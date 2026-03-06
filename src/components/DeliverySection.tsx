@@ -20,14 +20,14 @@ export function DeliverySection() {
     <Box
       component="section"
       id="delivery"
-      sx={{ py: { xs: 7, md: 9 }, scrollMarginTop: 100 }}
+      sx={{ py: { xs: 5, md: 6 }, scrollMarginTop: 100 }}
     >
       <Container maxWidth="xl">
-        <Stack spacing={4}>
+        <Stack spacing={3}>
           <SectionHeading
             eyebrow="Delivery Style"
-            title="How I tend to work on teams and products."
-            body="The strongest signal in these projects is not just the stack. It is the pattern: thoughtful scoping, clean boundaries, visible state, and the ability to move across the stack without losing product focus."
+            title="How I tend to work."
+            body="The strongest signal in these projects is the pattern: thoughtful scoping, clear boundaries, visible state, and the ability to move across the stack without losing product focus."
           />
 
           <Box
@@ -47,12 +47,12 @@ export function DeliverySection() {
                 <Paper
                   key={principle.title}
                   sx={{
-                    p: { xs: 2.5, md: 3 },
-                    borderRadius: 7,
+                    p: { xs: 2.1, md: 2.4 },
+                    borderRadius: "22px",
                     bgcolor: alpha("#fffdf8", 0.78),
                   }}
                 >
-                  <Stack spacing={2}>
+                  <Stack spacing={1.5}>
                     <Stack direction="row" spacing={1.5} alignItems="center">
                       <Box
                         sx={{
@@ -69,14 +69,14 @@ export function DeliverySection() {
                       </Box>
                       <Typography variant="h5">{principle.title}</Typography>
                     </Stack>
-                    <Typography variant="body1" color="text.secondary" sx={{ lineHeight: 1.75 }}>
+                    <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.68 }}>
                       {principle.description}
                     </Typography>
                     <Box
                       sx={{
-                        borderRadius: 5,
+                        borderRadius: "18px",
                         px: 2,
-                        py: 1.8,
+                        py: 1.45,
                         bgcolor: alpha("#132433", 0.03),
                       }}
                     >
@@ -95,4 +95,3 @@ export function DeliverySection() {
     </Box>
   );
 }
-

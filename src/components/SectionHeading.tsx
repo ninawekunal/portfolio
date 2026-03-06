@@ -12,7 +12,7 @@ export function SectionHeading({
   body,
 }: SectionHeadingProps) {
   return (
-    <Stack spacing={2.25} sx={{ maxWidth: 760 }}>
+    <Stack spacing={1.5} sx={{ maxWidth: 720 }}>
       <Box
         sx={{
           alignSelf: "flex-start",
@@ -31,14 +31,14 @@ export function SectionHeading({
           {eyebrow}
         </Typography>
       </Box>
-      <Typography variant="h2" sx={{ fontSize: { xs: "2.4rem", md: "3.2rem" } }}>
+      <Typography variant="h2" sx={{ fontSize: { xs: "2rem", md: "2.55rem" } }}>
         {title}
       </Typography>
       <Typography
         variant="body1"
         sx={{
-          fontSize: { xs: "1rem", md: "1.1rem" },
-          lineHeight: 1.75,
+          fontSize: { xs: "0.98rem", md: "1.02rem" },
+          lineHeight: 1.68,
           color: "text.secondary",
         }}
       >
@@ -47,4 +47,3 @@ export function SectionHeading({
     </Stack>
   );
 }
-

@@ -235,14 +235,14 @@ export function ProjectShowcase() {
     <Box
       component="section"
       id="projects"
-      sx={{ py: { xs: 7, md: 9 }, scrollMarginTop: 100 }}
+      sx={{ py: { xs: 5, md: 6 }, scrollMarginTop: 100 }}
     >
       <Container maxWidth="xl">
-        <Stack spacing={4}>
+        <Stack spacing={3}>
           <SectionHeading
             eyebrow="Project Showcase"
-            title="Interactive proof of skill, grounded in real repositories."
-            body="The content is curated for fast review, and the panel below also pulls current GitHub metadata so the portfolio stays connected to the work itself."
+            title="Interactive proof of skill."
+            body="The content is curated for fast review, and the panel below still pulls current GitHub metadata so the portfolio stays connected to the work itself."
           />
 
           <Stack direction="row" gap={1} flexWrap="wrap">
@@ -298,13 +298,12 @@ export function ProjectShowcase() {
             {selectedProject ? (
               <Paper
                 sx={{
-                  p: { xs: 2.4, md: 3.2 },
-                  borderRadius: 8,
+                  p: { xs: 2.1, md: 2.6 },
+                  borderRadius: "28px",
                   bgcolor: alpha("#fffdf8", 0.8),
-                  backdropFilter: "blur(18px)",
                 }}
               >
-                <Stack spacing={3}>
+                <Stack spacing={2.3}>
                   <Box
                     sx={{
                       display: "grid",
@@ -319,7 +318,7 @@ export function ProjectShowcase() {
                       variant="outlined"
                       sx={{
                         overflow: "hidden",
-                        borderRadius: 7,
+                        borderRadius: "24px",
                         bgcolor: alpha("#132433", 0.04),
                       }}
                     >
@@ -338,22 +337,22 @@ export function ProjectShowcase() {
                         <Typography variant="overline" color="primary.dark" sx={{ letterSpacing: "0.14em" }}>
                           {selectedProject.kicker}
                         </Typography>
-                        <Typography variant="h3" sx={{ mt: 0.6 }}>
+                        <Typography variant="h4" sx={{ mt: 0.55 }}>
                           {selectedProject.title}
                         </Typography>
                         <Typography
                           variant="body1"
-                          sx={{ mt: 1.2, color: "text.secondary", lineHeight: 1.78 }}
+                          sx={{ mt: 0.9, color: "text.secondary", lineHeight: 1.72 }}
                         >
                           {selectedProject.summary}
                         </Typography>
                       </Box>
 
                       <Box
-                        sx={{
-                          borderRadius: 6,
+                      sx={{
+                          borderRadius: "22px",
                           px: 2.1,
-                          py: 1.8,
+                          py: 1.55,
                           bgcolor: alpha("#132433", 0.03),
                         }}
                       >
@@ -460,7 +459,7 @@ export function ProjectShowcase() {
                   >
                     <Paper
                       variant="outlined"
-                      sx={{ p: 2.3, borderRadius: 6, bgcolor: alpha("#ffffff", 0.68) }}
+                      sx={{ p: 2, borderRadius: "22px", bgcolor: alpha("#ffffff", 0.68) }}
                     >
                       <Stack spacing={1.2}>
                         <Stack direction="row" spacing={1} alignItems="center">
@@ -477,7 +476,7 @@ export function ProjectShowcase() {
 
                     <Paper
                       variant="outlined"
-                      sx={{ p: 2.3, borderRadius: 6, bgcolor: alpha("#ffffff", 0.68) }}
+                      sx={{ p: 2, borderRadius: "22px", bgcolor: alpha("#ffffff", 0.68) }}
                     >
                       <Stack spacing={1.2}>
                         <Stack direction="row" spacing={1} alignItems="center">
@@ -494,7 +493,7 @@ export function ProjectShowcase() {
 
                     <Paper
                       variant="outlined"
-                      sx={{ p: 2.3, borderRadius: 6, bgcolor: alpha("#ffffff", 0.68) }}
+                      sx={{ p: 2, borderRadius: "22px", bgcolor: alpha("#ffffff", 0.68) }}
                     >
                       <Stack spacing={1.2}>
                         <Stack direction="row" spacing={1} alignItems="center">
@@ -511,7 +510,7 @@ export function ProjectShowcase() {
 
                     <Paper
                       variant="outlined"
-                      sx={{ p: 2.3, borderRadius: 6, bgcolor: alpha("#ffffff", 0.68) }}
+                      sx={{ p: 2, borderRadius: "22px", bgcolor: alpha("#ffffff", 0.68) }}
                     >
                       <Stack spacing={1.2}>
                         <Stack direction="row" spacing={1} alignItems="center">

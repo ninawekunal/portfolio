@@ -30,8 +30,8 @@ export default function Home() {
       <Box component="main">
         <HeroSection />
         <CapabilitySection />
-        <ExperienceSection />
         <ProjectShowcase />
+        <ExperienceSection />
         <DeliverySection />
         <SiteFooter />
       </Box>

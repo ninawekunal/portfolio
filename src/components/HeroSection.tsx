@@ -4,15 +4,11 @@ import GitHubIcon from "@mui/icons-material/GitHub";
 import LaunchRoundedIcon from "@mui/icons-material/LaunchRounded";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import PlaceRoundedIcon from "@mui/icons-material/PlaceRounded";
-import PsychologyAltRoundedIcon from "@mui/icons-material/PsychologyAltRounded";
-import StorageRoundedIcon from "@mui/icons-material/StorageRounded";
-import WebRoundedIcon from "@mui/icons-material/WebRounded";
 import {
   Box,
   Button,
   Chip,
   Container,
-  Divider,
   Paper,
   Stack,
   Typography,
@@ -21,19 +17,12 @@ import { alpha } from "@mui/material/styles";
 
 import {
   careerHighlights,
+  focusItems,
   heroBadges,
-  heroSignals,
   impactMetrics,
   profile,
+  topSkillsFromProfile,
 } from "@/data/portfolio";
-
-const heroCardSx = {
-  position: "relative",
-  overflow: "hidden",
-  borderRadius: "32px",
-  p: { xs: 3, md: 4 },
-  bgcolor: "rgba(255, 253, 248, 0.82)",
-} as const;
 
 export function HeroSection() {
   return (
@@ -41,73 +30,76 @@ export function HeroSection() {
       component="section"
       id="top"
       sx={{
-        pt: { xs: 5, md: 8 },
-        pb: { xs: 7, md: 9 },
+        pt: { xs: 4, md: 5 },
+        pb: { xs: 5, md: 6 },
       }}
     >
       <Container maxWidth="xl">
-        <Box
+        <Paper
           sx={{
-            display: "grid",
-            gap: 3,
-            gridTemplateColumns: {
-              xs: "1fr",
-              xl: "minmax(0, 1.2fr) minmax(360px, 0.82fr)",
-            },
-            alignItems: "start",
+            position: "relative",
+            overflow: "hidden",
+            borderRadius: "32px",
+            p: { xs: 2.5, md: 3.25 },
+            bgcolor: "rgba(255, 253, 248, 0.84)",
           }}
         >
-          <Paper sx={heroCardSx}>
+          <Box
+            sx={{
+              position: "absolute",
+              inset: 0,
+              background: `radial-gradient(circle at top left, ${alpha(
+                "#f0b07b",
+                0.28,
+              )}, transparent 34%), radial-gradient(circle at bottom right, ${alpha(
+                "#285873",
+                0.1,
+              )}, transparent 28%)`,
+              pointerEvents: "none",
+            }}
+          />
+
+          <Stack spacing={2.5} sx={{ position: "relative" }}>
             <Box
               sx={{
-                position: "absolute",
-                inset: 0,
-                background: `radial-gradient(circle at top left, ${alpha(
-                  "#f0b07b",
-                  0.34,
-                )}, transparent 34%), radial-gradient(circle at bottom right, ${alpha(
-                  "#285873",
-                  0.12,
-                )}, transparent 28%)`,
-                pointerEvents: "none",
+                display: "grid",
+                gap: 2,
+                gridTemplateColumns: {
+                  xs: "1fr",
+                  xl: "minmax(0, 1.2fr) minmax(320px, 0.82fr)",
+                },
+                alignItems: "start",
               }}
-            />
-            <Stack spacing={3} sx={{ position: "relative" }}>
-              <Chip
-                icon={<AutoAwesomeRoundedIcon />}
-                label="Portfolio for hiring managers and technical decision-makers"
-                sx={{
-                  alignSelf: "flex-start",
-                  bgcolor: alpha("#ffffff", 0.8),
-                }}
-              />
+            >
+              <Stack spacing={2.2}>
+                <Chip
+                  icon={<AutoAwesomeRoundedIcon />}
+                  label="Portfolio for hiring managers and technical decision-makers"
+                  sx={{
+                    alignSelf: "flex-start",
+                    bgcolor: alpha("#ffffff", 0.82),
+                  }}
+                />
 
-              <Stack spacing={2.5}>
                 <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
                   <Chip
                     icon={<PlaceRoundedIcon />}
                     label={profile.location}
                     variant="outlined"
-                    sx={{
-                      borderColor: alpha("#132433", 0.12),
-                      bgcolor: alpha("#ffffff", 0.6),
-                    }}
+                    sx={{ borderColor: alpha("#132433", 0.12), bgcolor: alpha("#ffffff", 0.62) }}
                   />
                   <Chip
                     label="4+ years professional experience"
                     variant="outlined"
-                    sx={{
-                      borderColor: alpha("#132433", 0.12),
-                      bgcolor: alpha("#ffffff", 0.6),
-                    }}
+                    sx={{ borderColor: alpha("#132433", 0.12), bgcolor: alpha("#ffffff", 0.62) }}
                   />
                 </Stack>
 
                 <Typography
                   variant="h1"
                   sx={{
-                    fontSize: { xs: "3rem", md: "clamp(3.75rem, 6vw, 5.5rem)" },
-                    maxWidth: 920,
+                    fontSize: { xs: "2.7rem", md: "clamp(3.2rem, 5vw, 4.35rem)" },
+                    maxWidth: 860,
                   }}
                 >
                   {profile.headline}
@@ -116,190 +108,161 @@ export function HeroSection() {
                 <Typography
                   variant="body1"
                   sx={{
-                    fontSize: { xs: "1.05rem", md: "1.18rem" },
-                    lineHeight: 1.8,
+                    fontSize: { xs: "1rem", md: "1.08rem" },
+                    lineHeight: 1.72,
                     color: "text.secondary",
-                    maxWidth: 780,
+                    maxWidth: 770,
                   }}
                 >
                   {profile.summary}
                 </Typography>
 
                 <Typography
-                  variant="body1"
+                  variant="body2"
                   sx={{
-                    fontSize: { xs: "1rem", md: "1.08rem" },
-                    lineHeight: 1.75,
+                    fontSize: { xs: "0.98rem", md: "1rem" },
+                    lineHeight: 1.7,
                     maxWidth: 760,
                   }}
                 >
                   {profile.audience}
                 </Typography>
-              </Stack>
 
-              <Stack direction="row" flexWrap="wrap" gap={1}>
-                {heroBadges.map((badge) => (
-                  <Chip
-                    key={badge}
-                    label={badge}
+                <Stack direction="row" spacing={1.1} flexWrap="wrap" useFlexGap>
+                  <Button href="#projects" variant="contained" endIcon={<LaunchRoundedIcon />}>
+                    Explore projects
+                  </Button>
+                  <Button
+                    href={profile.resumeUrl}
+                    target="_blank"
+                    rel="noreferrer"
                     variant="outlined"
-                    sx={{
-                      borderColor: alpha("#132433", 0.12),
-                      bgcolor: alpha("#ffffff", 0.62),
-                    }}
-                  />
-                ))}
-              </Stack>
-
-              <Stack direction="row" spacing={1.2} flexWrap="wrap" useFlexGap>
-                <Button
-                  href="#projects"
-                  size="large"
-                  variant="contained"
-                  endIcon={<LaunchRoundedIcon />}
-                >
-                  Explore projects
-                </Button>
-                <Button
-                  href={profile.resumeUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  size="large"
-                  variant="outlined"
-                  color="inherit"
-                  startIcon={<DescriptionRoundedIcon />}
-                >
-                  Resume PDF
-                </Button>
-                <Button
-                  href={profile.linkedInUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  size="large"
-                  variant="outlined"
-                  color="inherit"
-                  startIcon={<LinkedInIcon />}
-                >
-                  LinkedIn
-                </Button>
-                <Button
-                  href={profile.githubUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  size="large"
-                  variant="text"
-                  color="inherit"
-                  startIcon={<GitHubIcon />}
-                >
-                  GitHub
-                </Button>
-              </Stack>
-
-              <Divider />
-
-              <Box
-                sx={{
-                  display: "grid",
-                  gap: 1.5,
-                  gridTemplateColumns: { xs: "1fr", md: "repeat(2, minmax(0, 1fr))" },
-                }}
-              >
-                {impactMetrics.map((metric) => (
-                  <Paper
-                    key={metric.label}
-                    variant="outlined"
-                    sx={{
-                      p: 2.2,
-                      borderRadius: "24px",
-                      bgcolor: alpha("#ffffff", 0.7),
-                    }}
+                    color="inherit"
+                    startIcon={<DescriptionRoundedIcon />}
                   >
-                    <Typography variant="subtitle2" color="text.secondary" gutterBottom>
-                      {metric.label}
-                    </Typography>
-                    <Typography variant="h4" sx={{ mb: 0.7 }}>
-                      {metric.value}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.7 }}>
-                      {metric.detail}
-                    </Typography>
-                  </Paper>
-                ))}
-              </Box>
-            </Stack>
-          </Paper>
+                    Resume PDF
+                  </Button>
+                  <Button
+                    href={profile.linkedInUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    variant="outlined"
+                    color="inherit"
+                    startIcon={<LinkedInIcon />}
+                  >
+                    LinkedIn
+                  </Button>
+                  <Button
+                    href={profile.githubUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    variant="text"
+                    color="inherit"
+                    startIcon={<GitHubIcon />}
+                  >
+                    GitHub
+                  </Button>
+                </Stack>
 
-          <Stack spacing={2.5}>
-            <Paper
-              sx={{
-                ...heroCardSx,
-                p: { xs: 3, md: 3.4 },
-                background:
-                  "linear-gradient(160deg, rgba(19,36,51,0.96) 0%, rgba(32,57,77,0.94) 52%, rgba(15,107,98,0.92) 100%)",
-                color: "#f8fbff",
-              }}
-            >
-              <Stack spacing={2.1} sx={{ position: "relative", zIndex: 1 }}>
-                <Typography variant="overline" sx={{ letterSpacing: "0.16em", opacity: 0.74 }}>
-                  Professional Snapshot
-                </Typography>
-                <Typography variant="h4" sx={{ maxWidth: 440 }}>
-                  Building UI systems that scale with real product constraints.
-                </Typography>
-                <Typography
-                  variant="body1"
-                  sx={{ maxWidth: 440, opacity: 0.84, lineHeight: 1.78 }}
-                >
-                  Frontend-heavy by depth, full-stack by delivery, and increasingly focused on
-                  AI-native workflows that still respect operability, accessibility, and product
-                  clarity.
-                </Typography>
-                <Stack spacing={1.05}>
-                  {careerHighlights.map((item) => (
-                    <Typography key={item} variant="body2" sx={{ opacity: 0.84, lineHeight: 1.72 }}>
-                      {item}
-                    </Typography>
+                <Stack direction="row" flexWrap="wrap" gap={1}>
+                  {heroBadges.map((badge) => (
+                    <Chip
+                      key={badge}
+                      label={badge}
+                      variant="outlined"
+                      sx={{
+                        borderColor: alpha("#132433", 0.12),
+                        bgcolor: alpha("#ffffff", 0.64),
+                      }}
+                    />
                   ))}
                 </Stack>
-                <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
-                  <Chip
-                    icon={<WebRoundedIcon />}
-                    label="Frontend systems"
-                    sx={{ bgcolor: alpha("#ffffff", 0.14), color: "inherit" }}
-                  />
-                  <Chip
-                    icon={<StorageRoundedIcon />}
-                    label="Backend & data"
-                    sx={{ bgcolor: alpha("#ffffff", 0.14), color: "inherit" }}
-                  />
-                  <Chip
-                    icon={<PsychologyAltRoundedIcon />}
-                    label="AI-native workflows"
-                    sx={{ bgcolor: alpha("#ffffff", 0.14), color: "inherit" }}
-                  />
-                </Stack>
               </Stack>
-            </Paper>
 
-            <Paper sx={{ ...heroCardSx, p: { xs: 2.5, md: 3.2 } }}>
-              <Stack spacing={2}>
-                {heroSignals.map((signal, index) => (
-                  <Box key={signal.title}>
-                    <Typography variant="subtitle1">{signal.title}</Typography>
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      sx={{ mt: 0.6, lineHeight: 1.7 }}
-                    >
-                      {signal.detail}
+              <Stack spacing={1.5}>
+                <Paper
+                  sx={{
+                    p: 2.2,
+                    borderRadius: "24px",
+                    bgcolor: alpha("#132433", 0.95),
+                    color: "#f8fbff",
+                  }}
+                >
+                  <Stack spacing={1.2}>
+                    <Typography variant="overline" sx={{ letterSpacing: "0.14em", opacity: 0.72 }}>
+                      Profile Snapshot
                     </Typography>
-                    {index !== heroSignals.length - 1 ? <Divider sx={{ mt: 2 }} /> : null}
-                  </Box>
-                ))}
+                    {focusItems.map((item) => (
+                      <Box key={item.label}>
+                        <Typography variant="subtitle2" sx={{ opacity: 0.9 }}>
+                          {item.label}
+                        </Typography>
+                        <Typography variant="body2" sx={{ opacity: 0.78, lineHeight: 1.68, mt: 0.35 }}>
+                          {item.detail}
+                        </Typography>
+                      </Box>
+                    ))}
+                  </Stack>
+                </Paper>
+
+                <Paper
+                  sx={{
+                    p: 2.1,
+                    borderRadius: "24px",
+                    bgcolor: alpha("#ffffff", 0.74),
+                  }}
+                >
+                  <Stack spacing={1.35}>
+                    <Typography variant="subtitle1">Top skills from profile export</Typography>
+                    <Stack direction="row" flexWrap="wrap" gap={0.9}>
+                      {topSkillsFromProfile.map((skill) => (
+                        <Chip key={skill} label={skill} color="secondary" variant="outlined" />
+                      ))}
+                    </Stack>
+                    {careerHighlights.slice(0, 3).map((item) => (
+                      <Typography key={item} variant="body2" color="text.secondary" sx={{ lineHeight: 1.68 }}>
+                        {item}
+                      </Typography>
+                    ))}
+                  </Stack>
+                </Paper>
               </Stack>
-            </Paper>
+            </Box>
+
+            <Box
+              sx={{
+                display: "grid",
+                gap: 1.2,
+                gridTemplateColumns: {
+                  xs: "repeat(2, minmax(0, 1fr))",
+                  lg: "repeat(5, minmax(0, 1fr))",
+                },
+              }}
+            >
+              {impactMetrics.map((metric) => (
+                <Paper
+                  key={metric.label}
+                  variant="outlined"
+                  sx={{
+                    p: 1.7,
+                    borderRadius: "22px",
+                    bgcolor: alpha("#ffffff", 0.72),
+                  }}
+                >
+                  <Typography variant="body2" color="text.secondary">
+                    {metric.label}
+                  </Typography>
+                  <Typography variant="h5" sx={{ mt: 0.35, mb: 0.45 }}>
+                    {metric.value}
+                  </Typography>
+                  <Typography variant="caption" sx={{ color: "text.secondary", lineHeight: 1.55, display: "block" }}>
+                    {metric.detail}
+                  </Typography>
+                </Paper>
+              ))}
+            </Box>
           </Stack>
-        </Box>
+        </Paper>
       </Container>
     </Box>
   );

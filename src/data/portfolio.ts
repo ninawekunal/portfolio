@@ -42,34 +42,58 @@ export type EducationEntry = {
   details: string;
 };
 
+export type SkillCluster = {
+  title: string;
+  summary: string;
+  items: string[];
+  evidence: string;
+};
+
+export type FocusItem = {
+  label: string;
+  detail: string;
+};
+
 export const profile = {
   name: "Kunal Ninawe",
-  role: "Software Engineer II | Full-stack & Frontend Systems",
-  headline:
-    "Full-stack engineer building scalable, accessible UI systems and AI-native product workflows.",
+  role: "Software Engineer II | Identity, Frontend, and Full-stack Systems",
+  headline: "Building identity-aware products, reliable UI systems, and AI-native tools.",
   summary:
-    "I have 4+ years of professional software engineering experience building product-facing interfaces, backend services, and data workflows. My recent work spans partner account platforms used by 100k+ users, queue orchestration, map-led planning, document intelligence, and computer vision.",
+    "I have 4+ years of professional software engineering experience across React and TypeScript interfaces, identity-heavy backend systems, and cloud workflows in production. My recent work spans partner account platforms used by 100k+ users, authentication and MFA flows, queue orchestration, map-led planning, document intelligence, and computer vision.",
   audience:
-    "Best fit for hiring managers looking for an engineer who can move from architecture decisions to shipped UI without losing accessibility, reliability, or product clarity.",
+    "Best fit for hiring managers looking for an engineer who can move from trust-sensitive backend architecture to shipped UI without losing accessibility, reliability, or product clarity.",
   githubUrl: "https://github.com/ninawekunal",
   linkedInUrl: "https://linkedin.com/in/ninawekunal/",
   email: "ninawekunal@gmail.com",
   location: "Seattle, WA",
   resumeUrl: "/Kunal-Ninawe-Resume.pdf",
   knowledgeAreas: [
+    "Identity and access management",
+    "OAuth 2.0",
+    "OIDC",
+    "JWT",
+    "SSO",
+    "MFA",
+    "Session management",
     "Next.js",
     "React",
     "TypeScript",
     "Node.js",
+    "Hapi",
+    "Java",
+    "Kotlin",
+    "Spring Boot",
     "REST API design",
     "GraphQL",
-    "Supabase",
-    "Postgres",
-    "Redis",
-    "QStash",
-    "Mapbox",
-    "Google Maps integrations",
+    "gRPC",
+    "AWS",
+    "Kubernetes",
+    "Docker",
+    "CI/CD",
+    "Datadog",
+    "Splunk",
     "Document extraction",
+    "Map APIs",
     "Computer vision",
     "Machine learning",
     "AI-native product engineering",
@@ -78,35 +102,35 @@ export const profile = {
 };
 
 export const navigationItems = [
-  { label: "Capabilities", href: "#capabilities" },
-  { label: "Experience", href: "#experience" },
+  { label: "Skills", href: "#capabilities" },
   { label: "Projects", href: "#projects" },
+  { label: "Experience", href: "#experience" },
   { label: "Delivery", href: "#delivery" },
 ];
 
 export const heroBadges = [
-  "Mid-senior engineer",
-  "Full-stack delivery",
-  "Scalable systems",
+  "Identity & trust systems",
+  "Frontend systems",
+  "Cloud-native delivery",
   "AI-native product work",
 ];
 
 export const heroSignals = [
   {
-    title: "Currently at Expedia Group",
-    detail: "Software Engineer II shipping partner account workflows, auth, MFA, and dashboard experiences in React, TypeScript, and GraphQL.",
+    title: "Identity in production",
+    detail: "Built secure auth, MFA, email update, and account management flows across partner and traveler systems serving 100k+ users.",
   },
   {
     title: "Frontend depth with backend range",
-    detail: "Strong in React and Next.js UI systems, with production experience across Node.js, Java, Kotlin, Spring Boot, GraphQL, REST, SQL, and async cloud workflows.",
+    detail: "Strong in React and Next.js UI systems, with production experience across Node.js, Hapi, Java, Kotlin, Spring Boot, GraphQL, REST, gRPC, and SQL.",
+  },
+  {
+    title: "Cloud and release discipline",
+    detail: "Hands-on with Kubernetes, AWS, CI/CD, progressive rollouts, observability, and incident response in distributed systems.",
   },
   {
     title: "AI with engineering discipline",
     detail: "Builds GenAI, document, and ML-driven experiences where the UX makes the underlying system inspectable and useful.",
-  },
-  {
-    title: "Engineering systems that hold up",
-    detail: "Typed contracts, layered boundaries, accessibility, testing, on-call ownership, and failure-mode thinking are part of the default approach.",
   },
 ];
 
@@ -131,70 +155,72 @@ export const impactMetrics: Metric[] = [
     value: "~20%",
     detail: "Used L3 on-call debugging, logs, metrics, and RCA improvements to cut support volume.",
   },
+  {
+    label: "Identity bugs resolved",
+    value: "~45%",
+    detail: "Resolved identity-related bugs and inconsistencies by redesigning email update contracts and synchronization logic.",
+  },
 ];
 
 export const careerHighlights = [
   "Software Engineer II at Expedia Group since May 2022.",
-  "Shipped scalable and accessible account workflows using React, TypeScript, and GraphQL.",
-  "Previously built backend APIs and async workflows on AWS Lambda, ECS, DynamoDB, ElastiCache, and Kinesis.",
+  "Shipped secure identity workflows using React, TypeScript, Node.js, Java, GraphQL, and OIDC services.",
+  "Owned MFA, step-up auth, rollout safety, and incident response for high-trust partner account surfaces.",
+  "Previously built backend APIs and async workflows on AWS Lambda, ECS, ElastiCache, Kinesis, and CloudFormation.",
   "MS in Computer Engineering from New York University with coursework in distributed systems, cloud computing, and ML.",
 ];
 
-export const capabilityGroups = [
+export const topSkillsFromProfile = [
+  "Full-Stack Development",
+  "Identity and Access Management (IAM)",
+  "Reliability Engineering",
+];
+
+export const focusItems: FocusItem[] = [
   {
-    icon: "hub",
-    title: "Full-stack architecture",
-    description:
-      "Comfortable owning both the product surface and the system behind it, from interface modeling to service boundaries.",
-    items: [
-      "Next.js App Router and React-driven interfaces",
-      "Node and Hapi backend services",
-      "REST and GraphQL endpoint design",
-      "Supabase and Postgres-backed persistence",
-    ],
-    evidence: "SmartTrip and Agent Queues show clear frontend, backend, and shared-layer boundaries.",
+    label: "Open to",
+    detail: "Frontend, full-stack, product engineering, and AI application roles.",
   },
   {
-    icon: "smart",
-    title: "AI-native engineering",
-    description:
-      "Builds software that incorporates extraction, agentic workflows, and ML foundations in a way product teams can ship.",
-    items: [
-      "Document extraction and highlightable review workflows",
-      "Queue-driven operator flows for agentic systems",
-      "Computer vision and classical ML foundations",
-      "Evaluation-minded feature scoping",
-    ],
-    evidence:
-      "PDF Highlighter, Agent Queues, and ImageGenderDetector show both interface thinking and AI/ML implementation depth.",
+    label: "Current domain",
+    detail: "Identity, partner account workflows, and reliability-sensitive product surfaces.",
   },
   {
-    icon: "lan",
-    title: "Scalable systems thinking",
-    description:
-      "Designs for operational clarity with typed contracts, explicit state transitions, and clear failure handling.",
-    items: [
-      "Redis queues and QStash orchestration",
-      "Contract-first API validation with Zod",
-      "Startup and build-time dependency checks",
-      "Observable success, failure, and processing states",
-    ],
-    evidence:
-      "Agent Queues demonstrates queue semantics, validation discipline, and UI state observability.",
+    label: "Profile-backed stack",
+    detail: "React, TypeScript, Node.js, Java/OIDC, Kubernetes, AWS, Splunk, Datadog, PagerDuty.",
+  },
+];
+
+export const skillClusters: SkillCluster[] = [
+  {
+    title: "Identity & security",
+    summary: "Production ownership of high-trust account workflows and auth-sensitive operations.",
+    items: ["OAuth 2.0", "OIDC", "JWT", "SSO", "MFA", "ACR levels", "Session management"],
+    evidence: "Expedia identity work included step-up MFA, centralized identity contracts, and resilient cross-domain account flows.",
   },
   {
-    icon: "design",
-    title: "Product and UX execution",
-    description:
-      "Builds interfaces that make dense workflows easier to scan, navigate, and trust.",
-    items: [
-      "Document-heavy and map-heavy interfaces",
-      "Material-based component systems",
-      "Rapid MVP scoping without losing extensibility",
-      "Hiring-manager friendly storytelling through demos",
-    ],
-    evidence:
-      "SmartTrip and PDF Highlighter both translate complex interactions into approachable product flows.",
+    title: "Frontend systems",
+    summary: "Accessible, scalable UI systems with a strong testing and product quality mindset.",
+    items: ["TypeScript", "React", "Next.js", "Jest", "Cypress", "MobX", "Localization"],
+    evidence: "Built account management surfaces, auth flows, maps, document tooling, and polished product-facing interfaces.",
+  },
+  {
+    title: "Backend & APIs",
+    summary: "Comfortable working across service layers, typed contracts, and distributed integration points.",
+    items: ["Node.js", "Hapi", "Java", "Kotlin", "Spring Boot", "REST", "GraphQL", "gRPC", "SQL"],
+    evidence: "Shipped identity-connected account workflows, layered services, API contracts, and async queue-backed demos.",
+  },
+  {
+    title: "Cloud & operations",
+    summary: "Release discipline, observability, and cloud systems that hold up in production.",
+    items: ["Docker", "Kubernetes", "AWS", "CI/CD", "Spinnaker", "Datadog", "Splunk", "PagerDuty", "Istio"],
+    evidence: "Owned production releases, progressive deployment, metrics, RCA work, and AWS-backed workflows in containerized environments.",
+  },
+  {
+    title: "AI & applied systems",
+    summary: "Uses AI/ML where it improves workflow quality and user decision-making.",
+    items: ["OpenAI", "MCP", "Document extraction", "Map APIs", "Computer vision", "ML evaluation"],
+    evidence: "Current and recent work spans itinerary planning, PDF extraction, agentic flows, and computer vision experiments.",
   },
 ];
 
@@ -205,14 +231,13 @@ export const experienceTimeline: CareerEntry[] = [
     role: "Software Engineer II",
     period: "May 2022 - Present",
     summary:
-      "Owned end-to-end delivery across critical partner account workflows, balancing frontend systems work with reliability, experimentation, and cross-functional execution.",
+      "Owned end-to-end delivery across critical identity and partner account workflows, balancing frontend systems work with service contracts, security posture, and release reliability.",
     highlights: [
-      "Delivered email updates, auth, MFA, disable, and portfolio workflows using React, TypeScript, and GraphQL for global partner portals used by 100k+ users.",
-      "Designed scalable UI architectures for high-traffic, multi-region account experiences with careful rendering, state, and async data-flow decisions.",
-      "Improved release reliability through progressive deployments, feature flags, sidecars, and secure secret management.",
-      "Expanded Jest and Cypress coverage to 92% and handled L3 on-call incidents, contributing RCA work that reduced support requests by about 20%.",
+      "Unified fragmented B2B identity flows across partner and traveler systems using React, TypeScript, Node.js (Hapi), and Java/OIDC services for 100k+ partners with roughly 90% feature adoption.",
+      "Designed email update architecture across decoupled domains, defined REST and GraphQL contracts with centralized identity services, and resolved about 45% of identity-related bugs and inconsistencies.",
+      "Implemented step-up MFA with ACR policies, shipped staged rollouts via feature flags and analytics, and improved release confidence through 92% smoke coverage, progressive deployments, and L3 incident ownership using Splunk, Datadog, and PagerDuty.",
     ],
-    stack: ["React", "TypeScript", "GraphQL", "Jest", "Cypress", "Accessibility"],
+    stack: ["React", "TypeScript", "Node.js", "Hapi", "GraphQL", "OIDC", "Kubernetes", "Istio", "Splunk"],
   },
   {
     company: "Global Traffic Technologies",
@@ -222,10 +247,10 @@ export const experienceTimeline: CareerEntry[] = [
     summary:
       "Built backend APIs and async workflows for user-facing traffic products with a strong focus on cloud reliability and responsiveness.",
     highlights: [
-      "Worked across AWS Lambda, ECS, API Gateway, CloudFormation, DynamoDB, ElastiCache, and Kinesis.",
-      "Reduced latency and operational cost while improving reliability for customer-facing systems.",
+      "Built and deployed scalable backend APIs and batch workflows using AWS Lambda, ECS, and API Gateway.",
+      "Reduced latency and operational cost through CloudFormation automation, a DynamoDB to ElastiCache shift, and asynchronous logging with Kinesis Firehose, S3, and CloudWatch.",
     ],
-    stack: ["AWS Lambda", "ECS", "API Gateway", "DynamoDB", "ElastiCache", "Kinesis"],
+    stack: ["AWS Lambda", "ECS", "API Gateway", "CloudFormation", "ElastiCache", "Kinesis", "S3"],
   },
   {
     company: "Moaedat Ltd.",
@@ -434,7 +459,7 @@ export const deliveryPrinciples = [
     description:
       "Typed inputs, typed outputs, and clear ownership lines make systems easier to scale and debug.",
     example:
-      "Agent Queues validates both sides of the API contract and separates queue storage from visible workflow state.",
+      "Identity work at Expedia and Agent Queues both lean on explicit contracts, clear service responsibilities, and observable state.",
   },
   {
     icon: "visibility",
@@ -442,7 +467,7 @@ export const deliveryPrinciples = [
     description:
       "Users and operators trust systems more when transitions are inspectable instead of hidden.",
     example:
-      "PDF Highlighter exposes extraction decisions through direct highlights, and Agent Queues exposes processing states through dedicated panels.",
+      "PDF Highlighter exposes extraction decisions through direct highlights, and identity rollouts used metrics plus staged releases to keep risk visible.",
   },
   {
     icon: "ship",
@@ -450,12 +475,12 @@ export const deliveryPrinciples = [
     description:
       "Move from data model to UI finish without losing pace or maintainability.",
     example:
-      "Recent work spans React and Next.js fronts, Hapi and Node services, Redis, Supabase Postgres, and ML workflows.",
+      "Recent work spans React and Next.js fronts, Hapi and Node services, identity backends, AWS infrastructure, and ML workflows.",
   },
 ];
 
 export const footerNotes = [
   "This portfolio is built in Next.js with Material UI and statically exports cleanly for GitHub Pages.",
   "The same codebase also deploys directly to Vercel when you want the simpler hosting path.",
-  "Resume details incorporated here come from current professional experience at Expedia Group plus prior AWS-backed full-stack work and formal CS/CE training.",
+  "Skills and experience here are consolidated from the identity-focused resume, LinkedIn profile export, project repos, and current professional experience.",
 ];
