@@ -1,0 +1,36 @@
+<svg width="960" height="720" viewBox="0 0 960 720" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="960" height="720" rx="40" fill="#0F3140"/>
+  <rect x="28" y="28" width="904" height="664" rx="28" fill="url(#paint0_linear)"/>
+  <rect x="78" y="74" width="300" height="124" rx="24" fill="#FFF8F1" fill-opacity="0.1" stroke="#FFF8F1" stroke-opacity="0.16"/>
+  <text x="112" y="122" fill="#FFF8F1" font-size="46" font-family="Arial, sans-serif" font-weight="700">SmartTrip</text>
+  <text x="112" y="164" fill="#CDECF0" font-size="24" font-family="Arial, sans-serif">Route-aware itinerary planner</text>
+
+  <rect x="102" y="262" width="328" height="328" rx="34" fill="#FFF8F1" fill-opacity="0.94"/>
+  <path d="M142 546V304H390" stroke="#D3DDE4" stroke-width="10" stroke-linecap="round"/>
+  <circle cx="182" cy="344" r="24" fill="#D4692E"/>
+  <circle cx="248" cy="448" r="24" fill="#0F6B62"/>
+  <circle cx="356" cy="376" r="24" fill="#285873"/>
+  <path d="M182 344C214 360 222 410 248 448C286 462 314 432 356 376" stroke="#132433" stroke-width="12" stroke-linecap="round"/>
+  <text x="144" y="502" fill="#132433" font-size="24" font-family="Arial, sans-serif">ordered stops</text>
+
+  <rect x="500" y="252" width="344" height="126" rx="28" fill="#FFF8F1" fill-opacity="0.14" stroke="#FFF8F1" stroke-opacity="0.14"/>
+  <text x="542" y="314" fill="#FFF8F1" font-size="28" font-family="Arial, sans-serif" font-weight="700">Next.js UI</text>
+  <text x="542" y="350" fill="#D8EEF3" font-size="22" font-family="Arial, sans-serif">Trip creation, stop ordering, route review</text>
+
+  <rect x="500" y="406" width="344" height="126" rx="28" fill="#FFF8F1" fill-opacity="0.14" stroke="#FFF8F1" stroke-opacity="0.14"/>
+  <text x="542" y="468" fill="#FFF8F1" font-size="28" font-family="Arial, sans-serif" font-weight="700">Hapi + Supabase</text>
+  <text x="542" y="504" fill="#D8EEF3" font-size="22" font-family="Arial, sans-serif">Layered APIs, Postgres data, Mapbox routing</text>
+
+  <text x="80" y="636" fill="#FFF8F1" fill-opacity="0.72" font-size="22" font-family="Arial, sans-serif">
+    Next.js • Hapi • Supabase • Postgres • Mapbox • Google Maps export
+  </text>
+
+  <defs>
+    <linearGradient id="paint0_linear" x1="76" y1="54" x2="854" y2="674" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#285873"/>
+      <stop offset="0.56" stop-color="#204860"/>
+      <stop offset="1" stop-color="#0F6B62"/>
+    </linearGradient>
+  </defs>
+</svg>
+

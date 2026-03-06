@@ -1,0 +1,36 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: #132433;
+  background:
+    radial-gradient(circle at top left, rgba(240, 176, 123, 0.38), transparent 30%),
+    radial-gradient(circle at top right, rgba(40, 88, 115, 0.16), transparent 26%),
+    linear-gradient(180deg, #fffaf2 0%, #f6f2ea 56%, #eee7db 100%);
+  background-attachment: scroll;
+}
+
+main {
+  position: relative;
+  z-index: 1;
+  background-image:
+    linear-gradient(rgba(19, 36, 51, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(19, 36, 51, 0.03) 1px, transparent 1px),
+    radial-gradient(circle at 16% 24%, rgba(199, 91, 30, 0.07), transparent 16%),
+    radial-gradient(circle at 84% 14%, rgba(15, 107, 98, 0.07), transparent 16%),
+    radial-gradient(circle at 72% 88%, rgba(40, 88, 115, 0.06), transparent 18%);
+  background-size: 48px 48px, 48px 48px, auto, auto, auto;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}

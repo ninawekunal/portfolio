@@ -1,0 +1,37 @@
+<svg width="960" height="720" viewBox="0 0 960 720" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="960" height="720" rx="40" fill="#241B18"/>
+  <rect x="28" y="28" width="904" height="664" rx="28" fill="url(#paint0_linear)"/>
+  <rect x="72" y="74" width="380" height="124" rx="24" fill="#FFF8F1" fill-opacity="0.12" stroke="#FFF8F1" stroke-opacity="0.16"/>
+  <text x="104" y="122" fill="#FFF8F1" font-size="40" font-family="Arial, sans-serif" font-weight="700">PDF Highlighter</text>
+  <text x="104" y="164" fill="#FFE2D0" font-size="24" font-family="Arial, sans-serif">Document extraction with visual verification</text>
+
+  <rect x="96" y="238" width="366" height="394" rx="30" fill="#FFF8F1"/>
+  <rect x="142" y="294" width="166" height="22" rx="10" fill="#DAD7D2"/>
+  <rect x="142" y="346" width="214" height="22" rx="10" fill="#DAD7D2"/>
+  <rect x="142" y="398" width="176" height="22" rx="10" fill="#DAD7D2"/>
+  <rect x="126" y="338" width="246" height="38" rx="12" fill="#FFD15D" fill-opacity="0.72"/>
+  <rect x="126" y="390" width="206" height="38" rx="12" fill="#FF8A4C" fill-opacity="0.56"/>
+  <rect x="126" y="442" width="286" height="38" rx="12" fill="#FFD15D" fill-opacity="0.46"/>
+
+  <rect x="520" y="238" width="330" height="394" rx="30" fill="#FFF8F1" fill-opacity="0.12" stroke="#FFF8F1" stroke-opacity="0.14"/>
+  <text x="560" y="302" fill="#FFF8F1" font-size="28" font-family="Arial, sans-serif" font-weight="700">Extracted fields</text>
+  <rect x="560" y="340" width="250" height="54" rx="16" fill="#FFF8F1" fill-opacity="0.12"/>
+  <rect x="560" y="418" width="250" height="54" rx="16" fill="#FFF8F1" fill-opacity="0.12"/>
+  <rect x="560" y="496" width="250" height="54" rx="16" fill="#FFF8F1" fill-opacity="0.12"/>
+  <circle cx="604" cy="367" r="9" fill="#FFD15D"/>
+  <circle cx="604" cy="445" r="9" fill="#FF8A4C"/>
+  <circle cx="604" cy="523" r="9" fill="#FFD15D"/>
+
+  <text x="72" y="668" fill="#FFF8F1" fill-opacity="0.72" font-size="22" font-family="Arial, sans-serif">
+    React • TypeScript • Material UI • react-pdf • pdf.js • GitHub Pages
+  </text>
+
+  <defs>
+    <linearGradient id="paint0_linear" x1="82" y1="62" x2="860" y2="654" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#563529"/>
+      <stop offset="0.54" stop-color="#854226"/>
+      <stop offset="1" stop-color="#D4692E"/>
+    </linearGradient>
+  </defs>
+</svg>
+
