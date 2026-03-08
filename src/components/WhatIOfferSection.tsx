@@ -426,7 +426,7 @@ export function WhatIOfferSection() {
             >
               <Box
                 sx={{
-                  p: { xs: 1.25, md: 1.5 },
+                  p: { xs: 1.15, md: 1.35 },
                 }}
               >
                 <Paper
@@ -436,7 +436,7 @@ export function WhatIOfferSection() {
                     bgcolor: alpha("#0f1321", 0.9),
                     border: `1px solid ${alpha("#ffffff", 0.12)}`,
                     position: "sticky",
-                    top: { xs: 70, md: 82, lg: 94 },
+                    top: { xs: 70, md: 80, lg: 14 },
                     zIndex: 7,
                   }}
                 >
