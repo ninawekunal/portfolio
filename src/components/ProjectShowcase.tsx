@@ -323,14 +323,38 @@ export function ProjectShowcase() {
                         bgcolor: alpha("#132433", 0.04),
                       }}
                     >
-                      <Image
-                        src={withBasePath(selectedProject.posterSrc)}
-                        alt={selectedProject.posterAlt}
-                        width={960}
-                        height={720}
-                        priority={selectedProject.id === projects[0].id}
-                        style={{ display: "block", width: "100%", height: "auto" }}
-                      />
+                      {liveUrl ? (
+                        <Box
+                          sx={{
+                            width: "100%",
+                            aspectRatio: "4 / 3",
+                            bgcolor: "#ffffff",
+                          }}
+                        >
+                          <Box
+                            component="iframe"
+                            src={liveUrl}
+                            title={`${selectedProject.title} live demo`}
+                            loading="lazy"
+                            referrerPolicy="strict-origin-when-cross-origin"
+                            sx={{
+                              width: "100%",
+                              height: "100%",
+                              border: 0,
+                              display: "block",
+                            }}
+                          />
+                        </Box>
+                      ) : (
+                        <Image
+                          src={withBasePath(selectedProject.posterSrc)}
+                          alt={selectedProject.posterAlt}
+                          width={960}
+                          height={720}
+                          priority={selectedProject.id === projects[0].id}
+                          style={{ display: "block", width: "100%", height: "auto" }}
+                        />
+                      )}
                     </Paper>
 
                     <Stack spacing={2.2}>
