@@ -1,11 +1,20 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState, type ElementType } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ElementType,
+  type TouchEvent as ReactTouchEvent,
+} from "react";
 import Image from "next/image";
 import AutoAwesomeRoundedIcon from "@mui/icons-material/AutoAwesomeRounded";
 import CloudQueueRoundedIcon from "@mui/icons-material/CloudQueueRounded";
 import CodeRoundedIcon from "@mui/icons-material/CodeRounded";
 import DnsRoundedIcon from "@mui/icons-material/DnsRounded";
+import ExpandMoreRoundedIcon from "@mui/icons-material/ExpandMoreRounded";
 import HubRoundedIcon from "@mui/icons-material/HubRounded";
 import InsightsRoundedIcon from "@mui/icons-material/InsightsRounded";
 import OpenInNewRoundedIcon from "@mui/icons-material/OpenInNewRounded";
@@ -22,22 +31,18 @@ import {
   Button,
   ButtonBase,
   Chip,
+  Collapse,
   Container,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   Paper,
   Stack,
-  Tooltip,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
-import { alpha } from "@mui/material/styles";
+import { alpha, useTheme } from "@mui/material/styles";
 
 import {
   offerHeading,
   offerViews,
-  type OrbitNicheTechnique,
   type OfferView,
   type OrbitTechnology,
 } from "@/data/offer";
@@ -89,129 +94,156 @@ function clamp(value: number, min: number, max: number) {
 
 function TechnologyPin({
   technology,
+  selected,
   onClick,
 }: {
   technology: OrbitTechnology;
-  onClick: (technology: OrbitTechnology) => void;
+  selected: boolean;
+  onClick: () => void;
 }) {
   const brandSrc = brandIconMap[technology.icon];
   const Icon = fallbackIconMap[technology.icon] ?? WidgetsRoundedIcon;
 
-  const tooltipBody = (
-    <Box sx={{ p: 0.4, maxWidth: 320 }}>
-      <Typography variant="subtitle2">{technology.label}</Typography>
-      <Typography
-        variant="body2"
-        sx={{ mt: 0.45, color: alpha("#ffffff", 0.88), lineHeight: 1.55 }}
+  return (
+    <ButtonBase onClick={onClick} sx={{ borderRadius: "16px", textAlign: "left", minWidth: 0 }}>
+      <Paper
+        variant="outlined"
+        sx={{
+          px: 1.3,
+          py: 0.85,
+          borderRadius: "16px",
+          bgcolor: selected ? alpha("#1a2d48", 0.96) : alpha("#111722", 0.94),
+          borderColor: selected ? alpha("#8ec6ff", 0.72) : alpha("#ffffff", 0.16),
+          color: alpha("#ffffff", 0.94),
+          transition: "all 160ms ease",
+          "&:hover": {
+            borderColor: alpha("#8ec6ff", 0.55),
+            transform: "translateY(-1px)",
+          },
+        }}
       >
-        {technology.summary}
-      </Typography>
-      {technology.subItems?.length ? (
-        <Stack direction="row" flexWrap="wrap" gap={0.6} sx={{ mt: 0.65 }}>
-          {technology.subItems.map((item) => (
-            <Chip
-              key={item}
-              size="small"
-              label={item}
-              variant="outlined"
-              sx={{
-                borderColor: alpha("#8ec6ff", 0.58),
-                color: alpha("#dff0ff", 0.95),
-                bgcolor: alpha("#17314d", 0.9),
-              }}
+        <Stack direction="row" spacing={0.85} alignItems="center">
+          {brandSrc ? (
+            <Box
+              component="img"
+              src={brandSrc}
+              alt={`${technology.label} logo`}
+              sx={{ width: 16, height: 16, objectFit: "contain", flexShrink: 0 }}
             />
-          ))}
+          ) : (
+            <Icon sx={{ fontSize: 16, color: alpha("#cfe6ff", 0.92) }} />
+          )}
+          <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
+            {technology.label}
+          </Typography>
         </Stack>
-      ) : null}
-    </Box>
+      </Paper>
+    </ButtonBase>
   );
+}
+
+function ProfileAvatar({
+  size,
+  showFallback,
+  onError,
+}: {
+  size: number;
+  showFallback: boolean;
+  onError: () => void;
+}) {
+  if (showFallback) {
+    return (
+      <Box
+        sx={{
+          width: "100%",
+          height: "100%",
+          display: "grid",
+          placeItems: "center",
+          bgcolor: alpha("#223858", 0.95),
+        }}
+      >
+        <Typography variant="caption" sx={{ fontWeight: 700 }}>
+          KN
+        </Typography>
+      </Box>
+    );
+  }
 
   return (
-    <Tooltip arrow title={tooltipBody}>
-      <ButtonBase
-        onClick={() => onClick(technology)}
-        sx={{ borderRadius: "16px", textAlign: "left", minWidth: 0 }}
-      >
-        <Paper
-          variant="outlined"
-          sx={{
-            px: 1.3,
-            py: 0.85,
-            borderRadius: "16px",
-            bgcolor: alpha("#111722", 0.94),
-            borderColor: alpha("#ffffff", 0.16),
-            color: alpha("#ffffff", 0.94),
-            transition: "all 140ms ease",
-            "&:hover": {
-              borderColor: alpha("#8ec6ff", 0.55),
-              transform: "translateY(-1px)",
-            },
-          }}
-        >
-          <Stack direction="row" spacing={0.85} alignItems="center">
-            {brandSrc ? (
-              <Box
-                component="img"
-                src={brandSrc}
-                alt={`${technology.label} logo`}
-                sx={{ width: 16, height: 16, objectFit: "contain", flexShrink: 0 }}
-              />
-            ) : (
-              <Icon sx={{ fontSize: 16, color: alpha("#cfe6ff", 0.92) }} />
-            )}
-            <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
-              {technology.label}
-            </Typography>
-          </Stack>
-        </Paper>
-      </ButtonBase>
-    </Tooltip>
+    <Image
+      src="/profile_picture.jpeg"
+      alt="Kunal portrait"
+      width={size}
+      height={size}
+      onError={onError}
+      style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+    />
   );
 }
 
 export function WhatIOfferSection() {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
   const scrollerRef = useRef<HTMLDivElement | null>(null);
   const desktopTrackRef = useRef<HTMLDivElement | null>(null);
   const mobileTrackRef = useRef<HTMLDivElement | null>(null);
   const stepRefs = useRef<Array<HTMLDivElement | null>>([]);
   const dragTargetRef = useRef<"desktop" | "mobile" | null>(null);
+  const dragPreviewRef = useRef<number | null>(null);
   const scrollRafRef = useRef<number | null>(null);
   const wheelLockRef = useRef(false);
+  const touchStartRef = useRef<{ x: number; y: number } | null>(null);
 
   const [activeIndex, setActiveIndex] = useState(0);
-  const [selectedTechnology, setSelectedTechnology] = useState<OrbitTechnology | null>(null);
-  const [selectedNiche, setSelectedNiche] = useState<OrbitNicheTechnique | null>(null);
+  const [expandedTechnologyId, setExpandedTechnologyId] = useState<string | null>(null);
+  const [expandedNicheId, setExpandedNicheId] = useState<string | null>(null);
+  const [draggingTarget, setDraggingTarget] = useState<"desktop" | "mobile" | null>(null);
+  const [dragPreviewIndex, setDragPreviewIndex] = useState<number | null>(null);
   const [showPortraitFallback, setShowPortraitFallback] = useState(false);
 
   const totalSteps = offerViews.length;
   const activeView: OfferView = offerViews[activeIndex] ?? offerViews[0];
   const progress = activeIndex / Math.max(totalSteps - 1, 1);
+  const visualProgress =
+    dragPreviewIndex !== null ? dragPreviewIndex / Math.max(totalSteps - 1, 1) : progress;
+
+  const expandedTechnology = useMemo(
+    () => activeView.technologies.find((technology) => technology.id === expandedTechnologyId) ?? null,
+    [activeView, expandedTechnologyId],
+  );
 
   const relatedProjects = useMemo(() => {
-    if (!selectedTechnology) {
+    if (!expandedTechnology) {
       return [];
     }
 
-    return projects.filter((project) => selectedTechnology.projectIds.includes(project.id));
-  }, [selectedTechnology]);
+    return projects.filter((project) => expandedTechnology.projectIds.includes(project.id));
+  }, [expandedTechnology]);
 
   const jumpToStep = useCallback((index: number) => {
+    const clampedIndex = clamp(index, 0, totalSteps - 1);
+
+    if (isMobile) {
+      setActiveIndex(clampedIndex);
+      return;
+    }
+
     const root = scrollerRef.current;
-    const node = stepRefs.current[index];
+    const node = stepRefs.current[clampedIndex];
 
     if (!root || !node) {
       return;
     }
 
-    root.scrollTo({ top: index === 0 ? 0 : node.offsetTop, behavior: "smooth" });
-  }, []);
+    root.scrollTo({ top: clampedIndex === 0 ? 0 : node.offsetTop, behavior: "smooth" });
+  }, [isMobile, totalSteps]);
 
-  const jumpToPointerPosition = useCallback(
+  const getPointerStepIndex = useCallback(
     (clientCoordinate: number, target: "desktop" | "mobile") => {
       const track = target === "desktop" ? desktopTrackRef.current : mobileTrackRef.current;
 
       if (!track) {
-        return;
+        return activeIndex;
       }
 
       const rect = track.getBoundingClientRect();
@@ -219,12 +251,34 @@ export function WhatIOfferSection() {
         target === "desktop"
           ? clamp((clientCoordinate - rect.top) / Math.max(rect.height, 1), 0, 1)
           : clamp((clientCoordinate - rect.left) / Math.max(rect.width, 1), 0, 1);
-      const nextIndex = clamp(Math.round(ratio * (totalSteps - 1)), 0, totalSteps - 1);
+      return clamp(Math.round(ratio * (totalSteps - 1)), 0, totalSteps - 1);
+    },
+    [activeIndex, totalSteps],
+  );
 
+  const jumpToPointerPosition = useCallback(
+    (clientCoordinate: number, target: "desktop" | "mobile") => {
+      const nextIndex = getPointerStepIndex(clientCoordinate, target);
       jumpToStep(nextIndex);
     },
-    [jumpToStep, totalSteps],
+    [getPointerStepIndex, jumpToStep],
   );
+
+  const setPointerPreview = useCallback(
+    (clientCoordinate: number, target: "desktop" | "mobile") => {
+      const nextIndex = getPointerStepIndex(clientCoordinate, target);
+      dragPreviewRef.current = nextIndex;
+      setDragPreviewIndex((previous) => (previous === nextIndex ? previous : nextIndex));
+    },
+    [getPointerStepIndex],
+  );
+
+  const clearDragState = useCallback(() => {
+    dragTargetRef.current = null;
+    dragPreviewRef.current = null;
+    setDraggingTarget(null);
+    setDragPreviewIndex(null);
+  }, []);
 
   const syncActiveStep = useCallback(() => {
     const root = scrollerRef.current;
@@ -253,6 +307,10 @@ export function WhatIOfferSection() {
   }, []);
 
   useEffect(() => {
+    if (isMobile) {
+      return;
+    }
+
     const root = scrollerRef.current;
 
     if (!root) {
@@ -280,9 +338,13 @@ export function WhatIOfferSection() {
         scrollRafRef.current = null;
       }
     };
-  }, [syncActiveStep]);
+  }, [isMobile, syncActiveStep]);
 
   useEffect(() => {
+    if (isMobile) {
+      return;
+    }
+
     const root = scrollerRef.current;
 
     if (!root) {
@@ -290,7 +352,7 @@ export function WhatIOfferSection() {
     }
 
     const onWheel = (event: WheelEvent) => {
-      if (Math.abs(event.deltaY) < 8) {
+      if (Math.abs(event.deltaY) < 24) {
         return;
       }
 
@@ -313,7 +375,7 @@ export function WhatIOfferSection() {
 
       window.setTimeout(() => {
         wheelLockRef.current = false;
-      }, 360);
+      }, 440);
     };
 
     root.addEventListener("wheel", onWheel, { passive: false });
@@ -321,7 +383,7 @@ export function WhatIOfferSection() {
     return () => {
       root.removeEventListener("wheel", onWheel);
     };
-  }, [activeIndex, jumpToStep, totalSteps]);
+  }, [activeIndex, isMobile, jumpToStep, totalSteps]);
 
   useEffect(() => {
     const onPointerMove = (event: PointerEvent) => {
@@ -329,14 +391,20 @@ export function WhatIOfferSection() {
         return;
       }
 
-      jumpToPointerPosition(
+      setPointerPreview(
         dragTargetRef.current === "desktop" ? event.clientY : event.clientX,
         dragTargetRef.current,
       );
     };
 
     const onPointerUp = () => {
-      dragTargetRef.current = null;
+      const previewIndex = dragPreviewRef.current;
+
+      if (previewIndex !== null) {
+        jumpToStep(previewIndex);
+      }
+
+      clearDragState();
     };
 
     window.addEventListener("pointermove", onPointerMove);
@@ -348,7 +416,40 @@ export function WhatIOfferSection() {
       window.removeEventListener("pointerup", onPointerUp);
       window.removeEventListener("pointercancel", onPointerUp);
     };
-  }, [jumpToPointerPosition]);
+  }, [clearDragState, jumpToStep, setPointerPreview]);
+
+  const onMobileSwipeStart = useCallback((event: ReactTouchEvent<HTMLDivElement>) => {
+    if (!isMobile) {
+      return;
+    }
+
+    const touch = event.changedTouches[0];
+    touchStartRef.current = { x: touch.clientX, y: touch.clientY };
+  }, [isMobile]);
+
+  const onMobileSwipeEnd = useCallback(
+    (event: ReactTouchEvent<HTMLDivElement>) => {
+      if (!isMobile || !touchStartRef.current) {
+        return;
+      }
+
+      const touch = event.changedTouches[0];
+      const deltaX = touch.clientX - touchStartRef.current.x;
+      const deltaY = touch.clientY - touchStartRef.current.y;
+      touchStartRef.current = null;
+
+      if (Math.abs(deltaX) < 88 || Math.abs(deltaX) < Math.abs(deltaY) * 1.35) {
+        return;
+      }
+
+      if (deltaX < 0) {
+        jumpToStep(activeIndex + 1);
+      } else {
+        jumpToStep(activeIndex - 1);
+      }
+    },
+    [activeIndex, isMobile, jumpToStep],
+  );
 
   return (
     <Box component="section" id="what-i-offer" sx={{ py: { xs: 5, md: 6 }, scrollMarginTop: 100 }}>
@@ -404,10 +505,10 @@ export function WhatIOfferSection() {
             <Box
               ref={scrollerRef}
               sx={{
-                height: { xs: "74vh", md: "78vh", lg: "82vh" },
-                overflowY: "auto",
-                scrollSnapType: "y mandatory",
-                overscrollBehavior: "contain",
+                height: { xs: "auto", lg: "82vh" },
+                overflowY: { xs: "visible", lg: "auto" },
+                scrollSnapType: { xs: "none", lg: "y mandatory" },
+                overscrollBehavior: { xs: "auto", lg: "contain" },
                 borderRadius: "24px",
                 border: `1px solid ${alpha("#ffffff", 0.12)}`,
                 bgcolor: alpha("#0f1321", 0.7),
@@ -453,7 +554,8 @@ export function WhatIOfferSection() {
                         onPointerDown={(event) => {
                           event.preventDefault();
                           dragTargetRef.current = "desktop";
-                          jumpToPointerPosition(event.clientY, "desktop");
+                          setDraggingTarget("desktop");
+                          setPointerPreview(event.clientY, "desktop");
                         }}
                         sx={{
                           position: "relative",
@@ -481,7 +583,7 @@ export function WhatIOfferSection() {
                             top: 0,
                             width: 4,
                             borderRadius: 999,
-                            height: `${Math.max(progress * 420, 0)}px`,
+                            height: `${Math.max(visualProgress * 420, 0)}px`,
                             bgcolor: alpha("#f5be42", 0.92),
                           }}
                         />
@@ -490,41 +592,46 @@ export function WhatIOfferSection() {
                           sx={{
                             position: "absolute",
                             left: 16,
-                            top: `${Math.min(progress * 420, 418)}px`,
+                            top: `${Math.min(visualProgress * 420, 418)}px`,
                             transform: "translate(-50%, -50%)",
-                            width: 34,
-                            height: 34,
+                            width: 36,
+                            height: 36,
                             borderRadius: "50%",
-                            border: `2px solid ${alpha("#ffffff", 0.28)}`,
+                            border: `1.5px solid ${alpha("#ffffff", 0.38)}`,
                             bgcolor: alpha("#101726", 0.95),
-                            overflow: "hidden",
+                            p: "2px",
                             zIndex: 3,
+                            boxShadow: `0 0 0 1px ${alpha("#0b101b", 0.95)}`,
                           }}
                         >
-                          {showPortraitFallback ? (
-                            <Box
-                              sx={{
-                                width: "100%",
-                                height: "100%",
-                                display: "grid",
-                                placeItems: "center",
-                                bgcolor: alpha("#223858", 0.95),
-                              }}
-                            >
-                              <Typography variant="caption" sx={{ fontWeight: 700 }}>
-                                KN
-                              </Typography>
-                            </Box>
-                          ) : (
-                            <Box
-                              component="img"
-                              src="/profile_picture.jpeg"
-                              alt="Kunal portrait"
+                          <Box sx={{ width: "100%", height: "100%", borderRadius: "50%", overflow: "hidden" }}>
+                            <ProfileAvatar
+                              size={32}
+                              showFallback={showPortraitFallback}
                               onError={() => setShowPortraitFallback(true)}
-                              sx={{ width: "100%", height: "100%", objectFit: "cover" }}
                             />
-                          )}
+                          </Box>
                         </Box>
+                        {draggingTarget === "desktop" && dragPreviewIndex !== null ? (
+                          <Paper
+                            elevation={0}
+                            sx={{
+                              position: "absolute",
+                              left: 30,
+                              top: `${Math.min(visualProgress * 420, 418)}px`,
+                              transform: "translateY(-50%)",
+                              px: 0.8,
+                              py: 0.25,
+                              borderRadius: "10px",
+                              border: `1px solid ${alpha("#8ec6ff", 0.55)}`,
+                              bgcolor: alpha("#0f2034", 0.98),
+                            }}
+                          >
+                            <Typography variant="caption" sx={{ color: alpha("#e9f4ff", 0.97) }}>
+                              {offerViews[dragPreviewIndex]?.label}
+                            </Typography>
+                          </Paper>
+                        ) : null}
                       </Box>
 
                       <Stack sx={{ height: 420, justifyContent: "space-between" }}>
@@ -554,26 +661,30 @@ export function WhatIOfferSection() {
                 </Box>
 
                 <Box sx={{ position: "relative", minWidth: 0 }}>
-                  <Box sx={{ position: "sticky", top: 10, zIndex: 2 }}>
+                  <Box sx={{ position: { xs: "relative", lg: "sticky" }, top: { lg: 10 }, zIndex: 2 }}>
                     <Paper
+                      onTouchStart={onMobileSwipeStart}
+                      onTouchEnd={onMobileSwipeEnd}
+                      onTouchCancel={() => {
+                        touchStartRef.current = null;
+                      }}
                       sx={{
                         p: { xs: 1.2, md: 1.5 },
                         borderRadius: "22px",
                         bgcolor: alpha("#0f1321", 0.93),
                         border: `1px solid ${alpha("#ffffff", 0.12)}`,
                         width: "100%",
+                        touchAction: "pan-y",
                       }}
                     >
                       <Stack spacing={1.2}>
                         <Box sx={{ display: { xs: "block", lg: "none" } }}>
-                          <Stack direction="row" justifyContent="space-between" alignItems="center">
-                            <Typography variant="subtitle2" sx={{ color: alpha("#ffffff", 0.84) }}>
-                              Milestone {activeIndex + 1} / {totalSteps}
-                            </Typography>
-                            <Typography variant="subtitle2" sx={{ color: alpha("#f5be42", 0.92) }}>
-                              {activeView.label}
-                            </Typography>
-                          </Stack>
+                          <Typography
+                            variant="caption"
+                            sx={{ display: "block", mt: 0.2, color: alpha("#ffffff", 0.65) }}
+                          >
+                            Swipe left/right to switch core skills. Scroll vertically to read details.
+                          </Typography>
 
                           <Box
                             ref={mobileTrackRef}
@@ -581,10 +692,11 @@ export function WhatIOfferSection() {
                             onPointerDown={(event) => {
                               event.preventDefault();
                               dragTargetRef.current = "mobile";
-                              jumpToPointerPosition(event.clientX, "mobile");
+                              setDraggingTarget("mobile");
+                              setPointerPreview(event.clientX, "mobile");
                             }}
                             sx={{
-                              mt: 0.75,
+                              mt: 0.65,
                               height: 10,
                               borderRadius: 999,
                               bgcolor: alpha("#ffffff", 0.16),
@@ -595,7 +707,7 @@ export function WhatIOfferSection() {
                           >
                             <Box
                               sx={{
-                                width: `${progress * 100}%`,
+                                width: `${visualProgress * 100}%`,
                                 height: "100%",
                                 borderRadius: 999,
                                 bgcolor: alpha("#f5be42", 0.92),
@@ -604,41 +716,57 @@ export function WhatIOfferSection() {
                             <Box
                               sx={{
                                 position: "absolute",
-                                left: `${progress * 100}%`,
+                                left: `${visualProgress * 100}%`,
                                 top: "50%",
                                 transform: "translate(-50%, -50%)",
-                                width: 24,
-                                height: 24,
+                                width: 26,
+                                height: 26,
                                 borderRadius: "50%",
-                                border: `2px solid ${alpha("#ffffff", 0.24)}`,
+                                border: `1.5px solid ${alpha("#ffffff", 0.36)}`,
                                 bgcolor: alpha("#101726", 0.95),
-                                overflow: "hidden",
+                                p: "1.5px",
+                                boxShadow: `0 0 0 1px ${alpha("#0b101b", 0.95)}`,
                               }}
                             >
-                              {showPortraitFallback ? (
-                                <Box
+                              <Box sx={{ width: "100%", height: "100%", borderRadius: "50%", overflow: "hidden" }}>
+                                <ProfileAvatar
+                                  size={22}
+                                  showFallback={showPortraitFallback}
+                                  onError={() => setShowPortraitFallback(true)}
+                                />
+                              </Box>
+                            </Box>
+                            {draggingTarget === "mobile" && dragPreviewIndex !== null ? (
+                              <Paper
+                                elevation={0}
+                                sx={{
+                                  position: "absolute",
+                                  left: `${visualProgress * 100}%`,
+                                  top: -10,
+                                  transform: "translate(-50%, -100%)",
+                                  px: 0.8,
+                                  py: 0.25,
+                                  borderRadius: "10px",
+                                  border: `1px solid ${alpha("#8ec6ff", 0.55)}`,
+                                  bgcolor: alpha("#0f2034", 0.98),
+                                  pointerEvents: "none",
+                                  maxWidth: 150,
+                                }}
+                              >
+                                <Typography
+                                  variant="caption"
                                   sx={{
-                                    width: "100%",
-                                    height: "100%",
-                                    display: "grid",
-                                    placeItems: "center",
-                                    bgcolor: alpha("#223858", 0.95),
+                                    color: alpha("#e9f4ff", 0.97),
+                                    whiteSpace: "nowrap",
+                                    textOverflow: "ellipsis",
+                                    overflow: "hidden",
+                                    display: "block",
                                   }}
                                 >
-                                  <Typography variant="caption" sx={{ fontWeight: 700 }}>
-                                    KN
-                                  </Typography>
-                                </Box>
-                              ) : (
-                                <Box
-                                  component="img"
-                                  src="/profile_picture.jpeg"
-                                  alt="Kunal portrait"
-                                  onError={() => setShowPortraitFallback(true)}
-                                  sx={{ width: "100%", height: "100%", objectFit: "cover" }}
-                                />
-                              )}
-                            </Box>
+                                  {offerViews[dragPreviewIndex]?.label}
+                                </Typography>
+                              </Paper>
+                            ) : null}
                           </Box>
                         </Box>
 
@@ -660,89 +788,219 @@ export function WhatIOfferSection() {
                           </Typography>
                         </Box>
 
-                        <Stack spacing={0.65}>
+                        <Stack spacing={0.75}>
                           {activeView.nicheTechniques.map((niche) => {
-                            const nicheTooltip = (
-                              <Box sx={{ p: 0.4, maxWidth: 320 }}>
-                                <Typography variant="subtitle2">{niche.label}</Typography>
-                                <Typography
-                                  variant="body2"
-                                  sx={{ mt: 0.45, color: alpha("#ffffff", 0.88), lineHeight: 1.58 }}
-                                >
-                                  {niche.proof}
-                                </Typography>
-                                {niche.subItems?.length ? (
-                                  <Stack direction="row" flexWrap="wrap" gap={0.6} sx={{ mt: 0.65 }}>
-                                    {niche.subItems.map((item) => (
-                                      <Chip
-                                        key={item}
-                                        size="small"
-                                        label={item}
-                                        variant="outlined"
-                                        sx={{
-                                          borderColor: alpha("#f6b4e8", 0.58),
-                                          color: alpha("#ffe7f8", 0.96),
-                                          bgcolor: alpha("#3a1835", 0.92),
-                                        }}
-                                      />
-                                    ))}
-                                  </Stack>
-                                ) : null}
-                              </Box>
-                            );
+                            const isExpanded = expandedNicheId === niche.id;
 
                             return (
-                              <Tooltip key={niche.id} arrow title={nicheTooltip} disableTouchListener>
+                              <Paper
+                                key={niche.id}
+                                variant="outlined"
+                                sx={{
+                                  borderRadius: "14px",
+                                  bgcolor: alpha("#101726", 0.82),
+                                  borderColor: isExpanded
+                                    ? alpha("#f5be42", 0.45)
+                                    : alpha("#ffffff", 0.12),
+                                  overflow: "hidden",
+                                }}
+                              >
                                 <ButtonBase
-                                  onClick={() => setSelectedNiche(niche)}
+                                  onClick={() =>
+                                    setExpandedNicheId((previous) =>
+                                      previous === niche.id ? null : niche.id,
+                                    )
+                                  }
                                   sx={{
-                                    justifyContent: "flex-start",
-                                    borderRadius: "14px",
-                                    px: 0.4,
-                                    py: 0.35,
+                                    width: "100%",
+                                    justifyContent: "space-between",
+                                    textAlign: "left",
+                                    px: 0.9,
+                                    py: 0.55,
                                   }}
                                 >
-                                  <Box sx={{ display: "flex", gap: 0.9, alignItems: "center" }}>
+                                  <Box sx={{ display: "flex", gap: 0.9, alignItems: "center", minWidth: 0 }}>
                                     <AutoAwesomeRoundedIcon
                                       sx={{ color: alpha("#f5be42", 0.94), fontSize: 17, flexShrink: 0 }}
                                     />
                                     <Typography
                                       variant="body2"
                                       sx={{
-                                        color: alpha("#ffffff", 0.86),
+                                        color: alpha("#ffffff", 0.88),
                                         fontWeight: 500,
-                                        lineHeight: 1.5,
+                                        lineHeight: 1.45,
                                         textAlign: "left",
                                       }}
                                     >
                                       {niche.label}
                                     </Typography>
                                   </Box>
+                                  <ExpandMoreRoundedIcon
+                                    sx={{
+                                      fontSize: 18,
+                                      color: alpha("#ffffff", 0.72),
+                                      transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)",
+                                      transition: "transform 170ms ease",
+                                    }}
+                                  />
                                 </ButtonBase>
-                              </Tooltip>
+                                <Collapse in={isExpanded} timeout={180} unmountOnExit>
+                                  <Box sx={{ px: 1.25, pb: 1.1, pt: 0.2 }}>
+                                    <Typography
+                                      variant="body2"
+                                      sx={{ color: alpha("#ffffff", 0.85), lineHeight: 1.66 }}
+                                    >
+                                      {niche.proof}
+                                    </Typography>
+                                    {niche.subItems?.length ? (
+                                      <Stack direction="row" flexWrap="wrap" gap={0.6} sx={{ mt: 0.7 }}>
+                                        {niche.subItems.map((item) => (
+                                          <Chip
+                                            key={item}
+                                            size="small"
+                                            label={item}
+                                            variant="outlined"
+                                            sx={{
+                                              borderColor: alpha("#f6b4e8", 0.58),
+                                              color: alpha("#ffe7f8", 0.96),
+                                              bgcolor: alpha("#3a1835", 0.92),
+                                            }}
+                                          />
+                                        ))}
+                                      </Stack>
+                                    ) : null}
+                                  </Box>
+                                </Collapse>
+                              </Paper>
                             );
                           })}
                         </Stack>
 
                         <Box>
                           <Typography variant="subtitle1" sx={{ color: alpha("#ffffff", 0.96), mb: 0.8 }}>
-                            Technology pins
+                            Worked on
                           </Typography>
                           <Stack direction="row" flexWrap="wrap" useFlexGap gap={0.7}>
-                            {activeView.technologies.map((technology) => (
-                              <TechnologyPin
-                                key={technology.id}
-                                technology={technology}
-                                onClick={setSelectedTechnology}
-                              />
-                            ))}
+                            {activeView.technologies.map((technology) => {
+                              const isExpanded = expandedTechnologyId === technology.id;
+
+                              return (
+                                <TechnologyPin
+                                  key={technology.id}
+                                  technology={technology}
+                                  selected={isExpanded}
+                                  onClick={() =>
+                                    setExpandedTechnologyId((previous) =>
+                                      previous === technology.id ? null : technology.id,
+                                    )
+                                  }
+                                />
+                              );
+                            })}
                           </Stack>
+                          <Collapse in={Boolean(expandedTechnology)} timeout={180} unmountOnExit>
+                            <Paper
+                              variant="outlined"
+                              sx={{
+                                mt: 1,
+                                p: 1.1,
+                                borderRadius: "14px",
+                                bgcolor: alpha("#101726", 0.88),
+                                borderColor: alpha("#8ec6ff", 0.4),
+                              }}
+                            >
+                              <Typography variant="subtitle2" sx={{ color: alpha("#ffffff", 0.96) }}>
+                                {expandedTechnology?.label}
+                              </Typography>
+                              <Typography
+                                variant="body2"
+                                sx={{ mt: 0.4, color: alpha("#ffffff", 0.84), lineHeight: 1.62 }}
+                              >
+                                {expandedTechnology?.summary}
+                              </Typography>
+                              {expandedTechnology?.subItems?.length ? (
+                                <Stack direction="row" flexWrap="wrap" gap={0.6} sx={{ mt: 0.65 }}>
+                                  {expandedTechnology.subItems.map((item) => (
+                                    <Chip
+                                      key={item}
+                                      size="small"
+                                      label={item}
+                                      variant="outlined"
+                                      sx={{
+                                        borderColor: alpha("#8ec6ff", 0.58),
+                                        color: alpha("#dff0ff", 0.95),
+                                        bgcolor: alpha("#17314d", 0.9),
+                                      }}
+                                    />
+                                  ))}
+                                </Stack>
+                              ) : null}
+
+                              <Box sx={{ mt: 1 }}>
+                                {relatedProjects.length > 0 ? (
+                                  <Stack spacing={0.75}>
+                                    {relatedProjects.map((project) => (
+                                      <Paper
+                                        key={project.id}
+                                        variant="outlined"
+                                        sx={{
+                                          p: 0.9,
+                                          borderRadius: "12px",
+                                          bgcolor: alpha("#141b29", 0.94),
+                                          borderColor: alpha("#ffffff", 0.12),
+                                        }}
+                                      >
+                                        <Stack spacing={0.55}>
+                                          <Typography
+                                            variant="overline"
+                                            sx={{ color: alpha("#ffffff", 0.66), lineHeight: 1.1 }}
+                                          >
+                                            {project.kicker}
+                                          </Typography>
+                                          <Typography variant="subtitle2">{project.title}</Typography>
+                                          <Typography
+                                            variant="body2"
+                                            sx={{ color: alpha("#ffffff", 0.8), lineHeight: 1.58 }}
+                                          >
+                                            {project.headline}
+                                          </Typography>
+                                          <Box>
+                                            <Button
+                                              href={project.repoUrl}
+                                              target="_blank"
+                                              rel="noreferrer"
+                                              color="inherit"
+                                              variant="outlined"
+                                              size="small"
+                                              startIcon={<OpenInNewRoundedIcon />}
+                                              sx={{ borderColor: alpha("#ffffff", 0.28) }}
+                                            >
+                                              Repository
+                                            </Button>
+                                          </Box>
+                                        </Stack>
+                                      </Paper>
+                                    ))}
+                                  </Stack>
+                                ) : (
+                                  <Typography
+                                    variant="body2"
+                                    sx={{ color: alpha("#ffffff", 0.76), lineHeight: 1.58 }}
+                                  >
+                                    This area is represented in production/resume work and architectural
+                                    exposure, but it does not yet have a dedicated public showcase repository
+                                    in this portfolio.
+                                  </Typography>
+                                )}
+                              </Box>
+                            </Paper>
+                          </Collapse>
                         </Box>
                       </Stack>
                     </Paper>
                   </Box>
 
-                  <Stack spacing={0}>
+                  <Stack spacing={0} sx={{ display: { xs: "none", lg: "flex" } }}>
                     {offerViews.map((view, index) => (
                       <Box
                         key={view.id}
@@ -764,167 +1022,6 @@ export function WhatIOfferSection() {
           </Stack>
         </Paper>
       </Container>
-
-      <Dialog
-        open={Boolean(selectedNiche)}
-        onClose={() => setSelectedNiche(null)}
-        fullWidth
-        maxWidth="sm"
-        PaperProps={{
-          sx: {
-            borderRadius: "20px",
-            bgcolor: alpha("#0c1018", 0.98),
-            color: "#f7f9ff",
-          },
-        }}
-      >
-        <DialogTitle sx={{ borderBottom: `1px solid ${alpha("#ffffff", 0.1)}` }}>
-          {selectedNiche?.label}
-        </DialogTitle>
-        <DialogContent dividers sx={{ borderColor: alpha("#ffffff", 0.1) }}>
-          <Stack spacing={1.1}>
-            <Typography variant="body2" sx={{ color: alpha("#ffffff", 0.84), lineHeight: 1.7 }}>
-              {selectedNiche?.proof}
-            </Typography>
-            {selectedNiche?.subItems?.length ? (
-              <Stack direction="row" flexWrap="wrap" gap={0.7}>
-                {selectedNiche.subItems.map((item) => (
-                  <Chip
-                    key={item}
-                    size="small"
-                    label={item}
-                    variant="outlined"
-                    sx={{
-                      borderColor: alpha("#f6b4e8", 0.58),
-                      color: alpha("#ffe7f8", 0.96),
-                      bgcolor: alpha("#3a1835", 0.92),
-                    }}
-                  />
-                ))}
-              </Stack>
-            ) : null}
-          </Stack>
-        </DialogContent>
-        <DialogActions sx={{ borderTop: `1px solid ${alpha("#ffffff", 0.1)}` }}>
-          <Button color="inherit" onClick={() => setSelectedNiche(null)}>
-            Close
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      <Dialog
-        open={Boolean(selectedTechnology)}
-        onClose={() => setSelectedTechnology(null)}
-        fullWidth
-        maxWidth="md"
-        scroll="paper"
-        PaperProps={{
-          sx: {
-            borderRadius: "24px",
-            bgcolor: alpha("#0c1018", 0.98),
-            color: "#f7f9ff",
-          },
-        }}
-      >
-        <DialogTitle sx={{ borderBottom: `1px solid ${alpha("#ffffff", 0.1)}` }}>
-          <Stack spacing={0.6}>
-            <Typography variant="h5">{selectedTechnology?.label}</Typography>
-            <Typography variant="body2" sx={{ color: alpha("#ffffff", 0.74) }}>
-              {selectedTechnology?.summary}
-            </Typography>
-          </Stack>
-        </DialogTitle>
-        <DialogContent dividers sx={{ borderColor: alpha("#ffffff", 0.1), maxHeight: "70vh" }}>
-          <Stack spacing={1.2}>
-            {relatedProjects.length > 0 ? (
-              relatedProjects.map((project) => (
-                <Paper
-                  key={project.id}
-                  variant="outlined"
-                  sx={{
-                    p: 1.3,
-                    borderRadius: "16px",
-                    bgcolor: alpha("#141b29", 0.95),
-                    borderColor: alpha("#ffffff", 0.12),
-                  }}
-                >
-                  <Box
-                    sx={{
-                      display: "grid",
-                      gap: 1.2,
-                      gridTemplateColumns: { xs: "1fr", sm: "160px minmax(0, 1fr)" },
-                    }}
-                  >
-                    <Paper variant="outlined" sx={{ borderRadius: "12px", overflow: "hidden" }}>
-                      <Image
-                        src={project.posterSrc}
-                        alt={project.posterAlt}
-                        width={640}
-                        height={400}
-                        style={{ display: "block", width: "100%", height: "auto" }}
-                      />
-                    </Paper>
-
-                    <Stack spacing={0.8}>
-                      <Typography variant="overline" sx={{ color: alpha("#ffffff", 0.7) }}>
-                        {project.kicker}
-                      </Typography>
-                      <Typography variant="h6">{project.title}</Typography>
-                      <Typography variant="body2" sx={{ color: alpha("#ffffff", 0.8), lineHeight: 1.66 }}>
-                        {project.headline}
-                      </Typography>
-                      <Stack direction="row" flexWrap="wrap" gap={0.7}>
-                        {project.stack.slice(0, 6).map((item) => (
-                          <Chip
-                            key={item}
-                            size="small"
-                            label={item}
-                            variant="outlined"
-                            sx={{ borderColor: alpha("#ffffff", 0.18), color: alpha("#ffffff", 0.88) }}
-                          />
-                        ))}
-                      </Stack>
-                      <Box>
-                        <Button
-                          href={project.repoUrl}
-                          target="_blank"
-                          rel="noreferrer"
-                          color="inherit"
-                          variant="outlined"
-                          startIcon={<OpenInNewRoundedIcon />}
-                          sx={{ borderColor: alpha("#ffffff", 0.28) }}
-                        >
-                          View repository
-                        </Button>
-                      </Box>
-                    </Stack>
-                  </Box>
-                </Paper>
-              ))
-            ) : (
-              <Paper
-                variant="outlined"
-                sx={{
-                  p: 2,
-                  borderRadius: "16px",
-                  bgcolor: alpha("#141b29", 0.95),
-                  borderColor: alpha("#ffffff", 0.12),
-                }}
-              >
-                <Typography variant="body2" sx={{ color: alpha("#ffffff", 0.82), lineHeight: 1.7 }}>
-                  This area is represented in production/resume work and architectural exposure, but
-                  it does not yet have a dedicated public showcase repository in this portfolio.
-                </Typography>
-              </Paper>
-            )}
-          </Stack>
-        </DialogContent>
-        <DialogActions sx={{ borderTop: `1px solid ${alpha("#ffffff", 0.1)}` }}>
-          <Button color="inherit" onClick={() => setSelectedTechnology(null)}>
-            Close
-          </Button>
-        </DialogActions>
-      </Dialog>
     </Box>
   );
 }
