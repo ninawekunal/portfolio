@@ -25,9 +25,10 @@ export type OfferView = {
 
 export const offerHeading = {
   eyebrow: "What I Offer",
-  title: "Engineering that starts with real problems and ships practical systems.",
+  title:
+    "I design and ship production systems that stay reliable at scale, including workloads that serve millions of users.",
   body:
-    "I get energized by finding friction in the real world, translating it into clear engineering scope, and collaborating to close knowledge gaps quickly when the problem needs more than I already know.",
+    "I take products from 0 to 1 and from 1 to 100 by turning ambiguous problems into clear execution plans and collaborating quickly wherever deeper expertise is needed.",
 };
 
 export const offerViews: OfferView[] = [
@@ -93,49 +94,49 @@ export const offerViews: OfferView[] = [
         id: "lazy-loading",
         label: "Lazy Loading",
         proof:
-          "I split heavy routes/components and deferred expensive bundles so first interaction stayed responsive on slower networks.",
+          "I lazy-loaded heavy routes and UI blocks so users could start using the app quickly.",
       },
       {
         id: "state-management",
         label: "State Management",
         proof:
-          "I defined domain-level state boundaries and event flows so UI transitions were predictable and easy to debug in production.",
+          "I kept state boundaries clear so frontend behavior stayed predictable and easier to debug.",
       },
       {
         id: "accessibility",
         label: "Accessibility Support",
         proof:
-          "I shipped keyboard-first and semantic markup patterns, then validated critical journeys with accessibility checks before release.",
+          "I added keyboard navigation, semantic HTML, and focus states so key flows were accessible.",
       },
       {
         id: "hybrid-rendering",
         label: "Hybrid Rendering",
         proof:
-          "I chose SSR, static, or client rendering per screen based on data volatility and user-perceived latency targets.",
+          "I used SSR, SSG, or client rendering based on the page goal and expected load pattern.",
       },
       {
         id: "web-observability",
         label: "Web Performance Observability",
         proof:
-          "I instrumented frontend telemetry around releases to catch regressions fast and tie issues back to specific deployments.",
+          "I tracked web vitals and release metrics so we could catch regressions right after deploys.",
       },
       {
         id: "cache-session",
         label: "Caching & Session Management",
         proof:
-          "I coordinated browser and server caching with auth/session boundaries so protected flows stayed consistent during token refresh and sign-out.",
+          "I handled cache/session updates around login, logout, and token refresh to keep data consistent.",
       },
       {
         id: "websockets",
         label: "WebSockets & Real-time",
         proof:
-          "I built realtime updates with reconnect, fallback polling, and state reconciliation to keep clients reliable during network drops.",
+          "I implemented realtime updates with reconnect and fallback polling so users still saw fresh data.",
       },
       {
         id: "frontend-security",
         label: "Frontend Security",
         proof:
-          "I hardened token handling, browser storage, and request boundaries to reduce XSS/session-risk exposure in user-facing apps.",
+          "I improved frontend security with safer token handling, strict input checks, and secure defaults.",
       },
     ],
   },
@@ -223,43 +224,43 @@ export const offerViews: OfferView[] = [
         id: "authz-design",
         label: "AuthN/AuthZ Design",
         proof:
-          "I implemented layered AuthN/AuthZ checks and least-privilege policies in identity-sensitive APIs to keep access decisions explicit.",
+          "I built layered auth checks and least-privilege rules to protect sensitive APIs.",
       },
       {
         id: "contract-first",
         label: "Contract-first APIs",
         proof:
-          "I defined request/response contracts first, then generated/validated against them to reduce integration drift across teams.",
+          "I defined API contracts first and validated against them so integrations stayed stable.",
       },
       {
         id: "idempotency",
         label: "Idempotency",
         proof:
-          "I added idempotency keys and dedupe guards on write paths so retries or duplicate messages did not corrupt state.",
+          "I added idempotency keys and dedupe logic so retries never created duplicate writes.",
       },
       {
         id: "versioning",
         label: "Versioning Strategy",
         proof:
-          "I rolled out API and schema changes with backward-compatible versions and phased migration plans to avoid client breakage.",
+          "I versioned APIs and rolled changes out gradually so existing clients kept working.",
       },
       {
         id: "schema-evolution",
         label: "Schema Evolution",
         proof:
-          "I planned schema migrations with compatibility checks, rollback options, and data backfills to keep uptime intact.",
+          "I planned schema migrations with compatibility checks and rollback paths to avoid downtime.",
       },
       {
         id: "backend-security",
         label: "Backend Security",
         proof:
-          "I enforced secure data paths around token validation, PII boundaries, and trust-sensitive actions with audit-friendly controls.",
+          "I secured backend flows around tokens, PII access, and audit trails for trust-sensitive paths.",
       },
       {
         id: "failure-path",
         label: "Failure-path Engineering",
         proof:
-          "I designed retries, timeout budgets, and explicit fallback/error contracts early so failure paths were predictable under load.",
+          "I added retries, timeouts, and fallback behavior so failures were contained under load.",
       },
     ],
   },
@@ -319,37 +320,37 @@ export const offerViews: OfferView[] = [
         id: "human-loop",
         label: "Human-in-the-loop Review",
         proof:
-          "I paired model-generated outputs with reviewer UIs so teams could verify and approve critical results before downstream use.",
+          "I added human review steps so critical AI outputs were verified before final use.",
       },
       {
         id: "confidence-signals",
         label: "Confidence Signaling",
         proof:
-          "I exposed confidence indicators and fallback behavior in product flows so users knew when to trust or re-check model output.",
+          "I surfaced confidence and fallback signals so users knew when to trust or double-check results.",
       },
       {
         id: "evaluation-loops",
         label: "Evaluation Loops",
         proof:
-          "I built repeatable eval loops with error analysis baselines to measure model quality changes release over release.",
+          "I ran repeatable evaluation checks and error reviews before shipping model updates.",
       },
       {
         id: "prompt-system-design",
         label: "Prompt/System Design",
         proof:
-          "I treated prompts and tool-calling flows as versioned artifacts with tests so behavior changes stayed intentional.",
+          "I versioned prompts and tool flows so behavior changes were tested and easy to roll back.",
       },
       {
         id: "dataset-awareness",
         label: "Dataset Bias Awareness",
         proof:
-          "I documented dataset gaps and failure classes during experimentation so teams could set realistic guardrails in production.",
+          "I documented dataset gaps and common failure cases so teams could set practical guardrails.",
       },
       {
         id: "ai-observability",
         label: "AI Observability",
         proof:
-          "I logged inference traces and tool decisions in a debuggable format to speed up RCA when outputs regressed.",
+          "I logged inference traces and tool decisions so debugging AI issues was faster.",
       },
     ],
   },
@@ -412,44 +413,44 @@ export const offerViews: OfferView[] = [
         label: "Partitioning / Sharding",
         subItems: ["Consistent Hashing", "Hash-based partitioning"],
         proof:
-          "I used consistent/hash-based partitioning strategies to spread traffic, reduce hot keys, and keep throughput stable as load grew.",
+          "I used sharding and consistent hashing to spread traffic and avoid hot partitions.",
       },
       {
         id: "database-indexing",
         label: "Database Indexing",
         proof:
-          "I designed indexes around real query patterns and tuned them against write amplification/cost after profiling bottlenecks.",
+          "I added indexes based on real query patterns to reduce latency on heavy endpoints.",
       },
       {
         id: "scalable-architecture",
         label: "Scalable System Architecture",
         proof:
-          "I separated read/write paths and service boundaries so scaling one workload did not destabilize the rest of the platform.",
+          "I separated service and data paths so each part could scale without blocking others.",
       },
       {
         id: "microservices",
         label: "Micro-services",
         proof:
-          "I split domains into independently deployable services with explicit contracts so teams could ship safely without cross-service regressions.",
+          "I split domains into focused services with clear contracts so teams could deploy independently.",
       },
       {
         id: "async-messaging",
         label: "Asynchronous Messaging",
         subItems: ["Queue", "Pub/Sub"],
         proof:
-          "I implemented queue and pub/sub workflows to decouple services, smooth traffic spikes, and improve failure isolation.",
+          "I used queues and pub/sub to decouple workflows and handle traffic spikes smoothly.",
       },
       {
         id: "load-balancing",
         label: "Load Balancing",
         proof:
-          "I configured health-aware load balancing and failover rules so traffic shifted cleanly during partial outages.",
+          "I configured load balancing with health checks and failover to keep services available.",
       },
       {
         id: "resilience",
         label: "Resilience Patterns",
         proof:
-          "I applied retries, timeout budgets, and circuit-breaker patterns to prevent cascading failures during peak traffic.",
+          "I applied retries, timeouts, and circuit-breaker style controls to prevent cascading outages.",
       },
     ],
   },
@@ -508,37 +509,37 @@ export const offerViews: OfferView[] = [
         id: "scope-proof",
         label: "Scope Decisions",
         proof:
-          "I scoped work into thin vertical slices that de-risked the hardest unknowns first before expanding system complexity.",
+          "I start with small end-to-end slices that prove value and reduce risk early.",
       },
       {
         id: "ownership-proof",
         label: "Ownership in Production",
         proof:
-          "I took features from design to production, including rollout, monitoring, incident response, and post-release hardening.",
+          "I take features from planning to production, including monitoring and post-release fixes.",
       },
       {
         id: "collab-proof",
         label: "Cross-team Collaboration",
         proof:
-          "I aligned with product, design, and platform teams by documenting tradeoffs and keeping decision paths transparent.",
+          "I work closely with product, design, and platform teams and make tradeoffs clear.",
       },
       {
         id: "security-proof",
         label: "Security-first Delivery",
         proof:
-          "I embedded security and identity constraints early in architecture so compliance and privacy were built in, not patched later.",
+          "I include security and privacy requirements from day one, not as a later patch.",
       },
       {
         id: "mentorship-proof",
         label: "Mentoring Style",
         proof:
-          "I used code reviews and incident retrospectives to mentor teammates with concrete examples and reusable playbooks.",
+          "I mentor through code reviews, pairing, and incident learnings so others can avoid repeat mistakes.",
       },
       {
         id: "learning-proof",
         label: "Continuous Learning",
         proof:
-          "I ramped quickly on new domains, then documented what worked and what failed so the team could reuse those learnings.",
+          "I ramp up quickly in new areas and document what works so the team can reuse it.",
       },
     ],
   },

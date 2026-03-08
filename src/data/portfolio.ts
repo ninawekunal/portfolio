@@ -56,7 +56,7 @@ export type FocusItem = {
 
 export const profile = {
   name: "Kunal Ninawe",
-  role: "Software Engineer II | Identity, Frontend, and Full-stack Systems",
+  role: "Software Engineering | Full-Stack Engineering | Native-AI Product Engineering",
   headline: "Building identity-aware products, reliable UI systems, and AI-native tools.",
   summary:
     "I have 4+ years of professional software engineering experience across React and TypeScript interfaces, identity-heavy backend systems, and cloud workflows in production. My recent work spans partner account platforms used by 100k+ users, authentication and MFA flows, queue orchestration, map-led planning, document intelligence, and computer vision.",
@@ -102,7 +102,7 @@ export const profile = {
 };
 
 export const navigationItems = [
-  { label: "What I Offer", href: "#what-i-offer" },
+  { label: "My Skillset", href: "#what-i-offer" },
   { label: "Projects", href: "#projects" },
 ];
 

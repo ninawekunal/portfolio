@@ -131,13 +131,13 @@ function TechnologyPin({
           px: 1.3,
           py: 0.85,
           borderRadius: "16px",
-          bgcolor: alpha("#111722", 0.94),
-          borderColor: alpha("#ffffff", 0.16),
-          color: alpha("#ffffff", 0.94),
+          bgcolor: "#ffffff",
+          borderColor: alpha("#d9e1ef", 0.95),
+          color: alpha("#091427", 0.96),
           transition: "all 160ms ease",
           "&:hover": {
-            borderColor: alpha("#8ec6ff", 0.6),
-            bgcolor: alpha("#17263b", 0.96),
+            borderColor: alpha("#7fb1ff", 0.75),
+            bgcolor: "#ffffff",
             transform: "translateY(-1px)",
           },
         }}
@@ -151,7 +151,7 @@ function TechnologyPin({
               sx={{ width: 16, height: 16, objectFit: "contain", flexShrink: 0 }}
             />
           ) : (
-            <Icon sx={{ fontSize: 16, color: alpha("#cfe6ff", 0.92) }} />
+            <Icon sx={{ fontSize: 16, color: alpha("#1e3456", 0.9) }} />
           )}
           <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
             {technology.label}
@@ -383,40 +383,75 @@ export function WhatIOfferSection() {
         >
           <Stack spacing={2.2}>
             <Box>
-              <Typography variant="overline" sx={{ letterSpacing: "0.2em", opacity: 0.72 }}>
-                {offerHeading.eyebrow}
-              </Typography>
-              <Typography variant="h2" sx={{ fontSize: { xs: "2rem", md: "3rem" }, mt: 0.35 }}>
-                What I <Box component="span" sx={{ color: "#ee5ac8" }}>Offer</Box>
-              </Typography>
               <Typography
-                variant="h5"
+                variant="overline"
                 sx={{
-                  mt: 1.1,
-                  maxWidth: 940,
-                  color: alpha("#ffffff", 0.96),
-                  fontWeight: 500,
-                  lineHeight: 1.35,
+                  letterSpacing: "0.22em",
+                  opacity: 0.78,
+                  display: "block",
+                  textAlign: { xs: "left", md: "center" },
                 }}
               >
-                {offerHeading.title}
+                MY SKILLSET
               </Typography>
               <Typography
-                variant="body1"
+                variant="h2"
                 sx={{
-                  mt: 1,
+                  mt: 0.55,
+                  fontSize: { xs: "2rem", sm: "2.55rem", md: "3.15rem", lg: "3.65rem" },
+                  textAlign: { xs: "left", md: "center" },
+                  lineHeight: 1.1,
+                  letterSpacing: "-0.015em",
+                  maxWidth: 1040,
+                  mx: { xs: 0, md: "auto" },
+                  pr: { xs: 0.25, sm: 0 },
+                }}
+              >
+                The Magic{" "}
+                <Box
+                  component="span"
+                  sx={{
+                    fontStyle: "italic",
+                    backgroundImage: "linear-gradient(90deg, #ff3bb5 0%, #ff7b38 100%)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                  }}
+                >
+                  Behind
+                </Box>
+              </Typography>
+              <Stack
+                component="ul"
+                spacing={0.7}
+                sx={{
+                  mt: 1.35,
+                  mb: 0,
+                  pl: { xs: 2.25, md: 2.7 },
                   maxWidth: 960,
-                  color: alpha("#ffffff", 0.78),
-                  lineHeight: 1.74,
+                  mx: { xs: 0, md: "auto" },
                 }}
               >
-                {offerHeading.body}
-              </Typography>
+                <Typography
+                  component="li"
+                  variant="body1"
+                  sx={{ color: alpha("#ffffff", 0.83), lineHeight: 1.72 }}
+                >
+                  {offerHeading.title}
+                </Typography>
+                <Typography
+                  component="li"
+                  variant="body1"
+                  sx={{ color: alpha("#ffffff", 0.78), lineHeight: 1.72 }}
+                >
+                  {offerHeading.body}
+                </Typography>
+              </Stack>
             </Box>
 
             <Box
               ref={sectionRef}
               sx={{
+                mt: { xs: 1.4, md: 1.9 },
                 borderRadius: "24px",
                 border: `1px solid ${alpha("#ffffff", 0.12)}`,
                 bgcolor: alpha("#0f1321", 0.7),
@@ -426,12 +461,16 @@ export function WhatIOfferSection() {
             >
               <Box
                 sx={{
-                  p: { xs: 1.15, md: 1.35 },
+                  px: { xs: 1.15, md: 1.35 },
+                  pb: { xs: 1.15, md: 1.35 },
+                  pt: { xs: 1.8, md: 2.2 },
                 }}
               >
                 <Paper
                   sx={{
-                    p: { xs: 1.7, md: 1.9 },
+                    px: { xs: 1.7, md: 1.9 },
+                    pt: { xs: 1.7, md: 1.9 },
+                    pb: { xs: 2.2, md: 2.4 },
                     borderRadius: "20px",
                     bgcolor: alpha("#0f1321", 0.9),
                     border: `1px solid ${alpha("#ffffff", 0.12)}`,
@@ -440,17 +479,11 @@ export function WhatIOfferSection() {
                     zIndex: 7,
                   }}
                 >
-                  <Typography variant="subtitle1" sx={{ color: alpha("#ffffff", 0.95) }}>
-                    Milestone Progress
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    sx={{ mt: 0.2, color: alpha("#ffffff", 0.68), lineHeight: 1.55 }}
-                  >
-                    Drag or tap to jump between core skills.
+                  <Typography variant="subtitle1" sx={{ color: alpha("#ffffff", 0.95), fontWeight: 600 }}>
+                    Drag or tap to jump between core skills
                   </Typography>
                   <Box
-                    sx={{ mt: 1, px: { xs: 1.1, md: 1.45 }, pb: 0.2 }}
+                    sx={{ mt: 1.45, mb: 1.35, px: { xs: 1.1, md: 1.45 } }}
                   >
                     <Box
                       ref={topTrackRef}
@@ -542,7 +575,7 @@ export function WhatIOfferSection() {
                       ) : null}
                     </Box>
                   </Box>
-                  <Stack direction="row" flexWrap="wrap" gap={0.6} sx={{ mt: 0.8 }}>
+                  <Stack direction="row" flexWrap="wrap" gap={0.6} sx={{ mt: 1.15, mb: 0.8 }}>
                     {offerViews.map((view, index) => (
                       <Button
                         key={view.id}
