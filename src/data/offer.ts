@@ -93,49 +93,49 @@ export const offerViews: OfferView[] = [
         id: "lazy-loading",
         label: "Lazy Loading",
         proof:
-          "Split heavy UI surfaces and defer expensive modules to keep first interaction responsive.",
+          "I split heavy routes/components and deferred expensive bundles so first interaction stayed responsive on slower networks.",
       },
       {
         id: "state-management",
         label: "State Management",
         proof:
-          "Use domain-driven state boundaries so transitions stay predictable and debuggable.",
+          "I defined domain-level state boundaries and event flows so UI transitions were predictable and easy to debug in production.",
       },
       {
         id: "accessibility",
         label: "Accessibility Support",
         proof:
-          "Design keyboard and semantic-first interactions so workflows remain usable under assistive technology.",
+          "I shipped keyboard-first and semantic markup patterns, then validated critical journeys with accessibility checks before release.",
       },
       {
         id: "hybrid-rendering",
         label: "Hybrid Rendering",
         proof:
-          "Choose SSR/static/client rendering based on data volatility and UX expectations.",
+          "I chose SSR, static, or client rendering per screen based on data volatility and user-perceived latency targets.",
       },
       {
         id: "web-observability",
         label: "Web Performance Observability",
         proof:
-          "Track client-side regressions with release-aware telemetry and runtime diagnostics.",
+          "I instrumented frontend telemetry around releases to catch regressions fast and tie issues back to specific deployments.",
       },
       {
         id: "cache-session",
         label: "Caching & Session Management",
         proof:
-          "Coordinate client/server cache behavior carefully around auth-sensitive session transitions.",
+          "I coordinated browser and server caching with auth/session boundaries so protected flows stayed consistent during token refresh and sign-out.",
       },
       {
         id: "websockets",
         label: "WebSockets & Real-time",
         proof:
-          "Design real-time flows with graceful fallback and state reconciliation paths.",
+          "I built realtime updates with reconnect, fallback polling, and state reconciliation to keep clients reliable during network drops.",
       },
       {
         id: "frontend-security",
         label: "Frontend Security",
         proof:
-          "Guard token handling and browser state to reduce XSS/session-risk exposure.",
+          "I hardened token handling, browser storage, and request boundaries to reduce XSS/session-risk exposure in user-facing apps.",
       },
     ],
   },
@@ -223,43 +223,43 @@ export const offerViews: OfferView[] = [
         id: "authz-design",
         label: "AuthN/AuthZ Design",
         proof:
-          "Identity-sensitive systems use layered checks and least-privilege policies for safer defaults.",
+          "I implemented layered AuthN/AuthZ checks and least-privilege policies in identity-sensitive APIs to keep access decisions explicit.",
       },
       {
         id: "contract-first",
         label: "Contract-first APIs",
         proof:
-          "Keep IO contracts explicit to reduce integration drift and debugging ambiguity.",
+          "I defined request/response contracts first, then generated/validated against them to reduce integration drift across teams.",
       },
       {
         id: "idempotency",
         label: "Idempotency",
         proof:
-          "Protect state transitions against retries and duplicate event delivery.",
+          "I added idempotency keys and dedupe guards on write paths so retries or duplicate messages did not corrupt state.",
       },
       {
         id: "versioning",
         label: "Versioning Strategy",
         proof:
-          "Ship change safely via backward-compatible evolution and staged rollouts.",
+          "I rolled out API and schema changes with backward-compatible versions and phased migration plans to avoid client breakage.",
       },
       {
         id: "schema-evolution",
         label: "Schema Evolution",
         proof:
-          "Use migration discipline and compatibility checks as models evolve.",
+          "I planned schema migrations with compatibility checks, rollback options, and data backfills to keep uptime intact.",
       },
       {
         id: "backend-security",
         label: "Backend Security",
         proof:
-          "Harden data paths around token handling, PII boundaries, and trust-sensitive actions.",
+          "I enforced secure data paths around token validation, PII boundaries, and trust-sensitive actions with audit-friendly controls.",
       },
       {
         id: "failure-path",
         label: "Failure-path Engineering",
         proof:
-          "Design retries, fallback behavior, and explicit error contracts before incidents happen.",
+          "I designed retries, timeout budgets, and explicit fallback/error contracts early so failure paths were predictable under load.",
       },
     ],
   },
@@ -319,37 +319,37 @@ export const offerViews: OfferView[] = [
         id: "human-loop",
         label: "Human-in-the-loop Review",
         proof:
-          "Model-assisted outputs are paired with explicit review surfaces before final acceptance.",
+          "I paired model-generated outputs with reviewer UIs so teams could verify and approve critical results before downstream use.",
       },
       {
         id: "confidence-signals",
         label: "Confidence Signaling",
         proof:
-          "Expose confidence/fallback behavior so users understand reliability boundaries.",
+          "I exposed confidence indicators and fallback behavior in product flows so users knew when to trust or re-check model output.",
       },
       {
         id: "evaluation-loops",
         label: "Evaluation Loops",
         proof:
-          "Track quality with error analysis and repeatable regression metrics.",
+          "I built repeatable eval loops with error analysis baselines to measure model quality changes release over release.",
       },
       {
         id: "prompt-system-design",
         label: "Prompt/System Design",
         proof:
-          "Treat prompts and tool flows as versioned, testable system behavior.",
+          "I treated prompts and tool-calling flows as versioned artifacts with tests so behavior changes stayed intentional.",
       },
       {
         id: "dataset-awareness",
         label: "Dataset Bias Awareness",
         proof:
-          "Document dataset limits and failure classes to avoid false confidence.",
+          "I documented dataset gaps and failure classes during experimentation so teams could set realistic guardrails in production.",
       },
       {
         id: "ai-observability",
         label: "AI Observability",
         proof:
-          "Capture inference behavior with logs that are useful during debugging and RCA.",
+          "I logged inference traces and tool decisions in a debuggable format to speed up RCA when outputs regressed.",
       },
     ],
   },
@@ -412,44 +412,44 @@ export const offerViews: OfferView[] = [
         label: "Partitioning / Sharding",
         subItems: ["Consistent Hashing", "Hash-based partitioning"],
         proof:
-          "Use partition strategy to reduce hotspots and keep request distribution stable under scale.",
+          "I used consistent/hash-based partitioning strategies to spread traffic, reduce hot keys, and keep throughput stable as load grew.",
       },
       {
         id: "database-indexing",
         label: "Database Indexing",
         proof:
-          "Design indexes around access patterns while balancing write amplification and cost.",
+          "I designed indexes around real query patterns and tuned them against write amplification/cost after profiling bottlenecks.",
       },
       {
         id: "scalable-architecture",
         label: "Scalable System Architecture",
         proof:
-          "Decompose read/write paths and service boundaries so growth does not create tight coupling.",
+          "I separated read/write paths and service boundaries so scaling one workload did not destabilize the rest of the platform.",
       },
       {
         id: "microservices",
         label: "Micro-services",
         proof:
-          "Use clear domain ownership and contracts for independent deployment and safer changes.",
+          "I split domains into independently deployable services with explicit contracts so teams could ship safely without cross-service regressions.",
       },
       {
         id: "async-messaging",
         label: "Asynchronous Messaging",
         subItems: ["Queue", "Pub/Sub"],
         proof:
-          "Model workflows as events when decoupling improves resilience and latency tolerance.",
+          "I implemented queue and pub/sub workflows to decouple services, smooth traffic spikes, and improve failure isolation.",
       },
       {
         id: "load-balancing",
         label: "Load Balancing",
         proof:
-          "Distribute traffic with health-aware routing and failure isolation guardrails.",
+          "I configured health-aware load balancing and failover rules so traffic shifted cleanly during partial outages.",
       },
       {
         id: "resilience",
         label: "Resilience Patterns",
         proof:
-          "Combine retries, timeout budgets, and circuit-breaker thinking to avoid cascades.",
+          "I applied retries, timeout budgets, and circuit-breaker patterns to prevent cascading failures during peak traffic.",
       },
     ],
   },
@@ -508,37 +508,37 @@ export const offerViews: OfferView[] = [
         id: "scope-proof",
         label: "Scope Decisions",
         proof:
-          "Prioritize thin vertical slices that prove risk early before scaling complexity.",
+          "I scoped work into thin vertical slices that de-risked the hardest unknowns first before expanding system complexity.",
       },
       {
         id: "ownership-proof",
         label: "Ownership in Production",
         proof:
-          "Carry features through release, monitoring, incident handling, and hardening.",
+          "I took features from design to production, including rollout, monitoring, incident response, and post-release hardening.",
       },
       {
         id: "collab-proof",
         label: "Cross-team Collaboration",
         proof:
-          "Align with product, design, and platform peers through explicit technical tradeoffs.",
+          "I aligned with product, design, and platform teams by documenting tradeoffs and keeping decision paths transparent.",
       },
       {
         id: "security-proof",
         label: "Security-first Delivery",
         proof:
-          "Embed security and identity constraints into architecture decisions from day one.",
+          "I embedded security and identity constraints early in architecture so compliance and privacy were built in, not patched later.",
       },
       {
         id: "mentorship-proof",
         label: "Mentoring Style",
         proof:
-          "Use code reviews and incident retrospectives as repeatable teaching loops.",
+          "I used code reviews and incident retrospectives to mentor teammates with concrete examples and reusable playbooks.",
       },
       {
         id: "learning-proof",
         label: "Continuous Learning",
         proof:
-          "Treat unknown domains as explicit learning goals and document discoveries for reuse.",
+          "I ramped quickly on new domains, then documented what worked and what failed so the team could reuse those learnings.",
       },
     ],
   },
