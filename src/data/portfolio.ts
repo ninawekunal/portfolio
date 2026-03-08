@@ -102,10 +102,8 @@ export const profile = {
 };
 
 export const navigationItems = [
-  { label: "Skills", href: "#capabilities" },
+  { label: "What I Offer", href: "#what-i-offer" },
   { label: "Projects", href: "#projects" },
-  { label: "Experience", href: "#experience" },
-  { label: "Delivery", href: "#delivery" },
 ];
 
 export const heroBadges = [

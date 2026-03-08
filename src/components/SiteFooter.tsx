@@ -36,8 +36,8 @@ export function SiteFooter() {
               </Typography>
               <Typography variant="body1" sx={{ maxWidth: 760, opacity: 0.82, lineHeight: 1.8 }}>
                 This portfolio is intentionally structured for fast review. The case studies show
-                engineering range, and the resume-backed experience section shows production
-                ownership, scale, and collaboration context.
+                engineering range, and the What I Offer section highlights how I approach
+                production ownership, scale, and collaboration.
               </Typography>
 
               <Stack direction="row" spacing={1.3} flexWrap="wrap" useFlexGap>

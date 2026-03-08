@@ -1,12 +1,10 @@
 import { Box } from "@mui/material";
 
-import { CapabilitySection } from "@/components/CapabilitySection";
-import { DeliverySection } from "@/components/DeliverySection";
-import { ExperienceSection } from "@/components/ExperienceSection";
 import { HeroSection } from "@/components/HeroSection";
 import { ProjectShowcase } from "@/components/ProjectShowcase";
 import { SiteFooter } from "@/components/SiteFooter";
 import { TopBar } from "@/components/TopBar";
+import { WhatIOfferSection } from "@/components/WhatIOfferSection";
 import { profile } from "@/data/portfolio";
 
 const personJsonLd = {
@@ -29,10 +27,8 @@ export default function Home() {
       <TopBar />
       <Box component="main">
         <HeroSection />
-        <CapabilitySection />
+        <WhatIOfferSection />
         <ProjectShowcase />
-        <ExperienceSection />
-        <DeliverySection />
         <SiteFooter />
       </Box>
     </>
