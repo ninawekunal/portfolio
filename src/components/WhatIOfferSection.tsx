@@ -46,6 +46,7 @@ import {
   type OfferView,
   type OrbitTechnology,
 } from "@/data/offer";
+import { withBasePath } from "@/lib/assetPath";
 import { projects } from "@/data/portfolio";
 
 const fallbackIconMap: Record<string, ElementType> = {
@@ -102,6 +103,7 @@ function TechnologyPin({
   onClick: () => void;
 }) {
   const brandSrc = brandIconMap[technology.icon];
+  const brandSrcWithBasePath = brandSrc ? withBasePath(brandSrc) : undefined;
   const Icon = fallbackIconMap[technology.icon] ?? WidgetsRoundedIcon;
 
   return (
@@ -126,7 +128,7 @@ function TechnologyPin({
           {brandSrc ? (
             <Box
               component="img"
-              src={brandSrc}
+              src={brandSrcWithBasePath}
               alt={`${technology.label} logo`}
               sx={{ width: 16, height: 16, objectFit: "contain", flexShrink: 0 }}
             />
@@ -171,7 +173,7 @@ function ProfileAvatar({
 
   return (
     <Image
-      src="/profile_picture.jpeg"
+      src={withBasePath("/profile_picture.jpeg")}
       alt="Kunal portrait"
       width={size}
       height={size}

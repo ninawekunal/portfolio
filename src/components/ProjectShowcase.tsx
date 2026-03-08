@@ -25,6 +25,7 @@ import { alpha } from "@mui/material/styles";
 
 import { type PortfolioProject, projectFilters, projects } from "@/data/portfolio";
 import { SectionHeading } from "@/components/SectionHeading";
+import { withBasePath } from "@/lib/assetPath";
 
 type RepoSnapshot = {
   forks: number;
@@ -323,7 +324,7 @@ export function ProjectShowcase() {
                       }}
                     >
                       <Image
-                        src={selectedProject.posterSrc}
+                        src={withBasePath(selectedProject.posterSrc)}
                         alt={selectedProject.posterAlt}
                         width={960}
                         height={720}
