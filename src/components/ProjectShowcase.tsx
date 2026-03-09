@@ -1,10 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
-import ExpandMoreRoundedIcon from "@mui/icons-material/ExpandMoreRounded";
 import GitHubIcon from "@mui/icons-material/GitHub";
+import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
+import KeyboardArrowUpRoundedIcon from "@mui/icons-material/KeyboardArrowUpRounded";
 import LightbulbRoundedIcon from "@mui/icons-material/LightbulbRounded";
 import OpenInNewRoundedIcon from "@mui/icons-material/OpenInNewRounded";
 import {
@@ -12,7 +13,6 @@ import {
   Button,
   ButtonBase,
   Chip,
-  Collapse,
   Container,
   Dialog,
   DialogContent,
@@ -42,12 +42,7 @@ function LessonsList({
   return (
     <Stack spacing={0.72}>
       {project.lessonsLearned.map((item) => (
-        <Stack
-          key={item}
-          direction="row"
-          spacing={0.75}
-          alignItems="flex-start"
-        >
+        <Stack key={item} direction="row" spacing={0.75} alignItems="flex-start">
           <LightbulbRoundedIcon
             sx={{
               fontSize: 16,
@@ -71,8 +66,9 @@ export function ProjectShowcase() {
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const [activeFilter, setActiveFilter] = useState("All");
-  const [expandedProjectId, setExpandedProjectId] = useState<string | null>(null);
+  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(projects[0]?.id ?? null);
   const [demoProject, setDemoProject] = useState<PortfolioProject | null>(null);
+  const carouselRef = useRef<HTMLDivElement | null>(null);
 
   const filteredProjects = useMemo(
     () =>
@@ -83,7 +79,9 @@ export function ProjectShowcase() {
   );
 
   const selectedProject =
-    filteredProjects.find((project) => project.id === expandedProjectId) ?? filteredProjects[0] ?? null;
+    filteredProjects.find((project) => project.id === selectedProjectId) ??
+    filteredProjects[0] ??
+    null;
 
   const openLiveDemo = (project: PortfolioProject) => {
     if (!project.liveUrl) {
@@ -98,9 +96,25 @@ export function ProjectShowcase() {
     window.open(project.liveUrl, "_blank", "noopener,noreferrer");
   };
 
+  const scrollCarousel = (direction: "up" | "down") => {
+    const node = carouselRef.current;
+
+    if (!node) {
+      return;
+    }
+
+    const cards = node.querySelectorAll("[data-project-card='true']");
+    const step = cards.length ? (cards[0] as HTMLElement).offsetHeight + 12 : 182;
+
+    node.scrollBy({
+      top: direction === "down" ? step : -step,
+      behavior: "smooth",
+    });
+  };
+
   return (
     <Box component="section" id="projects" sx={{ py: { xs: 5, md: 6 }, scrollMarginTop: 100 }}>
-      <Container maxWidth="xl">
+      <Container maxWidth="lg">
         <Paper
           sx={{
             p: { xs: 2.1, md: 3.1 },
@@ -117,7 +131,7 @@ export function ProjectShowcase() {
           }}
         >
           <Stack spacing={3}>
-            <Stack spacing={1.5} sx={{ maxWidth: 860, mx: "auto", textAlign: "center" }}>
+            <Stack spacing={1.5} sx={{ maxWidth: 820, mx: "auto", textAlign: "center" }}>
               <Typography
                 variant="overline"
                 sx={{
@@ -158,8 +172,7 @@ export function ProjectShowcase() {
                 </Box>
               </Typography>
               <Typography variant="body1" sx={{ color: alpha("#e4ecff", 0.84), lineHeight: 1.72 }}>
-                Use the cards to inspect project implementation details while the right panel keeps the selected
-                project preview active on desktop.
+                Browse a vertical carousel of projects on the left and inspect implementation depth on the right.
               </Typography>
             </Stack>
 
@@ -171,18 +184,11 @@ export function ProjectShowcase() {
                   clickable
                   onClick={() => {
                     setActiveFilter(filter);
-
                     const nextProjects =
                       filter === "All"
                         ? projects
                         : projects.filter((project) => project.tags.includes(filter));
-
-                    if (!nextProjects.length) {
-                      setExpandedProjectId(null);
-                      return;
-                    }
-
-                    setExpandedProjectId(null);
+                    setSelectedProjectId(nextProjects[0]?.id ?? null);
                   }}
                   variant="outlined"
                   sx={{
@@ -209,180 +215,133 @@ export function ProjectShowcase() {
                 gap: 2.2,
                 gridTemplateColumns: {
                   xs: "1fr",
-                  lg: "minmax(340px, 0.62fr) minmax(0, 1fr)",
+                  lg: "minmax(340px, 0.54fr) minmax(0, 1fr)",
                 },
                 alignItems: "start",
               }}
             >
-              <Stack spacing={1.5}>
-                {filteredProjects.map((project) => {
-                  const isExpanded = expandedProjectId === project.id;
-
-                  return (
-                    <Paper
-                      key={project.id}
-                      sx={{
-                        overflow: "hidden",
-                        borderRadius: "24px",
-                        bgcolor: isExpanded ? alpha("#0f1321", 0.94) : alpha("#0f1321", 0.86),
-                        border: `1px solid ${
-                          isExpanded ? alpha("#f6b4e8", 0.4) : alpha("#ffffff", 0.16)
-                        }`,
-                        transition: "border-color 180ms ease, box-shadow 180ms ease",
-                      }}
+              <Paper
+                sx={{
+                  borderRadius: "22px",
+                  bgcolor: alpha("#0f1321", 0.82),
+                  border: `1px solid ${alpha("#ffffff", 0.16)}`,
+                  overflow: "hidden",
+                }}
+              >
+                <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ px: 1.2, py: 1 }}>
+                  <Typography variant="subtitle2" sx={{ color: alpha("#ffffff", 0.9) }}>
+                    Project carousel
+                  </Typography>
+                  <Stack direction="row" spacing={0.6}>
+                    <IconButton
+                      size="small"
+                      aria-label="Scroll project carousel up"
+                      onClick={() => scrollCarousel("up")}
+                      sx={{ color: alpha("#ffffff", 0.82), border: `1px solid ${alpha("#ffffff", 0.22)}` }}
                     >
-                      <ButtonBase
-                        onClick={() =>
-                          setExpandedProjectId((previous) => (previous === project.id ? null : project.id))
-                        }
-                        sx={{
-                          width: "100%",
-                          textAlign: "left",
-                          px: { xs: 1.55, md: 2.1 },
-                          py: { xs: 1.45, md: 1.7 },
-                          justifyContent: "space-between",
-                          alignItems: "flex-start",
-                          gap: 1,
-                        }}
-                      >
-                        <Stack spacing={0.8} sx={{ minWidth: 0 }}>
-                          <Stack direction="row" spacing={0.85} alignItems="center" flexWrap="wrap" useFlexGap>
-                            <Typography variant="h6" sx={{ lineHeight: 1.18, color: alpha("#ffffff", 0.97) }}>
-                              {project.title}
-                            </Typography>
-                            <Chip
-                              label={project.kicker}
-                              size="small"
-                              sx={{
-                                bgcolor: alpha("#3a1835", 0.92),
-                                border: `1px solid ${alpha("#f6b4e8", 0.58)}`,
-                                color: alpha("#ffe7f8", 0.96),
-                              }}
-                            />
-                          </Stack>
+                      <KeyboardArrowUpRoundedIcon fontSize="small" />
+                    </IconButton>
+                    <IconButton
+                      size="small"
+                      aria-label="Scroll project carousel down"
+                      onClick={() => scrollCarousel("down")}
+                      sx={{ color: alpha("#ffffff", 0.82), border: `1px solid ${alpha("#ffffff", 0.22)}` }}
+                    >
+                      <KeyboardArrowDownRoundedIcon fontSize="small" />
+                    </IconButton>
+                  </Stack>
+                </Stack>
 
-                          <Typography variant="body2" sx={{ lineHeight: 1.66, color: alpha("#e4ecff", 0.82) }}>
-                            {project.headline}
-                          </Typography>
+                <Box
+                  ref={carouselRef}
+                  sx={{
+                    px: 1.2,
+                    pb: 1.2,
+                    maxHeight: { xs: "none", md: 570 },
+                    overflowY: "auto",
+                    overscrollBehaviorY: "contain",
+                    scrollBehavior: "smooth",
+                    scrollSnapType: { xs: "none", md: "y mandatory" },
+                  }}
+                >
+                  <Stack spacing={1.2}>
+                    {filteredProjects.map((project) => {
+                      const isSelected = selectedProject?.id === project.id;
 
-                          <Stack direction="row" flexWrap="wrap" gap={0.75}>
-                            {project.tags.map((tag) => (
-                              <Chip
-                                key={tag}
-                                size="small"
-                                label={tag}
-                                variant="outlined"
-                                sx={{
-                                  borderColor: alpha("#ffffff", 0.2),
-                                  color: alpha("#dce8ff", 0.86),
-                                }}
-                              />
-                            ))}
-                          </Stack>
-
-                          <Stack direction="row" flexWrap="wrap" gap={0.55}>
-                            {project.stack.slice(0, 6).map((item) => (
-                              <TechnologyPin key={`${project.id}-${item}-collapsed`} label={item} />
-                            ))}
-                            {project.stack.length > 6 ? (
-                              <Chip
-                                size="small"
-                                label={`+${project.stack.length - 6}`}
-                                variant="outlined"
-                                sx={{
-                                  borderColor: alpha("#ffffff", 0.28),
-                                  color: alpha("#dce8ff", 0.84),
-                                }}
-                              />
-                            ) : null}
-                          </Stack>
-                        </Stack>
-
-                        <ExpandMoreRoundedIcon
+                      return (
+                        <Paper
+                          data-project-card="true"
+                          key={project.id}
                           sx={{
-                            mt: 0.35,
-                            color: alpha("#dce8ff", 0.82),
-                            transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)",
-                            transition: "transform 180ms ease",
+                            overflow: "hidden",
+                            borderRadius: "20px",
+                            minHeight: { xs: "auto", md: 172 },
+                            bgcolor: isSelected ? alpha("#1b2235", 0.95) : alpha("#0f1321", 0.9),
+                            border: `1px solid ${
+                              isSelected ? alpha("#f6b4e8", 0.42) : alpha("#ffffff", 0.16)
+                            }`,
+                            scrollSnapAlign: { xs: "none", md: "start" },
+                            transition: "border-color 180ms ease, background-color 180ms ease",
                           }}
-                        />
-                      </ButtonBase>
-
-                      <Collapse in={isExpanded} timeout={220} unmountOnExit>
-                        <Stack spacing={1.5} sx={{ px: { xs: 1.55, md: 2.1 }, pb: { xs: 1.55, md: 2.1 } }}>
-                          <Box>
-                            <Typography variant="subtitle2" sx={{ mb: 0.5, color: alpha("#ffffff", 0.93) }}>
-                              What I learned
-                            </Typography>
-                            <LessonsList project={project} itemColor={alpha("#e4ecff", 0.84)} />
-                          </Box>
-
-                          <Paper
-                            variant="outlined"
+                        >
+                          <ButtonBase
+                            onClick={() => setSelectedProjectId(project.id)}
                             sx={{
-                              borderRadius: "18px",
-                              px: 1.6,
-                              py: 1.2,
-                              bgcolor: alpha("#0a1528", 0.78),
-                              borderColor: alpha("#ffffff", 0.15),
+                              width: "100%",
+                              textAlign: "left",
+                              px: { xs: 1.4, md: 1.6 },
+                              py: { xs: 1.25, md: 1.35 },
+                              alignItems: "flex-start",
                             }}
                           >
-                            <Typography variant="subtitle2" sx={{ color: alpha("#ffffff", 0.95) }}>
-                              Scope owned
-                            </Typography>
-                            <Typography variant="body2" sx={{ mt: 0.45, lineHeight: 1.68, color: alpha("#dce8ff", 0.82) }}>
-                              {project.role}
-                            </Typography>
-                          </Paper>
+                            <Stack spacing={0.75} sx={{ width: "100%", minWidth: 0 }}>
+                              <Stack direction="row" spacing={0.75} alignItems="center" flexWrap="wrap" useFlexGap>
+                                <Typography variant="subtitle1" sx={{ color: alpha("#ffffff", 0.97), fontWeight: 700 }}>
+                                  {project.title}
+                                </Typography>
+                                <Chip
+                                  label={project.kicker}
+                                  size="small"
+                                  sx={{
+                                    bgcolor: alpha("#3a1835", 0.92),
+                                    border: `1px solid ${alpha("#f6b4e8", 0.58)}`,
+                                    color: alpha("#ffe7f8", 0.96),
+                                  }}
+                                />
+                              </Stack>
 
-                          <Box>
-                            <Typography variant="subtitle2" sx={{ mb: 0.75, color: alpha("#ffffff", 0.93) }}>
-                              Relevant stack
-                            </Typography>
-                            <Stack direction="row" flexWrap="wrap" gap={0.7}>
-                              {project.stack.map((item) => (
-                                <TechnologyPin key={`${project.id}-${item}`} label={item} />
-                              ))}
+                              <Typography variant="body2" sx={{ lineHeight: 1.62, color: alpha("#e4ecff", 0.82) }}>
+                                {project.headline}
+                              </Typography>
+
+                              <Stack direction="row" flexWrap="wrap" gap={0.55}>
+                                {project.stack.slice(0, 5).map((item) => (
+                                  <TechnologyPin key={`${project.id}-${item}-carousel`} label={item} />
+                                ))}
+                                {project.stack.length > 5 ? (
+                                  <Chip
+                                    size="small"
+                                    label={`+${project.stack.length - 5}`}
+                                    variant="outlined"
+                                    sx={{
+                                      borderColor: alpha("#ffffff", 0.28),
+                                      color: alpha("#dce8ff", 0.84),
+                                    }}
+                                  />
+                                ) : null}
+                              </Stack>
                             </Stack>
-                          </Box>
-
-                          <Stack direction={{ xs: "column", sm: "row" }} spacing={1.1}>
-                            <Button
-                              href={project.repoUrl}
-                              target="_blank"
-                              rel="noreferrer"
-                              variant="contained"
-                              startIcon={<GitHubIcon />}
-                              sx={{
-                                backgroundImage: `linear-gradient(90deg, ${MAGIC_GRADIENT_START} 0%, ${MAGIC_GRADIENT_END} 100%)`,
-                              }}
-                            >
-                              View repository
-                            </Button>
-
-                            <Button
-                              variant="outlined"
-                              color="inherit"
-                              startIcon={<OpenInNewRoundedIcon />}
-                              disabled={!project.liveUrl}
-                              onClick={() => openLiveDemo(project)}
-                              sx={{ borderColor: alpha("#ffffff", 0.34), color: alpha("#ffffff", 0.9) }}
-                            >
-                              Open live demo
-                            </Button>
-
-                          </Stack>
-                        </Stack>
-                      </Collapse>
-                    </Paper>
-                  );
-                })}
-              </Stack>
+                          </ButtonBase>
+                        </Paper>
+                      );
+                    })}
+                  </Stack>
+                </Box>
+              </Paper>
 
               {selectedProject ? (
                 <Paper
                   sx={{
-                    display: { xs: "none", lg: "block" },
                     position: "sticky",
                     top: "calc(env(safe-area-inset-top) + 104px)",
                     overflow: "hidden",
@@ -391,21 +350,59 @@ export function ProjectShowcase() {
                     bgcolor: alpha("#0f1321", 0.94),
                   }}
                 >
-                  <Box sx={{ p: 1.7, borderBottom: `1px solid ${alpha("#ffffff", 0.12)}` }}>
+                  <Stack spacing={1.3} sx={{ p: 1.6, borderBottom: `1px solid ${alpha("#ffffff", 0.12)}` }}>
                     <Typography variant="overline" sx={{ letterSpacing: "0.12em", color: alpha("#fff6d8", 0.9) }}>
-                      Live Project Preview
+                      Project Details
                     </Typography>
                     <Typography variant="h6" sx={{ mt: 0.2, color: alpha("#ffffff", 0.97) }}>
                       {selectedProject.title}
                     </Typography>
-                    <Typography variant="body2" sx={{ mt: 0.35, color: alpha("#dce8ff", 0.82), lineHeight: 1.6 }}>
+                    <Typography variant="body2" sx={{ color: alpha("#dce8ff", 0.84), lineHeight: 1.66 }}>
+                      {selectedProject.summary}
+                    </Typography>
+                    <Typography variant="caption" sx={{ color: alpha("#dce8ff", 0.74), lineHeight: 1.55 }}>
                       {selectedProject.demoInteractionHint ??
                         "Interact with this demo to inspect the primary workflow and state transitions."}
                     </Typography>
-                  </Box>
+                    <Stack direction="row" flexWrap="wrap" gap={0.7}>
+                      {selectedProject.stack.map((item) => (
+                        <TechnologyPin key={`${selectedProject.id}-${item}-detail`} label={item} />
+                      ))}
+                    </Stack>
+                    <Box>
+                      <Typography variant="subtitle2" sx={{ mb: 0.45, color: alpha("#ffffff", 0.93) }}>
+                        What I learned
+                      </Typography>
+                      <LessonsList project={selectedProject} itemColor={alpha("#e4ecff", 0.84)} />
+                    </Box>
+                    <Stack direction={{ xs: "column", sm: "row" }} spacing={1.05}>
+                      <Button
+                        href={selectedProject.repoUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        variant="contained"
+                        startIcon={<GitHubIcon />}
+                        sx={{
+                          backgroundImage: `linear-gradient(90deg, ${MAGIC_GRADIENT_START} 0%, ${MAGIC_GRADIENT_END} 100%)`,
+                        }}
+                      >
+                        View repository
+                      </Button>
+                      <Button
+                        variant="outlined"
+                        color="inherit"
+                        startIcon={<OpenInNewRoundedIcon />}
+                        disabled={!selectedProject.liveUrl}
+                        onClick={() => openLiveDemo(selectedProject)}
+                        sx={{ borderColor: alpha("#ffffff", 0.34), color: alpha("#ffffff", 0.9) }}
+                      >
+                        Open live demo
+                      </Button>
+                    </Stack>
+                  </Stack>
 
-                  {selectedProject.liveUrl ? (
-                    <Box sx={{ width: "100%", height: "78dvh", minHeight: 560, bgcolor: "#ffffff" }}>
+                  {selectedProject.liveUrl && !isMobile ? (
+                    <Box sx={{ width: "100%", height: "66dvh", minHeight: 460, bgcolor: "#ffffff" }}>
                       <Box
                         component="iframe"
                         src={selectedProject.liveUrl}
@@ -417,9 +414,6 @@ export function ProjectShowcase() {
                     </Box>
                   ) : (
                     <Stack spacing={1.2} sx={{ p: 1.7 }}>
-                      <Typography variant="body2" sx={{ color: alpha("#dce8ff", 0.8) }}>
-                        No live deployment for this project yet. Diagram preview shown instead.
-                      </Typography>
                       <Paper
                         variant="outlined"
                         sx={{
@@ -474,7 +468,10 @@ export function ProjectShowcase() {
               {demoProject?.title} · Live demo
             </Typography>
             {demoProject?.liveUrl ? (
-              <Typography variant="caption" sx={{ color: "text.secondary", display: "block", mt: 0.4, lineHeight: 1.55 }}>
+              <Typography
+                variant="caption"
+                sx={{ color: "text.secondary", display: "block", mt: 0.4, lineHeight: 1.55 }}
+              >
                 {demoProject.demoInteractionHint ??
                   "Interact with the demo to inspect the main flow and transitions."}
               </Typography>
@@ -505,7 +502,6 @@ export function ProjectShowcase() {
           )}
         </DialogContent>
       </Dialog>
-
     </Box>
   );
 }

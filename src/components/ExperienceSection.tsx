@@ -12,6 +12,7 @@ import {
 import AutoAwesomeRoundedIcon from "@mui/icons-material/AutoAwesomeRounded";
 import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import ExpandMoreRoundedIcon from "@mui/icons-material/ExpandMoreRounded";
 import PlaceRoundedIcon from "@mui/icons-material/PlaceRounded";
 import {
@@ -20,6 +21,9 @@ import {
   Chip,
   Collapse,
   Container,
+  Dialog,
+  DialogContent,
+  DialogTitle,
   IconButton,
   Paper,
   Stack,
@@ -376,93 +380,67 @@ function SkillAccordion({
   );
 }
 
-function ProjectAccordion({
-  company,
+function ExperienceProjectCard({
   project,
-  expanded,
-  onToggle,
+  onOpen,
 }: {
-  company: string;
   project: ExperienceProject;
-  expanded: boolean;
-  onToggle: () => void;
+  onOpen: () => void;
 }) {
   return (
     <Paper
       variant="outlined"
       sx={{
-        borderRadius: "18px",
-        bgcolor: alpha("#ffffff", 0.72),
-        borderColor: alpha("#132433", 0.12),
+        borderRadius: "16px",
+        bgcolor: alpha("#ffffff", 0.74),
+        borderColor: alpha("#132433", 0.14),
         overflow: "hidden",
       }}
     >
       <ButtonBase
-        onClick={onToggle}
+        onClick={onOpen}
         sx={{
           width: "100%",
-          px: 1.5,
-          py: 1.35,
           textAlign: "left",
-          alignItems: "flex-start",
+          px: 1.15,
+          py: 1,
+          display: "flex",
           justifyContent: "space-between",
+          alignItems: "flex-start",
+          gap: 0.8,
         }}
       >
-        <Stack spacing={0.5} sx={{ pr: 1.25, alignItems: "flex-start" }}>
-          <Typography variant="subtitle2">{project.name}</Typography>
-          <Typography variant="caption" sx={{ color: "primary.dark" }}>
+        <Stack spacing={0.5} sx={{ minWidth: 0 }}>
+          <Typography variant="subtitle2" sx={{ lineHeight: 1.28 }}>
+            {project.name}
+          </Typography>
+          <Typography variant="caption" sx={{ color: "primary.dark", lineHeight: 1.5 }}>
             {project.impact}
           </Typography>
-        </Stack>
-        <ExpandMoreRoundedIcon
-          sx={{
-            mt: 0.2,
-            color: "text.secondary",
-            transform: expanded ? "rotate(180deg)" : "rotate(0deg)",
-            transition: "transform 180ms ease",
-          }}
-        />
-      </ButtonBase>
-
-      <Collapse in={expanded} timeout={220}>
-        <Stack spacing={1.1} sx={{ px: 1.5, pb: 1.45 }}>
-          <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.64 }}>
-            {project.summary}
-          </Typography>
-
-          <Stack direction="row" flexWrap="wrap" gap={0.75}>
-            {project.technologies.map((technology) => (
-              <TechnologyPin key={`${company}-${project.name}-${technology}`} label={technology} />
+          <Stack direction="row" flexWrap="wrap" gap={0.45}>
+            {project.technologies.slice(0, 3).map((technology) => (
+              <TechnologyPin
+                key={`${project.name}-${technology}-mini`}
+                label={technology}
+                sx={{ px: 0.72, py: 0.44, borderRadius: "10px" }}
+              />
             ))}
+            {project.technologies.length > 3 ? (
+              <Chip
+                size="small"
+                label={`+${project.technologies.length - 3}`}
+                sx={{
+                  bgcolor: alpha("#132433", 0.08),
+                  color: "text.secondary",
+                }}
+              />
+            ) : null}
           </Stack>
-
-          {project.metrics?.length ? (
-            <Paper
-              variant="outlined"
-              sx={{
-                borderRadius: "14px",
-                px: 1.15,
-                py: 0.95,
-                bgcolor: alpha("#132433", 0.04),
-                borderColor: alpha("#132433", 0.12),
-              }}
-            >
-              <Stack direction="row" flexWrap="wrap" gap={1.2}>
-                {project.metrics.map((metric) => (
-                  <Box key={`${project.name}-${metric.label}`}>
-                    <Typography variant="caption" sx={{ color: "text.secondary" }}>
-                      {metric.label}
-                    </Typography>
-                    <Typography variant="subtitle2" sx={{ lineHeight: 1.22 }}>
-                      {metric.value}
-                    </Typography>
-                  </Box>
-                ))}
-              </Stack>
-            </Paper>
-          ) : null}
         </Stack>
-      </Collapse>
+        <Typography variant="caption" sx={{ color: "text.secondary", mt: 0.1, flexShrink: 0 }}>
+          Open
+        </Typography>
+      </ButtonBase>
     </Paper>
   );
 }
@@ -481,8 +459,11 @@ export function ExperienceSection() {
   const [desktopEntryProgress, setDesktopEntryProgress] = useState(0);
   const [mobileEntryProgress, setMobileEntryProgress] = useState(0);
   const [focusHeadingOnMobileNav, setFocusHeadingOnMobileNav] = useState(false);
-  const [expandedProjectsByCompany, setExpandedProjectsByCompany] = useState<Record<string, string | null>>({});
   const [expandedSkillsByCompany, setExpandedSkillsByCompany] = useState<Record<string, string | null>>({});
+  const [projectDialog, setProjectDialog] = useState<{
+    company: string;
+    project: ExperienceProject;
+  } | null>(null);
 
   const stopCount = experienceTimeline.length;
   const parsedPeriods = useMemo(() => experienceTimeline.map((entry) => parseTimelinePeriod(entry.period)), []);
@@ -559,17 +540,15 @@ export function ExperienceSection() {
     endKey: activePeriod.start.key,
   };
 
-  const activeCompanyExpandedProject = expandedProjectsByCompany[activeEntry.company] ?? null;
   const activeCompanyExpandedSkill = expandedSkillsByCompany[activeEntry.company] ?? null;
 
   const entryScrollProgress = isDesktop ? desktopEntryProgress : mobileEntryProgress;
   const activeSegmentRange = Math.max(activeSegment.end - activeSegment.start, 0);
-  const activeSegmentUpperBound =
-    activeSegmentRange > 0.003 ? activeSegment.end - 0.0015 : activeSegment.end;
-  const timelineProgress = clamp(
-    activeSegment.start + entryScrollProgress * activeSegmentRange,
+  const activeSegmentProgressLength = clamp(entryScrollProgress * activeSegmentRange, 0, activeSegmentRange);
+  const timelineProgressAbsolute = clamp(
+    activeSegment.start + activeSegmentProgressLength,
     activeSegment.start,
-    activeSegmentUpperBound,
+    activeSegment.end,
   );
 
   const jumpToEntry = useCallback(
@@ -919,9 +898,6 @@ export function ExperienceSection() {
                         <stop offset="0%" stopColor={MAGIC_GRADIENT_START} />
                         <stop offset="100%" stopColor={MAGIC_GRADIENT_END} />
                       </linearGradient>
-                      <clipPath id="experienceRoadMobileClip">
-                        <rect x="0" y="0" width={`${timelineProgress * 100}%`} height="100" />
-                      </clipPath>
                     </defs>
                     <path
                       d={mobileRoadPath}
@@ -936,7 +912,20 @@ export function ExperienceSection() {
                       stroke="url(#experienceRoadMobileGradient)"
                       strokeWidth="6"
                       strokeLinecap="round"
-                      clipPath="url(#experienceRoadMobileClip)"
+                      strokeOpacity={0.34}
+                      pathLength={1}
+                      strokeDasharray={`${activeSegmentRange} 1`}
+                      strokeDashoffset={-activeSegment.start}
+                    />
+                    <path
+                      d={mobileRoadPath}
+                      fill="none"
+                      stroke="url(#experienceRoadMobileGradient)"
+                      strokeWidth="6"
+                      strokeLinecap="round"
+                      pathLength={1}
+                      strokeDasharray={`${activeSegmentProgressLength} 1`}
+                      strokeDashoffset={-activeSegment.start}
                     />
                   </Box>
 
@@ -957,9 +946,6 @@ export function ExperienceSection() {
                         <stop offset="0%" stopColor={MAGIC_GRADIENT_START} />
                         <stop offset="100%" stopColor={MAGIC_GRADIENT_END} />
                       </linearGradient>
-                      <clipPath id="experienceRoadDesktopClip">
-                        <rect x="0" y="0" width="100" height={`${timelineProgress * 100}%`} />
-                      </clipPath>
                     </defs>
                     <path
                       d={desktopRoadPath}
@@ -974,7 +960,20 @@ export function ExperienceSection() {
                       stroke="url(#experienceRoadDesktopGradient)"
                       strokeWidth="6"
                       strokeLinecap="round"
-                      clipPath="url(#experienceRoadDesktopClip)"
+                      strokeOpacity={0.34}
+                      pathLength={1}
+                      strokeDasharray={`${activeSegmentRange} 1`}
+                      strokeDashoffset={-activeSegment.start}
+                    />
+                    <path
+                      d={desktopRoadPath}
+                      fill="none"
+                      stroke="url(#experienceRoadDesktopGradient)"
+                      strokeWidth="6"
+                      strokeLinecap="round"
+                      pathLength={1}
+                      strokeDasharray={`${activeSegmentProgressLength} 1`}
+                      strokeDashoffset={-activeSegment.start}
                     />
                   </Box>
 
@@ -985,7 +984,7 @@ export function ExperienceSection() {
                     const isActiveExperience = linkedExperienceIndex === activeIndex;
                     const isActiveBoundary =
                       milestone.key === activeSegment.startKey || milestone.key === activeSegment.endKey;
-                    const fillReached = timelineProgress >= milestone.position - 0.006;
+                    const fillReached = timelineProgressAbsolute >= milestone.position - 0.006;
 
                     if (!point) {
                       return null;
@@ -1146,20 +1145,24 @@ export function ExperienceSection() {
                   {activeEntry.projects?.length ? (
                     <Stack spacing={0.9}>
                       <Typography variant="subtitle1">Projects</Typography>
-                      {activeEntry.projects.map((project) => (
-                        <ProjectAccordion
-                          key={`${activeEntry.company}-${project.name}`}
-                          company={activeEntry.company}
-                          project={project}
-                          expanded={activeCompanyExpandedProject === project.name}
-                          onToggle={() => {
-                            setExpandedProjectsByCompany((previous) => ({
-                              ...previous,
-                              [activeEntry.company]: previous[activeEntry.company] === project.name ? null : project.name,
-                            }));
-                          }}
-                        />
-                      ))}
+                      <Box
+                        sx={{
+                          display: "grid",
+                          gap: 0.8,
+                          gridTemplateColumns: {
+                            xs: "1fr",
+                            md: "repeat(2, minmax(0, 1fr))",
+                          },
+                        }}
+                      >
+                        {activeEntry.projects.map((project) => (
+                          <ExperienceProjectCard
+                            key={`${activeEntry.company}-${project.name}`}
+                            project={project}
+                            onOpen={() => setProjectDialog({ company: activeEntry.company, project })}
+                          />
+                        ))}
+                      </Box>
                     </Stack>
                   ) : null}
 
@@ -1201,6 +1204,81 @@ export function ExperienceSection() {
           </Box>
         </Stack>
       </Container>
+
+      <Dialog
+        open={Boolean(projectDialog)}
+        onClose={() => setProjectDialog(null)}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogTitle
+          sx={{
+            display: "flex",
+            alignItems: "flex-start",
+            justifyContent: "space-between",
+            gap: 1.1,
+            pr: 1,
+          }}
+        >
+          <Box sx={{ minWidth: 0 }}>
+            <Typography variant="h6" sx={{ lineHeight: 1.24 }}>
+              {projectDialog?.project.name}
+            </Typography>
+            <Typography variant="caption" sx={{ color: "text.secondary", display: "block", mt: 0.35 }}>
+              {projectDialog?.company} · {projectDialog?.project.impact}
+            </Typography>
+          </Box>
+          <IconButton
+            aria-label="Close project details"
+            onClick={() => setProjectDialog(null)}
+          >
+            <CloseRoundedIcon />
+          </IconButton>
+        </DialogTitle>
+
+        <DialogContent sx={{ pt: 0.4 }}>
+          <Stack spacing={1.25}>
+            <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.7 }}>
+              {projectDialog?.project.summary}
+            </Typography>
+
+            <Stack direction="row" flexWrap="wrap" gap={0.7}>
+              {projectDialog?.project.technologies.map((technology) => (
+                <TechnologyPin
+                  key={`${projectDialog?.project.name ?? "project"}-${technology}-dialog`}
+                  label={technology}
+                />
+              ))}
+            </Stack>
+
+            {projectDialog?.project.metrics?.length ? (
+              <Paper
+                variant="outlined"
+                sx={{
+                  borderRadius: "14px",
+                  px: 1.15,
+                  py: 0.95,
+                  bgcolor: alpha("#132433", 0.03),
+                  borderColor: alpha("#132433", 0.14),
+                }}
+              >
+                <Stack direction="row" flexWrap="wrap" gap={1.2}>
+                  {projectDialog.project.metrics.map((metric) => (
+                    <Box key={`${projectDialog.project.name}-${metric.label}-dialog`}>
+                      <Typography variant="caption" sx={{ color: "text.secondary" }}>
+                        {metric.label}
+                      </Typography>
+                      <Typography variant="subtitle2" sx={{ lineHeight: 1.22 }}>
+                        {metric.value}
+                      </Typography>
+                    </Box>
+                  ))}
+                </Stack>
+              </Paper>
+            ) : null}
+          </Stack>
+        </DialogContent>
+      </Dialog>
     </Box>
   );
 }

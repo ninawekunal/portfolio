@@ -1,0 +1,57 @@
+<svg width="1200" height="800" viewBox="0 0 1200 800" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">AgentPortal architecture poster</title>
+  <desc id="desc">Dashboard-like layout with agent cards, workflow lanes, and status controls.</desc>
+  <defs>
+    <linearGradient id="bg" x1="60" y1="50" x2="1120" y2="760" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0E1830"/>
+      <stop offset="1" stop-color="#1E2743"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="200" y1="170" x2="970" y2="630" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FF3BB5"/>
+      <stop offset="1" stop-color="#FF7B38"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="26" y="26" width="1148" height="748" rx="40" fill="url(#bg)"/>
+  <rect x="60" y="62" width="1080" height="66" rx="18" fill="#101C35" stroke="#FFFFFF" stroke-opacity="0.18"/>
+  <rect x="92" y="84" width="300" height="22" rx="11" fill="#FFFFFF" fill-opacity="0.2"/>
+  <rect x="964" y="84" width="142" height="22" rx="11" fill="url(#accent)"/>
+
+  <rect x="60" y="154" width="330" height="582" rx="24" fill="#111E3A" stroke="#FFFFFF" stroke-opacity="0.16"/>
+  <rect x="416" y="154" width="724" height="582" rx="24" fill="#111E3A" stroke="#FFFFFF" stroke-opacity="0.16"/>
+
+  <rect x="92" y="190" width="266" height="118" rx="18" fill="#F8FAFF" fill-opacity="0.08"/>
+  <rect x="92" y="328" width="266" height="118" rx="18" fill="#F8FAFF" fill-opacity="0.08"/>
+  <rect x="92" y="466" width="266" height="118" rx="18" fill="#F8FAFF" fill-opacity="0.08"/>
+
+  <circle cx="132" cy="230" r="16" fill="url(#accent)"/>
+  <circle cx="132" cy="368" r="16" fill="url(#accent)"/>
+  <circle cx="132" cy="506" r="16" fill="url(#accent)"/>
+  <rect x="164" y="218" width="160" height="11" rx="5" fill="#FFFFFF" fill-opacity="0.8"/>
+  <rect x="164" y="236" width="128" height="9" rx="4" fill="#FFFFFF" fill-opacity="0.45"/>
+  <rect x="164" y="356" width="160" height="11" rx="5" fill="#FFFFFF" fill-opacity="0.8"/>
+  <rect x="164" y="374" width="128" height="9" rx="4" fill="#FFFFFF" fill-opacity="0.45"/>
+  <rect x="164" y="494" width="160" height="11" rx="5" fill="#FFFFFF" fill-opacity="0.8"/>
+  <rect x="164" y="512" width="128" height="9" rx="4" fill="#FFFFFF" fill-opacity="0.45"/>
+
+  <rect x="452" y="190" width="652" height="152" rx="20" fill="#F8FAFF" fill-opacity="0.06"/>
+  <rect x="452" y="364" width="310" height="332" rx="20" fill="#F8FAFF" fill-opacity="0.06"/>
+  <rect x="794" y="364" width="310" height="332" rx="20" fill="#F8FAFF" fill-opacity="0.06"/>
+
+  <path d="M500 266H912" stroke="url(#accent)" stroke-width="12" stroke-linecap="round"/>
+  <circle cx="500" cy="266" r="18" fill="#FF7B38"/>
+  <circle cx="706" cy="266" r="18" fill="#FF5B8A"/>
+  <circle cx="912" cy="266" r="18" fill="#FF3BB5"/>
+
+  <rect x="486" y="400" width="210" height="14" rx="7" fill="#FFFFFF" fill-opacity="0.84"/>
+  <rect x="486" y="424" width="174" height="10" rx="5" fill="#FFFFFF" fill-opacity="0.5"/>
+  <rect x="486" y="454" width="240" height="168" rx="14" fill="#0E1830" stroke="#FFFFFF" stroke-opacity="0.18"/>
+
+  <rect x="828" y="400" width="210" height="14" rx="7" fill="#FFFFFF" fill-opacity="0.84"/>
+  <rect x="828" y="424" width="174" height="10" rx="5" fill="#FFFFFF" fill-opacity="0.5"/>
+  <rect x="828" y="454" width="240" height="168" rx="14" fill="#0E1830" stroke="#FFFFFF" stroke-opacity="0.18"/>
+
+  <text x="74" y="752" fill="#FFFFFF" fill-opacity="0.88" font-size="38" font-family="Arial, sans-serif" font-weight="700">
+    AgentPortal · Agent Workflow and Operations UI
+  </text>
+</svg>

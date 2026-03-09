@@ -26,12 +26,14 @@ function CertificationItem({
   issueDate,
   credentialId,
   credentialUrl,
+  logoSrc,
 }: {
   title: string;
   issuer: string;
   issueDate?: string;
   credentialId?: string;
   credentialUrl?: string;
+  logoSrc?: string;
 }) {
   return (
     <Paper
@@ -51,13 +53,21 @@ function CertificationItem({
             borderRadius: "11px",
             display: "grid",
             placeItems: "center",
-            bgcolor: alpha("#0a66c2", 0.12),
+            bgcolor: logoSrc ? "#ffffff" : alpha("#0a66c2", 0.12),
             color: "#0a66c2",
+            border: logoSrc ? `1px solid ${alpha("#132433", 0.14)}` : "none",
             flexShrink: 0,
             mt: 0.15,
           }}
         >
-          {issuer.toLowerCase().includes("linkedin") ? (
+          {logoSrc ? (
+            <Box
+              component="img"
+              src={withBasePath(logoSrc)}
+              alt={`${issuer} logo`}
+              sx={{ width: 20, height: 20, objectFit: "contain", display: "block" }}
+            />
+          ) : issuer.toLowerCase().includes("linkedin") ? (
             <LinkedInIcon sx={{ fontSize: 20 }} />
           ) : (
             <VerifiedRoundedIcon sx={{ fontSize: 19 }} />
@@ -179,39 +189,55 @@ export function EducationCertificationSection() {
                       {entry.degree}
                     </Typography>
 
-                    <Stack direction="row" spacing={0.7} alignItems="center" sx={{ mt: 0.38 }}>
-                      {entry.logoSrc ? (
-                        <Box
-                          component="img"
-                          src={withBasePath(entry.logoSrc)}
-                          alt={`${entry.school} logo`}
+                    <Stack
+                      direction="row"
+                      justifyContent="space-between"
+                      alignItems="center"
+                      spacing={1}
+                      sx={{ mt: 0.38 }}
+                    >
+                      <Stack direction="row" spacing={0.7} alignItems="center" sx={{ minWidth: 0 }}>
+                        {entry.logoSrc ? (
+                          <Box
+                            component="img"
+                            src={withBasePath(entry.logoSrc)}
+                            alt={`${entry.school} logo`}
+                            sx={{
+                              width: 34,
+                              height: 34,
+                              objectFit: "contain",
+                              borderRadius: "7px",
+                              bgcolor: alpha("#ffffff", 0.95),
+                              p: 0.25,
+                              border: `1px solid ${alpha("#132433", 0.1)}`,
+                              flexShrink: 0,
+                            }}
+                          />
+                        ) : null}
+                        <Typography
+                          variant="body1"
                           sx={{
-                            width: 30,
-                            height: 30,
-                            objectFit: "contain",
-                            borderRadius: "7px",
-                            bgcolor: alpha("#ffffff", 0.9),
-                            p: 0.3,
-                            border: `1px solid ${alpha("#132433", 0.1)}`,
-                            flexShrink: 0,
+                            color: entry.schoolColor ?? "text.primary",
+                            fontWeight: 700,
+                            lineHeight: 1.2,
                           }}
-                        />
-                      ) : null}
+                        >
+                          {entry.school}
+                        </Typography>
+                      </Stack>
+
                       <Typography
-                        variant="body1"
+                        variant="caption"
                         sx={{
-                          color: entry.schoolColor ?? "text.primary",
-                          fontWeight: 700,
-                          lineHeight: 1.2,
+                          color: "text.secondary",
+                          textAlign: "right",
+                          flexShrink: 0,
+                          fontWeight: 600,
                         }}
                       >
-                        {entry.school}
+                        {entry.location} · {entry.date}
                       </Typography>
                     </Stack>
-
-                    <Typography variant="body2" sx={{ color: "text.secondary", display: "block", mt: 0.25 }}>
-                      {entry.location} · {entry.date}
-                    </Typography>
                     <Typography variant="body1" color="text.secondary" sx={{ mt: 0.6, lineHeight: 1.64 }}>
                       {entry.details}
                     </Typography>
@@ -298,6 +324,7 @@ export function EducationCertificationSection() {
                         issueDate={certification.issueDate}
                         credentialId={certification.credentialId}
                         credentialUrl={certification.credentialUrl}
+                        logoSrc={certification.logoSrc}
                       />
                     ))}
                   </Stack>

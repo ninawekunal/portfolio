@@ -74,6 +74,7 @@ export type CertificationEntry = {
   issueDate?: string;
   credentialId?: string;
   credentialUrl?: string;
+  logoSrc?: string;
 };
 
 export type SkillCluster = {
@@ -469,7 +470,7 @@ export const education: EducationEntry[] = [
     location: "New York, NY",
     degree: "M.S. in Computer Engineering",
     date: "May 2021",
-    logoSrc: "/education/nyu-logo.svg",
+    logoSrc: "/education/nyu-logo.png",
     schoolColor: "#57068c",
     details:
       "Coursework in data structures and algorithms, cloud computing, distributed systems, internet protocols, machine learning, and deep learning.",
@@ -495,13 +496,7 @@ export const certifications: CertificationEntry[] = [
     issueDate: "Mar 2026",
     credentialId: "h7edwy2r4qsp",
     credentialUrl: certificationsSourceUrl,
-  },
-  {
-    title: "Master of Science in Computer Engineering",
-    issuer: "New York University",
-    issueDate: "Jun 2021",
-    credentialId: "CeDiD:214B-22QX-KVE4",
-    credentialUrl: certificationsSourceUrl,
+    logoSrc: "/brand-icons/anthropic.svg",
   },
   {
     title: "Applied Machine Learning: Algorithms",
@@ -516,6 +511,7 @@ export const certifications: CertificationEntry[] = [
     issueDate: "Jan 2021",
     credentialId: "UC-7613dbd7-e71c-4a06-8e5e-edd62a7e4984",
     credentialUrl: certificationsSourceUrl,
+    logoSrc: "/brand-icons/udemy.svg",
   },
   {
     title: "Java Basics",
@@ -523,6 +519,7 @@ export const certifications: CertificationEntry[] = [
     issueDate: "Nov 2020",
     credentialId: "F5FE80A1E2B5",
     credentialUrl: certificationsSourceUrl,
+    logoSrc: "/brand-icons/hackerrank.svg",
   },
   {
     title: "Essential Math for Machine Learning: Python Edition",
@@ -557,6 +554,49 @@ export const projectFilters = [
 ];
 
 export const projects: PortfolioProject[] = [
+  {
+    id: "agent-portal",
+    title: "AgentPortal",
+    kicker: "Agent operations portal",
+    headline: "Operational portal focused on agent workflows and queue state visibility.",
+    summary:
+      "A full-stack portal project oriented around agent-facing workflows, routing, and high-signal operational state. It emphasizes practical interfaces for day-to-day execution over static dashboards.",
+    role:
+      "Owned interface orchestration, workflow state handling, and service integration surfaces for agent operations.",
+    githubSlug: "ninawekunal/AgentPortal",
+    repoUrl: "https://github.com/ninawekunal/AgentPortal",
+    demoInteractionHint:
+      "Navigate core portal flows and inspect how task state, agent actions, and workflow transitions are represented.",
+    posterSrc: "/projects/agent-portal.svg",
+    posterAlt: "AgentPortal poster showing agent cards, state lanes, and workflow controls.",
+    tags: ["Full Stack", "Scalable Systems", "Frontend"],
+    stack: ["Next.js", "TypeScript", "Node.js", "React", "Postgres"],
+    highlights: [
+      "Agent-centric task surfaces designed for operational clarity.",
+      "Explicit state transitions across assignment and completion stages.",
+      "Typed contracts and predictable UI behavior for workflow-heavy views.",
+    ],
+    architecture: [
+      "Frontend state modeled around agent workflow stages and task ownership.",
+      "Backend endpoints expose structured status and action contracts.",
+      "Project structure favors maintainability for feature iteration on operations tooling.",
+    ],
+    valueSignals: [
+      "Shows execution in operations-facing product design, not just consumer UI.",
+      "Demonstrates full-stack ownership on workflow and status-heavy surfaces.",
+      "Strengthens portfolio evidence for scalable internal tooling.",
+    ],
+    evidence: [
+      "Portal flow components and stateful task interfaces.",
+      "Service and API integration points for workflow updates.",
+      "End-to-end handling of interaction, status updates, and UI feedback.",
+    ],
+    lessonsLearned: [
+      "Operations portals are most effective when state transitions are explicit and low-friction.",
+      "Agent workflows benefit from clear ownership cues and predictable next actions.",
+      "Typed status contracts reduce regressions in high-change workflow UIs.",
+    ],
+  },
   {
     id: "agent-queues",
     title: "Agent Queues",

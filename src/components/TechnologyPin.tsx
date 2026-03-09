@@ -58,7 +58,7 @@ export function TechnologyPin({ label, sx }: TechnologyPinProps) {
         px: 1.15,
         py: 0.72,
         borderRadius: "14px",
-        bgcolor: alpha("#ffffff", 0.82),
+        bgcolor: "#ffffff",
         borderColor: alpha("#132433", 0.12),
         ...sx,
       }}
