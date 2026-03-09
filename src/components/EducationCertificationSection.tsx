@@ -133,61 +133,77 @@ export function EducationCertificationSection() {
       component="section"
       id="education-certifications"
       sx={{
-        py: { xs: 5, md: 6 },
+        pt: { xs: 4, md: 4.6 },
+        pb: { xs: 2.4, md: 3 },
         scrollMarginTop: 100,
       }}
     >
       <Container maxWidth="xl">
-        <Stack spacing={2.4}>
-          <SectionHeading
-            eyebrow="Education and Certifications"
-            title="Education and Certifications"
-            body="Academic foundation and current certification highlights in one place. Education stays on the left while certifications stay as a vertically scrollable list on the right."
-          />
+        <Paper
+          sx={{
+            p: { xs: 1.45, md: 2.2 },
+            borderRadius: "30px",
+            bgcolor: alpha("#fff8ee", 0.92),
+            border: `1px solid ${alpha("#132433", 0.1)}`,
+            backgroundImage: `radial-gradient(circle at 8% 0%, ${alpha(
+              "#f0b07b",
+              0.18,
+            )}, transparent 36%), radial-gradient(circle at 90% 10%, ${alpha(
+              "#0f6b62",
+              0.08,
+            )}, transparent 32%)`,
+          }}
+        >
+          <Stack spacing={2.4}>
+            <SectionHeading
+              eyebrow="Education and Certifications"
+              title="Education and Certifications"
+              body="Academic foundation and current certification highlights in one place. Education stays on the left while certifications stay as a vertically scrollable list on the right."
+            />
 
-          <Box
-            sx={{
-              display: "grid",
-              gap: 1.5,
-              gridTemplateColumns: {
-                xs: "1fr",
-                lg: "minmax(0, 1fr) minmax(0, 1fr)",
-              },
-              alignItems: "start",
-            }}
-          >
-            <Paper
+            <Box
               sx={{
-                p: { xs: 2, md: 2.3 },
-                borderRadius: "24px",
-                bgcolor: alpha("#fffdf8", 0.9),
+                display: "grid",
+                gap: 1.5,
+                gridTemplateColumns: {
+                  xs: "1fr",
+                  lg: "minmax(0, 1fr) minmax(0, 1fr)",
+                },
+                alignItems: "start",
               }}
             >
-              <Stack spacing={1.35}>
-                <Stack direction="row" spacing={1.1} alignItems="center">
-                  <Box
-                    sx={{
-                      display: "grid",
-                      placeItems: "center",
-                      width: 42,
-                      height: 42,
-                      borderRadius: "14px",
-                      bgcolor: alpha("#0f6b62", 0.12),
-                      color: "secondary.dark",
-                    }}
-                  >
-                    <SchoolRoundedIcon fontSize="small" />
-                  </Box>
-                  <Typography variant="h5" sx={{ fontSize: { xs: "1.45rem", md: "1.65rem" } }}>
-                    Education
-                  </Typography>
-                </Stack>
-
-                {education.map((entry, index) => (
-                  <Box key={entry.school}>
-                    <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                      {entry.degree}
+              <Paper
+                sx={{
+                  p: { xs: 2, md: 2.3 },
+                  borderRadius: "24px",
+                  bgcolor: alpha("#fffdf8", 0.9),
+                }}
+              >
+                <Stack spacing={1.35}>
+                  <Stack direction="row" spacing={1.1} alignItems="center">
+                    <Box
+                      sx={{
+                        display: "grid",
+                        placeItems: "center",
+                        width: 42,
+                        height: 42,
+                        borderRadius: "14px",
+                        bgcolor: alpha("#0f6b62", 0.12),
+                        color: "secondary.dark",
+                      }}
+                    >
+                      <SchoolRoundedIcon fontSize="small" />
+                    </Box>
+                    <Typography variant="h5" sx={{ fontSize: { xs: "1.45rem", md: "1.65rem" } }}>
+                      Education
                     </Typography>
+                  </Stack>
+
+                  {education.map((entry, index) => (
+                    <Box key={entry.school}>
+                      <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                        {entry.degree}
+                      </Typography>
 
                     <Stack
                       direction="row"
@@ -242,97 +258,98 @@ export function EducationCertificationSection() {
                       {entry.details}
                     </Typography>
                     {index !== education.length - 1 ? <Divider sx={{ mt: 1.3 }} /> : null}
-                  </Box>
-                ))}
-              </Stack>
-            </Paper>
+                    </Box>
+                  ))}
+                </Stack>
+              </Paper>
 
-            <Paper
-              sx={{
-                p: { xs: 2, md: 2.3 },
-                borderRadius: "24px",
-                bgcolor: alpha("#fffdf8", 0.9),
-              }}
-            >
-              <Stack spacing={1.2}>
-                <Stack
-                  direction="row"
-                  alignItems="center"
-                  justifyContent="space-between"
-                  gap={1}
-                  flexWrap="wrap"
-                >
-                  <Stack direction="row" spacing={1.1} alignItems="center">
-                    <Box
+              <Paper
+                sx={{
+                  p: { xs: 2, md: 2.3 },
+                  borderRadius: "24px",
+                  bgcolor: alpha("#fffdf8", 0.9),
+                }}
+              >
+                <Stack spacing={1.2}>
+                  <Stack
+                    direction="row"
+                    alignItems="center"
+                    justifyContent="space-between"
+                    gap={1}
+                    flexWrap="wrap"
+                  >
+                    <Stack direction="row" spacing={1.1} alignItems="center">
+                      <Box
+                        sx={{
+                          display: "grid",
+                          placeItems: "center",
+                          width: 42,
+                          height: 42,
+                          borderRadius: "14px",
+                          bgcolor: alpha("#0a66c2", 0.12),
+                          color: "#0a66c2",
+                        }}
+                      >
+                        <VerifiedRoundedIcon fontSize="small" />
+                      </Box>
+                      <Typography variant="h5" sx={{ fontSize: { xs: "1.45rem", md: "1.65rem" } }}>
+                        Certifications
+                      </Typography>
+                    </Stack>
+
+                    <ButtonBase
+                      component="a"
+                      href={certificationsSourceUrl}
+                      target="_blank"
+                      rel="noreferrer"
                       sx={{
-                        display: "grid",
-                        placeItems: "center",
-                        width: 42,
-                        height: 42,
-                        borderRadius: "14px",
-                        bgcolor: alpha("#0a66c2", 0.12),
-                        color: "#0a66c2",
+                        px: 1.1,
+                        py: 0.6,
+                        borderRadius: "12px",
+                        border: `1px solid ${alpha("#132433", 0.16)}`,
+                        color: alpha("#132433", 0.82),
+                        gap: 0.55,
+                        display: "inline-flex",
+                        alignItems: "center",
+                        "&:hover": {
+                          bgcolor: alpha("#132433", 0.08),
+                          color: "#132433",
+                        },
                       }}
                     >
-                      <VerifiedRoundedIcon fontSize="small" />
-                    </Box>
-                    <Typography variant="h5" sx={{ fontSize: { xs: "1.45rem", md: "1.65rem" } }}>
-                      Certifications
-                    </Typography>
+                      <LinkedInIcon sx={{ fontSize: 18 }} />
+                      <Typography variant="caption" sx={{ fontWeight: 700 }}>
+                        View on LinkedIn
+                      </Typography>
+                    </ButtonBase>
                   </Stack>
 
-                  <ButtonBase
-                    component="a"
-                    href={certificationsSourceUrl}
-                    target="_blank"
-                    rel="noreferrer"
+                  <Box
                     sx={{
-                      px: 1.1,
-                      py: 0.6,
-                      borderRadius: "12px",
-                      border: `1px solid ${alpha("#132433", 0.16)}`,
-                      color: alpha("#132433", 0.82),
-                      gap: 0.55,
-                      display: "inline-flex",
-                      alignItems: "center",
-                      "&:hover": {
-                        bgcolor: alpha("#132433", 0.08),
-                        color: "#132433",
-                      },
+                      maxHeight: { xs: 260, md: 320 },
+                      overflowY: "auto",
+                      pr: 0.4,
                     }}
                   >
-                    <LinkedInIcon sx={{ fontSize: 18 }} />
-                    <Typography variant="caption" sx={{ fontWeight: 700 }}>
-                      View on LinkedIn
-                    </Typography>
-                  </ButtonBase>
+                    <Stack spacing={0.9}>
+                      {certifications.map((certification) => (
+                        <CertificationItem
+                          key={`${certification.issuer}-${certification.title}`}
+                          title={certification.title}
+                          issuer={certification.issuer}
+                          issueDate={certification.issueDate}
+                          credentialId={certification.credentialId}
+                          credentialUrl={certification.credentialUrl}
+                          logoSrc={certification.logoSrc}
+                        />
+                      ))}
+                    </Stack>
+                  </Box>
                 </Stack>
-
-                <Box
-                  sx={{
-                    maxHeight: { xs: 260, md: 320 },
-                    overflowY: "auto",
-                    pr: 0.4,
-                  }}
-                >
-                  <Stack spacing={0.9}>
-                    {certifications.map((certification) => (
-                      <CertificationItem
-                        key={`${certification.issuer}-${certification.title}`}
-                        title={certification.title}
-                        issuer={certification.issuer}
-                        issueDate={certification.issueDate}
-                        credentialId={certification.credentialId}
-                        credentialUrl={certification.credentialUrl}
-                        logoSrc={certification.logoSrc}
-                      />
-                    ))}
-                  </Stack>
-                </Box>
-              </Stack>
-            </Paper>
-          </Box>
-        </Stack>
+              </Paper>
+            </Box>
+          </Stack>
+        </Paper>
       </Container>
     </Box>
   );

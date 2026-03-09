@@ -1,4 +1,9 @@
+import ApiRoundedIcon from "@mui/icons-material/ApiRounded";
 import BoltRoundedIcon from "@mui/icons-material/BoltRounded";
+import LockRoundedIcon from "@mui/icons-material/LockRounded";
+import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
+import SmsRoundedIcon from "@mui/icons-material/SmsRounded";
+import TuneRoundedIcon from "@mui/icons-material/TuneRounded";
 import { Box, Paper, Stack, Typography } from "@mui/material";
 import { alpha, type SxProps, type Theme } from "@mui/material/styles";
 
@@ -26,6 +31,19 @@ const stackBrandIconMap: Record<string, string> = {
   springboot: "/brand-icons/springboot.svg",
   redis: "/brand-icons/redis.svg",
   hapi: "/brand-icons/nodejs.svg",
+  splunk: "/brand-icons/splunk.svg",
+  datadog: "/brand-icons/datadog.svg",
+  pagerduty: "/brand-icons/pagerduty.svg",
+  php: "/brand-icons/php.svg",
+  mysql: "/brand-icons/mysql.svg",
+  bootstrap: "/brand-icons/bootstrap.svg",
+  apache: "/brand-icons/apache.svg",
+  ecs: "/brand-icons/ecs-aws.svg",
+  elasticache: "/brand-icons/elasticache-aws.svg",
+  dynamodb: "/brand-icons/dynamodb-aws.svg",
+  apigateway: "/brand-icons/apigateway-aws.svg",
+  cloudformation: "/brand-icons/cloudformation-aws.svg",
+  kinesis: "/brand-icons/kinesis-aws.svg",
 };
 
 function normalizeStackKey(label: string) {
@@ -41,6 +59,33 @@ function resolveBrandIcon(label: string) {
 
   const candidate = Object.entries(stackBrandIconMap).find(([key]) => normalized.includes(key));
   return candidate?.[1];
+}
+
+function renderFallbackIcon(label: string) {
+  const normalized = normalizeStackKey(label);
+  const iconSx = { fontSize: 16, color: alpha("#132433", 0.72) };
+
+  if (normalized.includes("mfa") || normalized.includes("sms")) {
+    return <SmsRoundedIcon sx={iconSx} />;
+  }
+
+  if (normalized.includes("acr") || normalized.includes("oidc")) {
+    return <LockRoundedIcon sx={iconSx} />;
+  }
+
+  if (normalized.includes("featureflag")) {
+    return <TuneRoundedIcon sx={iconSx} />;
+  }
+
+  if (normalized.includes("rest") || normalized.includes("api")) {
+    return <ApiRoundedIcon sx={iconSx} />;
+  }
+
+  if (normalized.includes("identity")) {
+    return <PersonRoundedIcon sx={iconSx} />;
+  }
+
+  return <BoltRoundedIcon sx={iconSx} />;
 }
 
 type TechnologyPinProps = {
@@ -72,7 +117,7 @@ export function TechnologyPin({ label, sx }: TechnologyPinProps) {
             sx={{ width: 16, height: 16, objectFit: "contain", flexShrink: 0 }}
           />
         ) : (
-          <BoltRoundedIcon sx={{ fontSize: 16, color: alpha("#132433", 0.72) }} />
+          renderFallbackIcon(label)
         )}
         <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
           {label}

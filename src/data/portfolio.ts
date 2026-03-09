@@ -470,7 +470,7 @@ export const education: EducationEntry[] = [
     location: "New York, NY",
     degree: "M.S. in Computer Engineering",
     date: "May 2021",
-    logoSrc: "/education/nyu-logo.png",
+    logoSrc: "/education/nyu-logo-stacked.svg",
     schoolColor: "#57068c",
     details:
       "Coursework in data structures and algorithms, cloud computing, distributed systems, internet protocols, machine learning, and deep learning.",
@@ -565,6 +565,7 @@ export const projects: PortfolioProject[] = [
       "Owned interface orchestration, workflow state handling, and service integration surfaces for agent operations.",
     githubSlug: "ninawekunal/AgentPortal",
     repoUrl: "https://github.com/ninawekunal/AgentPortal",
+    liveUrl: "https://agent-portal-production-590e.up.railway.app/login",
     demoInteractionHint:
       "Navigate core portal flows and inspect how task state, agent actions, and workflow transitions are represented.",
     posterSrc: "/projects/agent-portal.svg",

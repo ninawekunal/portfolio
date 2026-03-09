@@ -3,6 +3,7 @@ import { IBM_Plex_Sans, Space_Grotesk } from "next/font/google";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v16-appRouter";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 
+import { withBasePath } from "@/lib/assetPath";
 import theme from "@/theme";
 import "./globals.css";
 
@@ -25,7 +26,9 @@ export const metadata: Metadata = {
   description:
     "Engineering portfolio for Kunal Ninawe, a mid-senior full-stack engineer focused on scalable systems and AI-native product delivery.",
   icons: {
-    icon: "/favicon.svg",
+    icon: withBasePath("/favicon.svg"),
+    shortcut: withBasePath("/favicon.svg"),
+    apple: withBasePath("/favicon.svg"),
   },
   openGraph: {
     title: "Kunal Ninawe | Full-Stack Engineer",
@@ -59,4 +62,3 @@ export default function RootLayout({
     </html>
   );
 }
-

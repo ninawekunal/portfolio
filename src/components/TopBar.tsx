@@ -18,6 +18,7 @@ import {
   IconButton,
   Modal,
   Stack,
+  Tooltip,
   Toolbar,
   Typography,
 } from "@mui/material";
@@ -143,10 +144,12 @@ function BrandIdentity({
   compact = false,
   onAvatarClick,
   captionOverride,
+  hideCaption = false,
 }: {
   compact?: boolean;
   onAvatarClick: () => void;
   captionOverride?: string;
+  hideCaption?: boolean;
 }) {
   const captionText = captionOverride ?? brandCaption;
 
@@ -176,23 +179,39 @@ function BrandIdentity({
             <LocationBadge compact={compact} />
           </Stack>
         </Stack>
-        <Typography
-          variant="caption"
-          paddingTop={0.25}
-          sx={{
-            display: "block",
-            mt: compact ? 0.15 : 0,
-            color: alpha("#132433", 0.68),
-            letterSpacing: compact ? "0.05em" : "0.08em",
-            textTransform: compact ? "none" : "uppercase",
-            lineHeight: compact ? 1.28 : 1.2,
-            whiteSpace: compact ? "normal" : "nowrap",
-            textAlign: compact && captionOverride ? "center" : "left",
-            fontWeight: compact && captionOverride ? 700 : 500,
-          }}
-        >
-          {captionText}
-        </Typography>
+        {!hideCaption ? (
+          <Typography
+            variant="caption"
+            paddingTop={0.25}
+            sx={{
+              display: "block",
+              mt: compact ? 0.15 : 0,
+              color: alpha("#132433", 0.68),
+              letterSpacing: compact ? "0.05em" : "0.08em",
+              textTransform: compact ? "none" : "uppercase",
+              lineHeight: compact ? 1.28 : 1.2,
+              whiteSpace: compact ? "normal" : "nowrap",
+              textAlign: compact && captionOverride ? "center" : "left",
+              fontWeight: compact && captionOverride ? 700 : 500,
+              ...(compact && captionOverride
+                ? {
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    px: 1.18,
+                    py: 0.38,
+                    borderRadius: 999,
+                    border: `1px solid ${alpha("#132433", 0.28)}`,
+                    bgcolor: alpha("#132433", 0.16),
+                    color: alpha("#132433", 0.94),
+                    mt: 0.4,
+                  }
+                : {}),
+            }}
+          >
+            {captionText}
+          </Typography>
+        ) : null}
       </Box>
     </Stack>
   );
@@ -238,6 +257,7 @@ export function TopBar() {
     () => navigationItems.find((item) => item.href === activeSectionHref)?.label ?? "My Skillset",
     [activeSectionHref],
   );
+  const ActiveSectionIcon = navigationIcons[activeSectionHref as keyof typeof navigationIcons] ?? BuildRoundedIcon;
 
   return (
     <AppBar
@@ -337,32 +357,34 @@ export function TopBar() {
 
               {utilityLinks.map((item) => {
                 const Icon = item.icon;
+                const utilityHref = item.href.startsWith("/") ? withBasePath(item.href) : item.href;
 
                 return (
-                  <ButtonBase
-                    key={item.href}
-                    component="a"
-                    href={item.href}
-                    target="_blank"
-                    rel="noreferrer"
-                    sx={{
-                      width: 38,
-                      height: 38,
-                      borderRadius: "12px",
-                      color: alpha("#132433", 0.86),
-                      display: "inline-flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      transition: "background-color 180ms ease, color 180ms ease",
-                      "&:hover": {
-                        bgcolor: alpha("#132433", 0.08),
-                        color: "#132433",
-                      },
-                    }}
-                    aria-label={item.label}
-                  >
-                    <Icon sx={{ fontSize: 20 }} />
-                  </ButtonBase>
+                  <Tooltip key={item.href} title={item.label} arrow enterDelay={120}>
+                    <ButtonBase
+                      component="a"
+                      href={utilityHref}
+                      target="_blank"
+                      rel="noreferrer"
+                      sx={{
+                        width: 38,
+                        height: 38,
+                        borderRadius: "12px",
+                        color: alpha("#132433", 0.86),
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        transition: "background-color 180ms ease, color 180ms ease",
+                        "&:hover": {
+                          bgcolor: alpha("#132433", 0.08),
+                          color: "#132433",
+                        },
+                      }}
+                      aria-label={item.label}
+                    >
+                      <Icon sx={{ fontSize: 20 }} />
+                    </ButtonBase>
+                  </Tooltip>
                 );
               })}
             </Stack>
@@ -381,11 +403,7 @@ export function TopBar() {
             >
               <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1}>
                 <Box sx={{ minWidth: 0, pl: 0.5, flex: 1 }}>
-                  <BrandIdentity
-                    compact
-                    onAvatarClick={() => setProfileModalOpen(true)}
-                    captionOverride={activeSectionLabel}
-                  />
+                  <BrandIdentity compact hideCaption onAvatarClick={() => setProfileModalOpen(true)} />
                 </Box>
                 <IconButton
                   aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
@@ -404,6 +422,27 @@ export function TopBar() {
                   {mobileMenuOpen ? <CloseRoundedIcon /> : <MenuRoundedIcon />}
                 </IconButton>
               </Stack>
+
+              <Box sx={{ mt: 0.82, display: "flex", justifyContent: "center" }}>
+                <Box
+                  sx={{
+                    width: "100%",
+                    maxWidth: 380,
+                    borderRadius: "18px",
+                    bgcolor: alpha("#132433", 0.12),
+                    border: `1px solid ${alpha("#132433", 0.2)}`,
+                    px: 1,
+                    py: 0.72,
+                  }}
+                >
+                  <Stack direction="row" spacing={0.78} alignItems="center" justifyContent="center">
+                    <ActiveSectionIcon sx={{ fontSize: 20, color: alpha("#132433", 0.9) }} />
+                    <Typography variant="h6" sx={{ fontSize: "1.16rem", lineHeight: 1.2 }}>
+                      {activeSectionLabel}
+                    </Typography>
+                  </Stack>
+                </Box>
+              </Box>
 
               {mobileMenuOpen ? (
                 <Stack spacing={0.8} sx={{ mt: 1.2 }}>
@@ -437,36 +476,42 @@ export function TopBar() {
                     );
                   })}
 
-                  {utilityLinks.map((item) => {
-                    const Icon = item.icon;
+                  <Stack
+                    direction="row"
+                    alignItems="center"
+                    justifyContent="center"
+                    spacing={0.7}
+                    sx={{ pt: 0.4 }}
+                  >
+                    {utilityLinks.map((item) => {
+                      const Icon = item.icon;
+                      const utilityHref = item.href.startsWith("/") ? withBasePath(item.href) : item.href;
 
-                    return (
-                      <ButtonBase
-                        key={item.href}
-                        component="a"
-                        href={item.href}
-                        target="_blank"
-                        rel="noreferrer"
-                        onClick={() => setMobileMenuOpen(false)}
-                        sx={{
-                          justifyContent: "center",
-                          alignSelf: "center",
-                          width: 52,
-                          height: 46,
-                          borderRadius: "16px",
-                          color: alpha("#132433", 0.9),
-                          fontWeight: 600,
-                          backgroundColor: alpha("#132433", 0.06),
-                          "&:hover": {
-                            backgroundColor: alpha("#132433", 0.14),
-                          },
-                        }}
-                        aria-label={item.label}
-                      >
-                        <Icon sx={{ fontSize: 20 }} />
-                      </ButtonBase>
-                    );
-                  })}
+                      return (
+                        <Tooltip key={`mobile-${item.href}`} title={item.label} arrow enterDelay={120}>
+                          <ButtonBase
+                            component="a"
+                            href={utilityHref}
+                            target="_blank"
+                            rel="noreferrer"
+                            sx={{
+                              width: 40,
+                              height: 40,
+                              borderRadius: "12px",
+                              color: alpha("#132433", 0.9),
+                              backgroundColor: alpha("#132433", 0.06),
+                              "&:hover": {
+                                backgroundColor: alpha("#132433", 0.14),
+                              },
+                            }}
+                            aria-label={item.label}
+                          >
+                            <Icon sx={{ fontSize: 20 }} />
+                          </ButtonBase>
+                        </Tooltip>
+                      );
+                    })}
+                  </Stack>
                 </Stack>
               ) : null}
             </Box>

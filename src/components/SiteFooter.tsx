@@ -11,7 +11,7 @@ import { footerNotes, profile } from "@/data/portfolio";
 
 export function SiteFooter() {
   return (
-    <Box sx={{ pt: { xs: 4, md: 5 }, pb: { xs: 6, md: 8 } }}>
+    <Box sx={{ pt: { xs: 2.2, md: 3 }, pb: { xs: 6, md: 8 } }}>
       <Container maxWidth="xl">
         <Paper
           sx={{

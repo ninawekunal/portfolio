@@ -10,11 +10,16 @@ import {
   type WheelEvent as ReactWheelEvent,
 } from "react";
 import AutoAwesomeRoundedIcon from "@mui/icons-material/AutoAwesomeRounded";
+import ApiRoundedIcon from "@mui/icons-material/ApiRounded";
 import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import ExpandMoreRoundedIcon from "@mui/icons-material/ExpandMoreRounded";
+import LockRoundedIcon from "@mui/icons-material/LockRounded";
 import PlaceRoundedIcon from "@mui/icons-material/PlaceRounded";
+import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
+import SmsRoundedIcon from "@mui/icons-material/SmsRounded";
+import TuneRoundedIcon from "@mui/icons-material/TuneRounded";
 import {
   Box,
   ButtonBase,
@@ -39,6 +44,7 @@ import {
   type ExperienceProject,
   type ExperienceSkill,
 } from "@/data/portfolio";
+import { withBasePath } from "@/lib/assetPath";
 
 type RoadPoint = {
   x: number;
@@ -308,6 +314,27 @@ function SkillAccordion({
   expanded: boolean;
   onToggle: () => void;
 }) {
+  const fullText = `${skill.skill} ${skill.whereApplied}`.toLowerCase();
+  const skillBrandLogo =
+    fullText.includes("splunk")
+      ? "/brand-icons/splunk.svg"
+      : fullText.includes("datadog")
+        ? "/brand-icons/datadog.svg"
+        : fullText.includes("pagerduty")
+          ? "/brand-icons/pagerduty.svg"
+          : null;
+  const SkillIconComponent = fullText.includes("mfa") || fullText.includes("sms")
+    ? SmsRoundedIcon
+    : fullText.includes("acr")
+      ? LockRoundedIcon
+      : fullText.includes("feature flag")
+        ? TuneRoundedIcon
+        : fullText.includes("centralized identity") || fullText.includes("identity")
+            ? PersonRoundedIcon
+            : fullText.includes("rest") || fullText.includes("api")
+              ? ApiRoundedIcon
+              : AutoAwesomeRoundedIcon;
+
   return (
     <Paper
       variant="outlined"
@@ -331,14 +358,32 @@ function SkillAccordion({
         }}
       >
         <Stack direction="row" spacing={1} sx={{ minWidth: 0 }}>
-          <AutoAwesomeRoundedIcon
-            sx={{
-              color: alpha("#f5be42", 0.95),
-              fontSize: 17,
-              mt: 0.22,
-              flexShrink: 0,
-            }}
-          />
+          {skillBrandLogo ? (
+            <Box
+              component="img"
+              src={withBasePath(skillBrandLogo)}
+              alt={`${skill.skill} icon`}
+              sx={{
+                width: 18,
+                height: 18,
+                mt: 0.2,
+                objectFit: "contain",
+                flexShrink: 0,
+                p: 0.2,
+                bgcolor: "#ffffff",
+                borderRadius: "6px",
+              }}
+            />
+          ) : (
+            <SkillIconComponent
+              sx={{
+                color: alpha("#f5be42", 0.95),
+                fontSize: 17,
+                mt: 0.22,
+                flexShrink: 0,
+              }}
+            />
+          )}
           <Box sx={{ minWidth: 0 }}>
             <Typography variant="subtitle2" sx={{ color: alpha("#ffffff", 0.95) }}>
               {skill.skill}
@@ -451,6 +496,7 @@ export function ExperienceSection() {
 
   const contentScrollRef = useRef<HTMLDivElement | null>(null);
   const mobileHeadingRef = useRef<HTMLDivElement | null>(null);
+  const timelineCardRef = useRef<HTMLDivElement | null>(null);
   const touchStartRef = useRef<{ x: number; y: number } | null>(null);
   const mobileScrollStartRef = useRef(0);
   const desktopBoundaryLockRef = useRef(false);
@@ -697,7 +743,8 @@ export function ExperienceSection() {
     }
 
     const frameId = window.requestAnimationFrame(() => {
-      const viewportOffset = 154;
+      const timelineCardHeight = timelineCardRef.current?.offsetHeight ?? 162;
+      const viewportOffset = timelineCardHeight + 138;
       const targetTop = window.scrollY + headingNode.getBoundingClientRect().top - viewportOffset;
 
       window.scrollTo({
@@ -756,11 +803,27 @@ export function ExperienceSection() {
       component="section"
       id="experience"
       sx={{
-        py: { xs: 5, md: 6 },
+        pt: { xs: 2.8, md: 3.5 },
+        pb: { xs: 4.8, md: 5.6 },
         scrollMarginTop: 100,
       }}
     >
       <Container maxWidth="xl">
+        <Paper
+          sx={{
+            p: { xs: 1.35, md: 2.2 },
+            borderRadius: "32px",
+            bgcolor: alpha("#fff8ee", 0.92),
+            border: `1px solid ${alpha("#132433", 0.1)}`,
+            backgroundImage: `radial-gradient(circle at 12% 0%, ${alpha(
+              "#f0b07b",
+              0.2,
+            )}, transparent 34%), radial-gradient(circle at 88% 12%, ${alpha(
+              "#0f6b62",
+              0.1,
+            )}, transparent 30%)`,
+          }}
+        >
         <Stack spacing={3}>
           <SectionHeading
             eyebrow="Experience"
@@ -787,6 +850,7 @@ export function ExperienceSection() {
               }}
             >
               <Paper
+                ref={timelineCardRef}
                 onTouchStart={handleTouchStart}
                 onTouchEnd={handleTouchEnd}
                 sx={{
@@ -912,20 +976,8 @@ export function ExperienceSection() {
                       stroke="url(#experienceRoadMobileGradient)"
                       strokeWidth="6"
                       strokeLinecap="round"
-                      strokeOpacity={0.34}
                       pathLength={1}
-                      strokeDasharray={`${activeSegmentRange} 1`}
-                      strokeDashoffset={-activeSegment.start}
-                    />
-                    <path
-                      d={mobileRoadPath}
-                      fill="none"
-                      stroke="url(#experienceRoadMobileGradient)"
-                      strokeWidth="6"
-                      strokeLinecap="round"
-                      pathLength={1}
-                      strokeDasharray={`${activeSegmentProgressLength} 1`}
-                      strokeDashoffset={-activeSegment.start}
+                      strokeDasharray={`${timelineProgressAbsolute} 1`}
                     />
                   </Box>
 
@@ -960,20 +1012,8 @@ export function ExperienceSection() {
                       stroke="url(#experienceRoadDesktopGradient)"
                       strokeWidth="6"
                       strokeLinecap="round"
-                      strokeOpacity={0.34}
                       pathLength={1}
-                      strokeDasharray={`${activeSegmentRange} 1`}
-                      strokeDashoffset={-activeSegment.start}
-                    />
-                    <path
-                      d={desktopRoadPath}
-                      fill="none"
-                      stroke="url(#experienceRoadDesktopGradient)"
-                      strokeWidth="6"
-                      strokeLinecap="round"
-                      pathLength={1}
-                      strokeDasharray={`${activeSegmentProgressLength} 1`}
-                      strokeDashoffset={-activeSegment.start}
+                      strokeDasharray={`${timelineProgressAbsolute} 1`}
                     />
                   </Box>
 
@@ -1054,6 +1094,14 @@ export function ExperienceSection() {
                     );
                   })}
                 </Box>
+
+                {!isDesktop ? (
+                  <Stack spacing={0.45} sx={{ mt: 0.6, px: 0.35 }}>
+                    <Typography variant="caption" sx={{ color: alpha("#132433", 0.72), lineHeight: 1.42 }}>
+                      Swipe left/right on this timeline or use arrows to navigate experiences.
+                    </Typography>
+                  </Stack>
+                ) : null}
               </Paper>
 
               <Paper
@@ -1098,30 +1146,19 @@ export function ExperienceSection() {
                   }}
                 >
                 <Stack spacing={1.35} sx={{ position: "relative", px: { xs: 0, md: 0.2 } }}>
-                  <Stack
-                    ref={mobileHeadingRef}
-                    direction={{ xs: "column", sm: "row" }}
-                    justifyContent="space-between"
-                    spacing={1.2}
-                  >
-                    <Box>
+                  <Stack ref={mobileHeadingRef} spacing={0.68}>
+                    <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1}>
                       <Typography
                         variant="h4"
                         sx={{
-                          fontSize: { xs: "1.55rem", md: "2rem" },
+                          fontSize: { xs: "1.38rem", sm: "1.5rem", md: "2rem" },
                           fontWeight: 800,
                           color: "primary.dark",
+                          minWidth: 0,
+                          lineHeight: 1.22,
                         }}
                       >
                         {activeEntry.company}
-                      </Typography>
-                      <Typography variant="subtitle1" sx={{ mt: 0.2, color: "text.secondary", fontWeight: 600 }}>
-                        {activeEntry.role}
-                      </Typography>
-                    </Box>
-                    <Stack spacing={0.6} alignItems={{ xs: "flex-start", sm: "flex-end" }}>
-                      <Typography variant="body2" sx={{ color: "text.secondary", fontWeight: 600 }}>
-                        {activePeriod.label}
                       </Typography>
                       <Chip
                         size="small"
@@ -1129,18 +1166,28 @@ export function ExperienceSection() {
                         label={activeEntry.location}
                         variant="outlined"
                         sx={{
+                          maxWidth: { xs: "52%", sm: "none" },
                           bgcolor: alpha("#ffffff", 0.74),
                           borderColor: alpha("#132433", 0.15),
+                          "& .MuiChip-label": {
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                          },
                         }}
                       />
                     </Stack>
+                    <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1}>
+                      <Typography variant="subtitle1" sx={{ color: "text.secondary", fontWeight: 600, minWidth: 0 }}>
+                        {activeEntry.role}
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        sx={{ color: "text.secondary", fontWeight: 700, whiteSpace: "nowrap", flexShrink: 0 }}
+                      >
+                        {activePeriod.label}
+                      </Typography>
+                    </Stack>
                   </Stack>
-
-                  {!isDesktop ? (
-                    <Typography variant="caption" sx={{ color: "text.secondary" }}>
-                      Swipe left/right on the timeline card or use arrow buttons to navigate experiences.
-                    </Typography>
-                  ) : null}
 
                   {activeEntry.projects?.length ? (
                     <Stack spacing={0.9}>
@@ -1203,6 +1250,7 @@ export function ExperienceSection() {
             </Box>
           </Box>
         </Stack>
+        </Paper>
       </Container>
 
       <Dialog

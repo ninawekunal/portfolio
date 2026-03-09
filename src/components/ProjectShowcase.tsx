@@ -32,6 +32,10 @@ import { withBasePath } from "@/lib/assetPath";
 const MAGIC_GRADIENT_START = "#ff3bb5";
 const MAGIC_GRADIENT_END = "#ff7b38";
 
+function clamp(value: number, min: number, max: number) {
+  return Math.min(max, Math.max(min, value));
+}
+
 function LessonsList({
   project,
   itemColor,
@@ -68,6 +72,7 @@ export function ProjectShowcase() {
   const [activeFilter, setActiveFilter] = useState("All");
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(projects[0]?.id ?? null);
   const [demoProject, setDemoProject] = useState<PortfolioProject | null>(null);
+  const [mobileProjectDetail, setMobileProjectDetail] = useState<PortfolioProject | null>(null);
   const carouselRef = useRef<HTMLDivElement | null>(null);
 
   const filteredProjects = useMemo(
@@ -96,6 +101,14 @@ export function ProjectShowcase() {
     window.open(project.liveUrl, "_blank", "noopener,noreferrer");
   };
 
+  const handleProjectCardClick = (project: PortfolioProject) => {
+    setSelectedProjectId(project.id);
+
+    if (isMobile) {
+      setMobileProjectDetail(project);
+    }
+  };
+
   const scrollCarousel = (direction: "up" | "down") => {
     const node = carouselRef.current;
 
@@ -103,18 +116,39 @@ export function ProjectShowcase() {
       return;
     }
 
-    const cards = node.querySelectorAll("[data-project-card='true']");
-    const step = cards.length ? (cards[0] as HTMLElement).offsetHeight + 12 : 182;
+    const cards = Array.from(node.querySelectorAll("[data-project-card='true']")) as HTMLElement[];
 
-    node.scrollBy({
-      top: direction === "down" ? step : -step,
+    if (!cards.length) {
+      return;
+    }
+
+    const currentScrollTop = node.scrollTop;
+    let nearestIndex = 0;
+    let smallestOffsetDistance = Number.POSITIVE_INFINITY;
+
+    cards.forEach((card, index) => {
+      const distance = Math.abs(card.offsetTop - currentScrollTop);
+      if (distance < smallestOffsetDistance) {
+        smallestOffsetDistance = distance;
+        nearestIndex = index;
+      }
+    });
+
+    const nextIndex = clamp(
+      nearestIndex + (direction === "down" ? 1 : -1),
+      0,
+      cards.length - 1,
+    );
+
+    node.scrollTo({
+      top: cards[nextIndex].offsetTop,
       behavior: "smooth",
     });
   };
 
   return (
     <Box component="section" id="projects" sx={{ py: { xs: 5, md: 6 }, scrollMarginTop: 100 }}>
-      <Container maxWidth="lg">
+      <Container maxWidth="xl">
         <Paper
           sx={{
             p: { xs: 2.1, md: 3.1 },
@@ -189,6 +223,7 @@ export function ProjectShowcase() {
                         ? projects
                         : projects.filter((project) => project.tags.includes(filter));
                     setSelectedProjectId(nextProjects[0]?.id ?? null);
+                    setMobileProjectDetail(null);
                   }}
                   variant="outlined"
                   sx={{
@@ -257,11 +292,12 @@ export function ProjectShowcase() {
                   sx={{
                     px: 1.2,
                     pb: 1.2,
-                    maxHeight: { xs: "none", md: 570 },
+                    maxHeight: { xs: "min(70dvh, 500px)", md: 570 },
                     overflowY: "auto",
                     overscrollBehaviorY: "contain",
                     scrollBehavior: "smooth",
-                    scrollSnapType: { xs: "none", md: "y mandatory" },
+                    scrollSnapType: { xs: "none", md: "y proximity" },
+                    scrollPaddingTop: 4,
                   }}
                 >
                   <Stack spacing={1.2}>
@@ -281,11 +317,12 @@ export function ProjectShowcase() {
                               isSelected ? alpha("#f6b4e8", 0.42) : alpha("#ffffff", 0.16)
                             }`,
                             scrollSnapAlign: { xs: "none", md: "start" },
-                            transition: "border-color 180ms ease, background-color 180ms ease",
+                            scrollSnapStop: { xs: "normal", md: "always" },
+                            transition: "border-color 180ms ease, background-color 180ms ease, transform 180ms ease",
                           }}
                         >
                           <ButtonBase
-                            onClick={() => setSelectedProjectId(project.id)}
+                            onClick={() => handleProjectCardClick(project)}
                             sx={{
                               width: "100%",
                               textAlign: "left",
@@ -339,7 +376,7 @@ export function ProjectShowcase() {
                 </Box>
               </Paper>
 
-              {selectedProject ? (
+              {selectedProject && !isMobile ? (
                 <Paper
                   sx={{
                     position: "sticky",
@@ -440,6 +477,85 @@ export function ProjectShowcase() {
           </Stack>
         </Paper>
       </Container>
+
+      <Dialog
+        open={Boolean(mobileProjectDetail && isMobile)}
+        onClose={() => setMobileProjectDetail(null)}
+        fullScreen={isMobile}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle
+          sx={{
+            display: "flex",
+            alignItems: "flex-start",
+            justifyContent: "space-between",
+            gap: 1,
+            pr: 1,
+          }}
+        >
+          <Box sx={{ minWidth: 0 }}>
+            <Typography variant="h6" sx={{ lineHeight: 1.24 }}>
+              {mobileProjectDetail?.title}
+            </Typography>
+            <Typography variant="caption" sx={{ color: "text.secondary", display: "block", mt: 0.32 }}>
+              {mobileProjectDetail?.kicker}
+            </Typography>
+          </Box>
+          <IconButton aria-label="Close project details" onClick={() => setMobileProjectDetail(null)}>
+            <CloseRoundedIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent sx={{ pt: 0.4 }}>
+          {mobileProjectDetail ? (
+            <Stack spacing={1.2}>
+              <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.68 }}>
+                {mobileProjectDetail.summary}
+              </Typography>
+              <Typography variant="caption" sx={{ color: "text.secondary", lineHeight: 1.55 }}>
+                {mobileProjectDetail.demoInteractionHint ??
+                  "Interact with this demo to inspect the primary workflow and state transitions."}
+              </Typography>
+              <Stack direction="row" flexWrap="wrap" gap={0.7}>
+                {mobileProjectDetail.stack.map((item) => (
+                  <TechnologyPin key={`${mobileProjectDetail.id}-${item}-mobile-detail`} label={item} />
+                ))}
+              </Stack>
+              <Box>
+                <Typography variant="subtitle2" sx={{ mb: 0.45 }}>
+                  What I learned
+                </Typography>
+                <LessonsList project={mobileProjectDetail} itemColor="text.primary" />
+              </Box>
+              <Stack spacing={0.9}>
+                <Button
+                  href={mobileProjectDetail.repoUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  variant="contained"
+                  startIcon={<GitHubIcon />}
+                  sx={{
+                    backgroundImage: `linear-gradient(90deg, ${MAGIC_GRADIENT_START} 0%, ${MAGIC_GRADIENT_END} 100%)`,
+                  }}
+                >
+                  View repository
+                </Button>
+                <Button
+                  variant="outlined"
+                  startIcon={<OpenInNewRoundedIcon />}
+                  disabled={!mobileProjectDetail.liveUrl}
+                  onClick={() => {
+                    openLiveDemo(mobileProjectDetail);
+                    setMobileProjectDetail(null);
+                  }}
+                >
+                  Open live demo
+                </Button>
+              </Stack>
+            </Stack>
+          ) : null}
+        </DialogContent>
+      </Dialog>
 
       <Dialog
         open={Boolean(demoProject)}
