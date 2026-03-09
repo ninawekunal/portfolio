@@ -26,9 +26,9 @@ export type OfferView = {
 export const offerHeading = {
   eyebrow: "What I Offer",
   title:
-    "I design and ship production systems that stay reliable at scale, including workloads that serve millions of users.",
+    "Experience in designing and shipping production systems that stay reliable at scale, including workloads that serve millions of users.",
   body:
-    "I take products from 0 to 1 and from 1 to 100 by turning ambiguous problems into clear execution plans and collaborating quickly wherever deeper expertise is needed.",
+    "Excited about shipping products from 0 to 1 & from 1 to 100 by turning ambiguous problems into clear execution plans and collaborating quickly wherever deeper expertise is needed.",
 };
 
 export const offerViews: OfferView[] = [
@@ -465,7 +465,7 @@ export const offerViews: OfferView[] = [
         id: "scope-intent",
         label: "Scope with intent",
         icon: "style",
-        summary: "Start with high-signal user flow, then expand from a stable base.",
+        summary: "Start with high level design of the system, map out essential components, then expand from a stable base.",
         projectIds: ["smarttrip"],
       },
       {
@@ -493,14 +493,14 @@ export const offerViews: OfferView[] = [
         id: "reliability",
         label: "Reliability + incident response",
         icon: "style",
-        summary: "Use rollout safety, observability, and RCA loops as core engineering behavior.",
+        summary: "Accountability for uptime and fast recovery when things go wrong. Demonstrated by owning on-call rotations and leading post-mortems for critical production issues.",
         projectIds: [],
       },
       {
         id: "mentoring",
         label: "Mentor and unblock others",
         icon: "style",
-        summary: "Share constraints and mistakes so teams avoid repeating costly patterns.",
+        summary: "Want to help others grow by sharing practical lessons from real production challenges.",
         projectIds: [],
       },
     ],
@@ -509,37 +509,37 @@ export const offerViews: OfferView[] = [
         id: "scope-proof",
         label: "Scope Decisions",
         proof:
-          "I start with small end-to-end slices that prove value and reduce risk early.",
+          "Always starting with high level user flow and expanding scope from a stable base to avoid over-engineering and scope creep.",
       },
       {
         id: "ownership-proof",
         label: "Ownership in Production",
         proof:
-          "I take features from planning to production, including monitoring and post-release fixes.",
+          "Experience owning end to end delivery from UX to API contracts to release behavior and iterating based on real user feedback.",
       },
       {
         id: "collab-proof",
         label: "Cross-team Collaboration",
         proof:
-          "I work closely with product, design, and platform teams and make tradeoffs clear.",
+          "Experience in working closely with product, design, and platform teams and make tradeoffs clear, and brainstorm together when needed to unblock progress.",
       },
       {
         id: "security-proof",
         label: "Security-first Delivery",
         proof:
-          "I include security and privacy requirements from day one, not as a later patch.",
+          "Previous experience in handling sensitive data and flows with a security-first mindset shapes my delivery approach to be cautious and deliberate around potential risks.",
       },
       {
         id: "mentorship-proof",
         label: "Mentoring Style",
         proof:
-          "I mentor through code reviews, pairing, and incident learnings so others can avoid repeat mistakes.",
+          "Documenting practical lessons from real production challenges, and understanding that peers would also be facing those challenges for the first time, so sharing constraints and mistakes to help them avoid repeating costly patterns and unblock themselves faster.",
       },
       {
         id: "learning-proof",
         label: "Continuous Learning",
         proof:
-          "I ramp up quickly in new areas and document what works so the team can reuse it.",
+          "Language and framework agnostic with a focus on core principles and patterns that can be applied across tech stacks, and a track record of quickly ramping up in new environments to deliver impact.",
       },
     ],
   },

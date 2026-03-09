@@ -8,6 +8,7 @@ export type PortfolioProject = {
   githubSlug: string;
   repoUrl: string;
   liveUrl?: string;
+  demoInteractionHint?: string;
   posterSrc: string;
   posterAlt: string;
   tags: string[];
@@ -16,6 +17,7 @@ export type PortfolioProject = {
   architecture: string[];
   valueSignals: string[];
   evidence: string[];
+  lessonsLearned: string[];
 };
 
 export type Metric = {
@@ -32,6 +34,28 @@ export type CareerEntry = {
   summary: string;
   highlights: string[];
   stack: string[];
+  skillsApplied?: ExperienceSkill[];
+  projects?: ExperienceProject[];
+};
+
+export type ExperienceSkill = {
+  skill: string;
+  whereApplied: string;
+  outcome: string;
+};
+
+export type ExperienceProject = {
+  name: string;
+  impact: string;
+  summary: string;
+  technologies: string[];
+  learnings: string[];
+  metrics?: ExperienceMetric[];
+};
+
+export type ExperienceMetric = {
+  label: string;
+  value: string;
 };
 
 export type EducationEntry = {
@@ -40,6 +64,16 @@ export type EducationEntry = {
   degree: string;
   date: string;
   details: string;
+  logoSrc?: string;
+  schoolColor?: string;
+};
+
+export type CertificationEntry = {
+  title: string;
+  issuer: string;
+  issueDate?: string;
+  credentialId?: string;
+  credentialUrl?: string;
 };
 
 export type SkillCluster = {
@@ -103,7 +137,9 @@ export const profile = {
 
 export const navigationItems = [
   { label: "My Skillset", href: "#what-i-offer" },
+  { label: "Experience", href: "#experience" },
   { label: "Projects", href: "#projects" },
+  { label: "Education", href: "#education-certifications" },
 ];
 
 export const heroBadges = [
@@ -236,6 +272,86 @@ export const experienceTimeline: CareerEntry[] = [
       "Implemented step-up MFA with ACR policies, shipped staged rollouts via feature flags and analytics, and improved release confidence through 92% smoke coverage, progressive deployments, and L3 incident ownership using Splunk, Datadog, and PagerDuty.",
     ],
     stack: ["React", "TypeScript", "Node.js", "Hapi", "GraphQL", "OIDC", "Kubernetes", "Istio", "Splunk"],
+    skillsApplied: [
+      {
+        skill: "Identity architecture",
+        whereApplied:
+          "Unified fragmented B2B identity across partner and traveler systems using React, TypeScript, Node.js (Hapi), and Java/OIDC services.",
+        outcome:
+          "Delivered a coherent auth model used by 100k+ partners with high adoption and clearer trust boundaries.",
+      },
+      {
+        skill: "API contract design",
+        whereApplied:
+          "Defined REST and GraphQL contracts for cross-domain email updates with centralized identity services.",
+        outcome:
+          "Reduced identity inconsistencies and resolved roughly 45% of identity-related bugs.",
+      },
+      {
+        skill: "MFA and risk controls",
+        whereApplied:
+          "Implemented step-up MFA with ACR policy controls and staged rollouts using feature flags and analytics.",
+        outcome:
+          "Improved release confidence with policy-driven authentication and safer production rollouts.",
+      },
+      {
+        skill: "Reliability and on-call ownership",
+        whereApplied:
+          "Owned L3 incidents with Splunk, Datadog, and PagerDuty while tightening smoke coverage and deployment safety.",
+        outcome:
+          "Reached 92% smoke coverage and strengthened incident response and recovery discipline.",
+      },
+    ],
+    projects: [
+      {
+        name: "Partner Identity Unification",
+        impact: "100k+ partner users with ~90% feature adoption",
+        summary:
+          "Merged fragmented partner and traveler authentication journeys into one coherent identity flow with predictable UX and service behavior.",
+        technologies: ["React", "TypeScript", "Node.js (Hapi)", "Java", "OIDC", "GraphQL"],
+        learnings: [
+          "Unification work needs one explicit source of truth for user identity across domains.",
+          "API contracts must be treated as product surfaces because frontend trust depends on backend consistency.",
+          "Rollouts are safer when telemetry is defined before feature code is shipped.",
+        ],
+        metrics: [
+          { label: "Partners impacted", value: "100k+" },
+          { label: "Adoption", value: "~90%" },
+        ],
+      },
+      {
+        name: "Cross-Domain Email Update Platform",
+        impact: "Resolved roughly 45% of identity-related bugs",
+        summary:
+          "Designed and delivered centralized email-update flows spanning decoupled systems so account state stayed synchronized and support incidents dropped.",
+        technologies: ["REST", "GraphQL", "Node.js", "Java", "Centralized identity services"],
+        learnings: [
+          "Identity mutations need explicit ownership boundaries across every participating service.",
+          "Data reconciliation jobs are only useful when failure states are visible to operators.",
+          "Contract tests across teams reduce integration regressions during high-trust changes.",
+        ],
+        metrics: [
+          { label: "Identity bugs reduced", value: "~45%" },
+          { label: "Domain boundary", value: "Multi-system sync" },
+        ],
+      },
+      {
+        name: "Step-Up MFA and Progressive Rollout",
+        impact: "92% smoke coverage and stronger release confidence",
+        summary:
+          "Implemented policy-driven step-up MFA with ACR levels and shipped it behind staged rollouts to control risk in production.",
+        technologies: ["MFA", "ACR policy", "Feature flags", "Splunk", "Datadog", "PagerDuty"],
+        learnings: [
+          "Authentication risk controls need UX clarity to avoid support overhead.",
+          "Progressive delivery plus guardrail dashboards catches regressions before full rollout.",
+          "Incident ownership improves design decisions for reliability and operability.",
+        ],
+        metrics: [
+          { label: "Smoke coverage", value: "92%" },
+          { label: "Rollout strategy", value: "Progressive + flags" },
+        ],
+      },
+    ],
   },
   {
     company: "Global Traffic Technologies",
@@ -249,6 +365,47 @@ export const experienceTimeline: CareerEntry[] = [
       "Reduced latency and operational cost through CloudFormation automation, a DynamoDB to ElastiCache shift, and asynchronous logging with Kinesis Firehose, S3, and CloudWatch.",
     ],
     stack: ["AWS Lambda", "ECS", "API Gateway", "CloudFormation", "ElastiCache", "Kinesis", "S3"],
+    skillsApplied: [
+      {
+        skill: "Serverless and container architecture",
+        whereApplied:
+          "Built production APIs and asynchronous workflows using AWS Lambda, ECS, and API Gateway.",
+        outcome:
+          "Scaled backend delivery for user-facing traffic products while keeping latency targets stable.",
+      },
+      {
+        skill: "Cost-performance optimization",
+        whereApplied:
+          "Shifted storage patterns from DynamoDB to ElastiCache for performance-sensitive paths.",
+        outcome:
+          "Improved response time and reduced operating costs for key backend flows.",
+      },
+      {
+        skill: "Infrastructure as code",
+        whereApplied:
+          "Automated infrastructure provisioning and deployment with CloudFormation.",
+        outcome:
+          "Increased release consistency and reduced manual operational overhead.",
+      },
+    ],
+    projects: [
+      {
+        name: "Cloud API and Batch Workflow Modernization",
+        impact: "Lower latency and lower infrastructure cost",
+        summary:
+          "Delivered scalable backend APIs with resilient async processing and improved infra automation for traffic-product workloads.",
+        technologies: ["AWS Lambda", "ECS", "API Gateway", "CloudFormation", "ElastiCache", "Kinesis"],
+        learnings: [
+          "Cost and latency improvements are often unlocked by choosing the right storage tier for access patterns.",
+          "Batch workflows need idempotent processing guarantees to keep retries safe.",
+          "Infrastructure as code accelerates both incident response and product iteration.",
+        ],
+        metrics: [
+          { label: "Primary impact", value: "Latency down" },
+          { label: "Cost profile", value: "Optimized" },
+        ],
+      },
+    ],
   },
   {
     company: "Moaedat Ltd.",
@@ -262,6 +419,47 @@ export const experienceTimeline: CareerEntry[] = [
       "Supported 500+ products and improved online reach for the business.",
     ],
     stack: ["PHP", "MySQL", "Bootstrap", "JavaScript", "Apache"],
+    skillsApplied: [
+      {
+        skill: "Full-stack web delivery",
+        whereApplied:
+          "Built an end-to-end e-commerce web application using PHP, MySQL, Bootstrap, JavaScript, and Apache.",
+        outcome:
+          "Shipped a production storefront that supported inventory workflows and customer discovery.",
+      },
+      {
+        skill: "Relational data modeling",
+        whereApplied:
+          "Designed product and inventory schema for catalog and operational use cases.",
+        outcome:
+          "Enabled management of 500+ products with stable day-to-day updates.",
+      },
+      {
+        skill: "Product and UX execution",
+        whereApplied:
+          "Delivered core browsing and purchasing flows for a business-focused web audience.",
+        outcome:
+          "Improved online presence and reach through a complete e-commerce experience.",
+      },
+    ],
+    projects: [
+      {
+        name: "E-Commerce Platform Launch",
+        impact: "Supported 500+ products online",
+        summary:
+          "Built and shipped an e-commerce web experience with inventory tracking and admin-facing workflows for day-to-day operations.",
+        technologies: ["PHP", "MySQL", "Bootstrap", "JavaScript", "Apache"],
+        learnings: [
+          "Schema design quality directly affects inventory and checkout reliability.",
+          "Shipping value fast means balancing custom features with proven web tooling.",
+          "Simple UX wins conversion when product browsing and search are frictionless.",
+        ],
+        metrics: [
+          { label: "Catalog size", value: "500+ products" },
+          { label: "Outcome", value: "Online reach improved" },
+        ],
+      },
+    ],
   },
 ];
 
@@ -271,6 +469,8 @@ export const education: EducationEntry[] = [
     location: "New York, NY",
     degree: "M.S. in Computer Engineering",
     date: "May 2021",
+    logoSrc: "/education/nyu-logo.svg",
+    schoolColor: "#57068c",
     details:
       "Coursework in data structures and algorithms, cloud computing, distributed systems, internet protocols, machine learning, and deep learning.",
   },
@@ -279,7 +479,71 @@ export const education: EducationEntry[] = [
     location: "Mumbai, India",
     degree: "B.S. in Computer and Information Science",
     date: "July 2019",
+    logoSrc: "/education/university-of-mumbai-logo.svg",
+    schoolColor: "#101010",
     details: "Strong computing foundation spanning software engineering and computer science fundamentals.",
+  },
+];
+
+export const certificationsSourceUrl =
+  "https://www.linkedin.com/in/ninawekunal/details/certifications/";
+
+export const certifications: CertificationEntry[] = [
+  {
+    title: "AI Fluency: Framework & Foundations",
+    issuer: "Anthropic",
+    issueDate: "Mar 2026",
+    credentialId: "h7edwy2r4qsp",
+    credentialUrl: certificationsSourceUrl,
+  },
+  {
+    title: "Master of Science in Computer Engineering",
+    issuer: "New York University",
+    issueDate: "Jun 2021",
+    credentialId: "CeDiD:214B-22QX-KVE4",
+    credentialUrl: certificationsSourceUrl,
+  },
+  {
+    title: "Applied Machine Learning: Algorithms",
+    issuer: "LinkedIn Learning",
+    issueDate: "Mar 2021",
+    credentialId: "AdpqsJlizw9hCYf1ePxFEWTuR6F9",
+    credentialUrl: certificationsSourceUrl,
+  },
+  {
+    title: "Face Recognition Web App in Machine Learning with Python and Flask",
+    issuer: "Udemy",
+    issueDate: "Jan 2021",
+    credentialId: "UC-7613dbd7-e71c-4a06-8e5e-edd62a7e4984",
+    credentialUrl: certificationsSourceUrl,
+  },
+  {
+    title: "Java Basics",
+    issuer: "HackerRank",
+    issueDate: "Nov 2020",
+    credentialId: "F5FE80A1E2B5",
+    credentialUrl: certificationsSourceUrl,
+  },
+  {
+    title: "Essential Math for Machine Learning: Python Edition",
+    issuer: "LinkedIn Learning",
+    issueDate: "Jul 2020",
+    credentialId: "AZkvNXZjR4PkWItENBAq2zhmgJX3",
+    credentialUrl: certificationsSourceUrl,
+  },
+  {
+    title: "Introduction to Data Structures & Algorithms in Java",
+    issuer: "LinkedIn Learning",
+    issueDate: "Jun 2020",
+    credentialId: "AelsH2eBxuZFS2pjyXwrrB6Nw9Pw",
+    credentialUrl: certificationsSourceUrl,
+  },
+  {
+    title: "WordPress: Ecommerce",
+    issuer: "LinkedIn Learning",
+    issueDate: "May 2020",
+    credentialId: "AT-x_jwYannoMRGH6e-L6wIRUwAf",
+    credentialUrl: certificationsSourceUrl,
   },
 ];
 
@@ -305,6 +569,8 @@ export const projects: PortfolioProject[] = [
     githubSlug: "ninawekunal/agent-queues",
     repoUrl: "https://github.com/ninawekunal/agent-queues",
     liveUrl: "https://agent-queues.vercel.app",
+    demoInteractionHint:
+      "Create a sample refund request, then watch queue, processing, success, and failure lanes update in real time.",
     posterSrc: "/projects/agent-queues.svg",
     posterAlt: "Agent Queues project poster showing a queue flowing into processing and outcome buckets.",
     tags: ["AI", "Full Stack", "Scalable Systems"],
@@ -329,6 +595,11 @@ export const projects: PortfolioProject[] = [
       "Shared contract validation helpers and API response envelope.",
       "Dedicated panels for queue stream, success bucket, and failure bucket.",
     ],
+    lessonsLearned: [
+      "Batch-style queue processing smooths burst traffic and protects downstream services under load.",
+      "Redis stream events partitioned by agent ID let the client subscribe to only the updates it needs.",
+      "A publish/subscribe flow is practical for real-time operator dashboards where state changes rapidly.",
+    ],
   },
   {
     id: "smarttrip",
@@ -341,6 +612,8 @@ export const projects: PortfolioProject[] = [
       "Designed a layered full-stack architecture around trip management, routing, API documentation, and persistent travel data.",
     githubSlug: "ninawekunal/SmartTrip",
     repoUrl: "https://github.com/ninawekunal/SmartTrip",
+    demoInteractionHint:
+      "Create a trip, add and reorder stops, then compute routes and export the journey to Google Maps.",
     posterSrc: "/projects/smarttrip.svg",
     posterAlt: "SmartTrip project poster showing route nodes connected across a map-like grid.",
     tags: ["Full Stack", "Frontend"],
@@ -365,6 +638,11 @@ export const projects: PortfolioProject[] = [
       "Migration-backed schema for trips, stops, and routes.",
       "Health checks and API docs surfaced as first-class product features.",
     ],
+    lessonsLearned: [
+      "Strong domain models for trips and stops make route orchestration easier to evolve safely.",
+      "Separating UI, API, and shared contracts keeps frontend changes from destabilizing backend logic.",
+      "MVP discipline matters: nailing core routing and export first creates a stronger base for AI features later.",
+    ],
   },
   {
     id: "pdf-highlighter",
@@ -378,6 +656,8 @@ export const projects: PortfolioProject[] = [
     githubSlug: "ninawekunal/pdf-highlighter",
     repoUrl: "https://github.com/ninawekunal/pdf-highlighter",
     liveUrl: "https://ninawekunal.github.io/pdf-highlighter/",
+    demoInteractionHint:
+      "Choose an invoice sample and click extracted fields to jump to the exact highlighted location in the PDF.",
     posterSrc: "/projects/pdf-highlighter.svg",
     posterAlt: "PDF Highlighter project poster showing a document with highlighted fields and a matching side panel.",
     tags: ["AI", "Frontend", "Data / ML"],
@@ -402,6 +682,11 @@ export const projects: PortfolioProject[] = [
       "PDF coordinate mapping from document space to screen overlay space.",
       "Static deployment pipeline with GitHub Actions and base-path handling.",
     ],
+    lessonsLearned: [
+      "Document intelligence UX becomes trustworthy when extraction output is visibly anchored to source coordinates.",
+      "Layered parsing and fallback strategies reduce fragility across invoice formats.",
+      "Human-in-the-loop review flows are essential when field extraction confidence is not perfect.",
+    ],
   },
   {
     id: "image-gender-detector",
@@ -415,6 +700,8 @@ export const projects: PortfolioProject[] = [
     githubSlug: "ninawekunal/ImageGenderDetector",
     repoUrl: "https://github.com/ninawekunal/ImageGenderDetector",
     liveUrl: "https://ninawekunal.github.io/ImageGenderDetector/faceapp.html",
+    demoInteractionHint:
+      "Upload or select a face image, run detection, then inspect the bounding box and predicted class output.",
     posterSrc: "/projects/image-gender-detector.svg",
     posterAlt: "ImageGenderDetector project poster showing a detected face, model signals, and classifier output.",
     tags: ["AI", "Data / ML"],
@@ -438,6 +725,11 @@ export const projects: PortfolioProject[] = [
       "Use of PCA, SVM, and Grid Search in the training workflow.",
       "Browser-based demo backed by Python and OpenCV.",
       "Transparent acknowledgement of dataset bias and model limitations.",
+    ],
+    lessonsLearned: [
+      "Classical ML pipelines still deliver practical value when feature preparation is explicit and well evaluated.",
+      "Preprocessing quality (detection, cropping, normalization) heavily influences downstream classifier performance.",
+      "Model metrics are not enough without communicating dataset bias and reliability boundaries to users.",
     ],
   },
 ];

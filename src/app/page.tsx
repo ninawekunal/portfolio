@@ -1,6 +1,7 @@
 import { Box } from "@mui/material";
 
-import { HeroSection } from "@/components/HeroSection";
+import { EducationCertificationSection } from "@/components/EducationCertificationSection";
+import { ExperienceSection } from "@/components/ExperienceSection";
 import { ProjectShowcase } from "@/components/ProjectShowcase";
 import { SiteFooter } from "@/components/SiteFooter";
 import { TopBar } from "@/components/TopBar";
@@ -26,9 +27,10 @@ export default function Home() {
       />
       <TopBar />
       <Box component="main">
-        <HeroSection />
         <WhatIOfferSection />
+        <ExperienceSection />
         <ProjectShowcase />
+        <EducationCertificationSection />
         <SiteFooter />
       </Box>
     </>

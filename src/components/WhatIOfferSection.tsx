@@ -8,8 +8,8 @@ import {
   type ElementType,
   type TouchEvent as ReactTouchEvent,
 } from "react";
-import Image from "next/image";
 import AutoAwesomeRoundedIcon from "@mui/icons-material/AutoAwesomeRounded";
+import BuildRoundedIcon from "@mui/icons-material/BuildRounded";
 import CloudQueueRoundedIcon from "@mui/icons-material/CloudQueueRounded";
 import CodeRoundedIcon from "@mui/icons-material/CodeRounded";
 import DnsRoundedIcon from "@mui/icons-material/DnsRounded";
@@ -135,6 +135,7 @@ function TechnologyPin({
           borderColor: alpha("#d9e1ef", 0.95),
           color: alpha("#091427", 0.96),
           transition: "all 160ms ease",
+          cursor: "pointer",
           "&:hover": {
             borderColor: alpha("#7fb1ff", 0.75),
             bgcolor: "#ffffff",
@@ -162,45 +163,6 @@ function TechnologyPin({
   );
 }
 
-function ProfileAvatar({
-  size,
-  showFallback,
-  onError,
-}: {
-  size: number;
-  showFallback: boolean;
-  onError: () => void;
-}) {
-  if (showFallback) {
-    return (
-      <Box
-        sx={{
-          width: "100%",
-          height: "100%",
-          display: "grid",
-          placeItems: "center",
-          bgcolor: alpha("#223858", 0.95),
-        }}
-      >
-        <Typography variant="caption" sx={{ fontWeight: 700 }}>
-          KN
-        </Typography>
-      </Box>
-    );
-  }
-
-  return (
-    <Image
-      src={withBasePath("/profile_picture.jpeg")}
-      alt="Kunal portrait"
-      width={size}
-      height={size}
-      onError={onError}
-      style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-    />
-  );
-}
-
 export function WhatIOfferSection() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
@@ -215,10 +177,10 @@ export function WhatIOfferSection() {
   const [expandedNicheId, setExpandedNicheId] = useState<string | null>(null);
   const [draggingTarget, setDraggingTarget] = useState<"top" | null>(null);
   const [dragPreviewIndex, setDragPreviewIndex] = useState<number | null>(null);
-  const [showPortraitFallback, setShowPortraitFallback] = useState(false);
 
   const totalSteps = offerViews.length;
   const activeView: OfferView = offerViews[activeIndex] ?? offerViews[0];
+  const showTechnologyPins = activeView.id !== "working-style";
   const progress = activeIndex / Math.max(totalSteps - 1, 1);
   const visualProgress =
     dragPreviewIndex !== null ? dragPreviewIndex / Math.max(totalSteps - 1, 1) : progress;
@@ -381,15 +343,17 @@ export function WhatIOfferSection() {
             )}, transparent 31%)`,
           }}
         >
-          <Stack spacing={2.2}>
+          <Stack spacing={{ xs: 1.25, md: 2.2 }}>
             <Box>
               <Typography
                 variant="overline"
                 sx={{
+                  fontSize: { xs: "0.88rem", md: "1.02rem" },
+                  fontWeight: 500,
                   letterSpacing: "0.22em",
                   opacity: 0.78,
                   display: "block",
-                  textAlign: { xs: "left", md: "center" },
+                  textAlign: "center",
                 }}
               >
                 MY SKILLSET
@@ -399,12 +363,13 @@ export function WhatIOfferSection() {
                 sx={{
                   mt: 0.55,
                   fontSize: { xs: "2rem", sm: "2.55rem", md: "3.15rem", lg: "3.65rem" },
-                  textAlign: { xs: "left", md: "center" },
+                  textAlign: "center",
                   lineHeight: 1.1,
                   letterSpacing: "-0.015em",
-                  maxWidth: 1040,
-                  mx: { xs: 0, md: "auto" },
-                  pr: { xs: 0.25, sm: 0 },
+                  maxWidth: { xs: "100%", md: 1240, lg: 1320 },
+                  mx: "auto",
+                  px: { xs: 0.2, sm: 0.3, md: 0.6 },
+                  overflow: "visible",
                 }}
               >
                 The Magic{" "}
@@ -412,6 +377,8 @@ export function WhatIOfferSection() {
                   component="span"
                   sx={{
                     fontStyle: "italic",
+                    display: "inline-block",
+                    pr: "0.3em",
                     backgroundImage: "linear-gradient(90deg, #ff3bb5 0%, #ff7b38 100%)",
                     WebkitBackgroundClip: "text",
                     WebkitTextFillColor: "transparent",
@@ -451,31 +418,35 @@ export function WhatIOfferSection() {
             <Box
               ref={sectionRef}
               sx={{
-                mt: { xs: 1.4, md: 1.9 },
+                mt: { xs: 0, md: 1.9 },
                 borderRadius: "24px",
                 border: `1px solid ${alpha("#ffffff", 0.12)}`,
                 bgcolor: alpha("#0f1321", 0.7),
                 touchAction: "pan-y",
-                overflow: "hidden",
+                overflow: "visible",
               }}
             >
               <Box
                 sx={{
                   px: { xs: 1.15, md: 1.35 },
                   pb: { xs: 1.15, md: 1.35 },
-                  pt: { xs: 1.8, md: 2.2 },
+                  pt: { xs: 0.45, md: 2.2 },
                 }}
               >
                 <Paper
                   sx={{
                     px: { xs: 1.7, md: 1.9 },
-                    pt: { xs: 1.7, md: 1.9 },
+                    pt: { xs: 1.2, md: 1.9 },
                     pb: { xs: 2.2, md: 2.4 },
                     borderRadius: "20px",
                     bgcolor: alpha("#0f1321", 0.9),
                     border: `1px solid ${alpha("#ffffff", 0.12)}`,
                     position: "sticky",
-                    top: { xs: 70, md: 80, lg: 14 },
+                    top: {
+                      xs: "calc(env(safe-area-inset-top) + 108px)",
+                      md: "calc(env(safe-area-inset-top) + 92px)",
+                      lg: "calc(env(safe-area-inset-top) + 92px)",
+                    },
                     zIndex: 7,
                   }}
                 >
@@ -527,21 +498,21 @@ export function WhatIOfferSection() {
                           zIndex: 2,
                         }}
                       >
-                        <Box
-                          sx={{
-                            width: "100%",
-                            height: "100%",
-                            borderRadius: "50%",
-                            overflow: "hidden",
-                          }}
-                        >
-                          <ProfileAvatar
-                            size={24}
-                            showFallback={showPortraitFallback}
-                            onError={() => setShowPortraitFallback(true)}
-                          />
+                          <Box
+                            sx={{
+                              width: "100%",
+                              height: "100%",
+                              borderRadius: "50%",
+                              display: "grid",
+                              placeItems: "center",
+                              bgcolor: alpha("#172338", 0.95),
+                            }}
+                          >
+                            <BuildRoundedIcon
+                              sx={{ fontSize: { xs: 13.5, md: 15 }, color: alpha("#f7d77d", 0.95) }}
+                            />
+                          </Box>
                         </Box>
-                      </Box>
                       {draggingTarget === "top" && dragPreviewIndex !== null ? (
                         <Paper
                           elevation={0}
@@ -575,7 +546,25 @@ export function WhatIOfferSection() {
                       ) : null}
                     </Box>
                   </Box>
-                  <Stack direction="row" flexWrap="wrap" gap={0.6} sx={{ mt: 1.15, mb: 0.8 }}>
+                  <Typography
+                    variant="subtitle2"
+                    sx={{
+                      display: { xs: "block", md: "none" },
+                      mt: 0.35,
+                      mb: 0.1,
+                      color: alpha("#fff6d8", 0.96),
+                    }}
+                  >
+                    {activeView.label}
+                  </Typography>
+
+                  <Stack
+                    paddingTop={1.15}
+                    direction="row"
+                    flexWrap="wrap"
+                    gap={0.6}
+                    sx={{ mt: 1.15, mb: 0.8, display: { xs: "none", md: "flex" } }}
+                  >
                     {offerViews.map((view, index) => (
                       <Button
                         key={view.id}
@@ -626,13 +615,6 @@ export function WhatIOfferSection() {
                       }}
                     >
                       <Stack spacing={1.2}>
-                        <Typography
-                          variant="caption"
-                          sx={{ display: { xs: "block", lg: "none" }, color: alpha("#ffffff", 0.65) }}
-                        >
-                          Swipe left/right to switch core skills. Scroll vertically to read details.
-                        </Typography>
-
                         <Box>
                           <Typography
                             variant="h4"
@@ -655,25 +637,29 @@ export function WhatIOfferSection() {
                           sx={{
                             display: "grid",
                             gap: 1.1,
-                            gridTemplateColumns: {
-                              xs: "1fr",
-                              lg: "minmax(0, 0.95fr) minmax(0, 1.05fr)",
-                            },
+                            gridTemplateColumns: showTechnologyPins
+                              ? {
+                                  xs: "1fr",
+                                  lg: "minmax(0, 0.95fr) minmax(0, 1.05fr)",
+                                }
+                              : "1fr",
                             alignItems: "start",
                           }}
                         >
-                          <Box>
-                            <Typography variant="subtitle1" sx={{ color: alpha("#ffffff", 0.96), mb: 0.8 }}>
-                              Worked on
-                            </Typography>
-                            <Stack direction="row" flexWrap="wrap" useFlexGap gap={0.7}>
-                              {activeView.technologies.map((technology) => {
-                                return (
-                                  <TechnologyPin key={technology.id} technology={technology} />
-                                );
-                              })}
-                            </Stack>
-                          </Box>
+                          {showTechnologyPins ? (
+                            <Box>
+                              <Typography variant="subtitle1" sx={{ color: alpha("#ffffff", 0.96), mb: 0.8 }}>
+                                Worked on
+                              </Typography>
+                              <Stack direction="row" flexWrap="wrap" useFlexGap gap={0.7}>
+                                {activeView.technologies.map((technology) => {
+                                  return (
+                                    <TechnologyPin key={technology.id} technology={technology} />
+                                  );
+                                })}
+                              </Stack>
+                            </Box>
+                          ) : null}
 
                           <Stack spacing={0.75}>
                             {activeView.nicheTechniques.map((niche) => {
