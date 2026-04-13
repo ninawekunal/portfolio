@@ -1,7 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
-import Image from "next/image";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
@@ -27,7 +26,6 @@ import { alpha, useTheme } from "@mui/material/styles";
 
 import { TechnologyPin } from "@/components/TechnologyPin";
 import { type PortfolioProject, projectFilters, projects } from "@/data/portfolio";
-import { withBasePath } from "@/lib/assetPath";
 
 const MAGIC_GRADIENT_START = "#ff3bb5";
 const MAGIC_GRADIENT_END = "#ff7b38";
@@ -72,6 +70,11 @@ export function ProjectShowcase() {
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(projects[0]?.id ?? null);
   const [mobileProjectDetail, setMobileProjectDetail] = useState<PortfolioProject | null>(null);
   const carouselRef = useRef<HTMLDivElement | null>(null);
+  const [carouselScrollState, setCarouselScrollState] = useState(() => ({
+    hasOverflow: false,
+    canScrollUp: false,
+    canScrollDown: false,
+  }));
 
   const filteredProjects = useMemo(
     () =>
@@ -102,6 +105,49 @@ export function ProjectShowcase() {
     }
   };
 
+  const updateCarouselScrollState = useCallback(() => {
+    const node = carouselRef.current;
+
+    if (!node) {
+      return;
+    }
+
+    const hasOverflow = node.scrollHeight > node.clientHeight + 1;
+    const canScrollUp = node.scrollTop > 0;
+    const canScrollDown = node.scrollTop + node.clientHeight < node.scrollHeight - 1;
+
+    setCarouselScrollState((prev) => {
+      if (
+        prev.hasOverflow === hasOverflow &&
+        prev.canScrollUp === canScrollUp &&
+        prev.canScrollDown === canScrollDown
+      ) {
+        return prev;
+      }
+
+      return { hasOverflow, canScrollUp, canScrollDown };
+    });
+  }, []);
+
+  useEffect(() => {
+    updateCarouselScrollState();
+
+    const node = carouselRef.current;
+    if (!node) {
+      return;
+    }
+
+    const resizeObserver = new ResizeObserver(() => updateCarouselScrollState());
+    resizeObserver.observe(node);
+
+    window.addEventListener("resize", updateCarouselScrollState, { passive: true });
+
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener("resize", updateCarouselScrollState);
+    };
+  }, [updateCarouselScrollState, filteredProjects.length]);
+
   const scrollCarousel = (direction: "up" | "down") => {
     const node = carouselRef.current;
 
@@ -115,12 +161,15 @@ export function ProjectShowcase() {
       return;
     }
 
+    const nodeRect = node.getBoundingClientRect();
     const currentScrollTop = node.scrollTop;
     let nearestIndex = 0;
     let smallestOffsetDistance = Number.POSITIVE_INFINITY;
 
     cards.forEach((card, index) => {
-      const distance = Math.abs(card.offsetTop - currentScrollTop);
+      const cardRect = card.getBoundingClientRect();
+      const cardScrollTop = currentScrollTop + (cardRect.top - nodeRect.top);
+      const distance = Math.abs(cardScrollTop - currentScrollTop);
       if (distance < smallestOffsetDistance) {
         smallestOffsetDistance = distance;
         nearestIndex = index;
@@ -133,8 +182,11 @@ export function ProjectShowcase() {
       cards.length - 1,
     );
 
+    const targetRect = cards[nextIndex].getBoundingClientRect();
+    const targetScrollTop = currentScrollTop + (targetRect.top - nodeRect.top);
+
     node.scrollTo({
-      top: cards[nextIndex].offsetTop,
+      top: targetScrollTop,
       behavior: "smooth",
     });
   };
@@ -260,11 +312,20 @@ export function ProjectShowcase() {
                   <Typography variant="subtitle2" sx={{ color: alpha("#ffffff", 0.9) }}>
                     Project carousel
                   </Typography>
-                  <Stack direction="row" spacing={0.6}>
+                  <Stack
+                    direction="row"
+                    spacing={0.6}
+                    sx={{
+                      opacity: carouselScrollState.hasOverflow ? 1 : 0,
+                      pointerEvents: carouselScrollState.hasOverflow ? "auto" : "none",
+                      transition: "opacity 180ms ease",
+                    }}
+                  >
                     <IconButton
                       size="small"
                       aria-label="Scroll project carousel up"
                       onClick={() => scrollCarousel("up")}
+                      disabled={!carouselScrollState.canScrollUp}
                       sx={{ color: alpha("#ffffff", 0.82), border: `1px solid ${alpha("#ffffff", 0.22)}` }}
                     >
                       <KeyboardArrowUpRoundedIcon fontSize="small" />
@@ -273,6 +334,7 @@ export function ProjectShowcase() {
                       size="small"
                       aria-label="Scroll project carousel down"
                       onClick={() => scrollCarousel("down")}
+                      disabled={!carouselScrollState.canScrollDown}
                       sx={{ color: alpha("#ffffff", 0.82), border: `1px solid ${alpha("#ffffff", 0.22)}` }}
                     >
                       <KeyboardArrowDownRoundedIcon fontSize="small" />
@@ -282,15 +344,82 @@ export function ProjectShowcase() {
 
                 <Box
                   ref={carouselRef}
+                  tabIndex={0}
+                  aria-label="Project carousel list"
+                  onWheel={(event) => {
+                    const node = carouselRef.current;
+                    if (!node) {
+                      return;
+                    }
+
+                    if (node.scrollHeight <= node.clientHeight) {
+                      return;
+                    }
+
+                    const scrollingUp = event.deltaY < 0;
+                    const scrollingDown = event.deltaY > 0;
+                    const atTop = node.scrollTop <= 0;
+                    const atBottom = Math.ceil(node.scrollTop + node.clientHeight) >= node.scrollHeight;
+
+                    if ((scrollingUp && atTop) || (scrollingDown && atBottom)) {
+                      return;
+                    }
+
+                    event.preventDefault();
+                    node.scrollTop += event.deltaY;
+                  }}
+                  onScroll={() => updateCarouselScrollState()}
+                  onKeyDown={(event) => {
+                    if (event.key === "ArrowUp") {
+                      event.preventDefault();
+                      scrollCarousel("up");
+                      return;
+                    }
+
+                    if (event.key === "ArrowDown") {
+                      event.preventDefault();
+                      scrollCarousel("down");
+                      return;
+                    }
+
+                    const node = carouselRef.current;
+                    if (!node) {
+                      return;
+                    }
+
+                    if (event.key === "PageUp") {
+                      event.preventDefault();
+                      node.scrollBy({ top: -node.clientHeight * 0.9, behavior: "smooth" });
+                      return;
+                    }
+
+                    if (event.key === "PageDown") {
+                      event.preventDefault();
+                      node.scrollBy({ top: node.clientHeight * 0.9, behavior: "smooth" });
+                      return;
+                    }
+
+                    if (event.key === "Home") {
+                      event.preventDefault();
+                      node.scrollTo({ top: 0, behavior: "smooth" });
+                      return;
+                    }
+
+                    if (event.key === "End") {
+                      event.preventDefault();
+                      node.scrollTo({ top: node.scrollHeight, behavior: "smooth" });
+                    }
+                  }}
                   sx={{
                     px: 1.2,
                     pb: 1.2,
-                    maxHeight: { xs: "min(70dvh, 500px)", md: 570 },
+                    maxHeight: { xs: "min(52dvh, 420px)", md: 388 },
                     overflowY: "auto",
                     overscrollBehaviorY: "contain",
-                    scrollBehavior: "smooth",
-                    scrollSnapType: { xs: "none", md: "y proximity" },
-                    scrollPaddingTop: 4,
+                    scrollBehavior: "auto",
+                    scrollbarGutter: "stable",
+                    WebkitOverflowScrolling: "touch",
+                    outline: "none",
                   }}
                 >
                   <Stack spacing={1.2}>
@@ -309,8 +438,6 @@ export function ProjectShowcase() {
                             border: `1px solid ${
                               isSelected ? alpha("#f6b4e8", 0.42) : alpha("#ffffff", 0.16)
                             }`,
-                            scrollSnapAlign: { xs: "none", md: "start" },
-                            scrollSnapStop: { xs: "normal", md: "always" },
                             transition: "border-color 180ms ease, background-color 180ms ease, transform 180ms ease",
                           }}
                         >
@@ -429,27 +556,6 @@ export function ProjectShowcase() {
                         Open live demo
                       </Button>
                     </Stack>
-                  </Stack>
-
-                  <Stack spacing={1.2} sx={{ p: 1.7 }}>
-                    <Paper
-                      variant="outlined"
-                      sx={{
-                        overflow: "hidden",
-                        borderRadius: "18px",
-                        bgcolor: alpha("#0a1528", 0.75),
-                        borderColor: alpha("#ffffff", 0.16),
-                      }}
-                    >
-                      <Image
-                        src={withBasePath(selectedProject.posterSrc)}
-                        alt={selectedProject.posterAlt}
-                        width={960}
-                        height={720}
-                        priority={selectedProject.id === projects[0].id}
-                        style={{ display: "block", width: "100%", height: "auto" }}
-                      />
-                    </Paper>
                   </Stack>
                 </Paper>
               ) : null}
