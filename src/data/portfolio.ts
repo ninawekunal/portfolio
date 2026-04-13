@@ -555,137 +555,6 @@ export const projectFilters = [
 
 export const projects: PortfolioProject[] = [
   {
-    id: "agent-portal",
-    title: "AgentPortal",
-    kicker: "Agent operations portal",
-    headline: "Operational portal focused on agent workflows and queue state visibility.",
-    summary:
-      "A full-stack portal project oriented around agent-facing workflows, routing, and high-signal operational state. It emphasizes practical interfaces for day-to-day execution over static dashboards.",
-    role:
-      "Owned interface orchestration, workflow state handling, and service integration surfaces for agent operations.",
-    githubSlug: "ninawekunal/AgentPortal",
-    repoUrl: "https://github.com/ninawekunal/AgentPortal",
-    liveUrl: "https://agent-portal-production-590e.up.railway.app/login",
-    demoInteractionHint:
-      "Navigate core portal flows and inspect how task state, agent actions, and workflow transitions are represented.",
-    posterSrc: "/projects/agent-portal.svg",
-    posterAlt: "AgentPortal poster showing agent cards, state lanes, and workflow controls.",
-    tags: ["Full Stack", "Scalable Systems", "Frontend"],
-    stack: ["Next.js", "TypeScript", "Node.js", "React", "Postgres"],
-    highlights: [
-      "Agent-centric task surfaces designed for operational clarity.",
-      "Explicit state transitions across assignment and completion stages.",
-      "Typed contracts and predictable UI behavior for workflow-heavy views.",
-    ],
-    architecture: [
-      "Frontend state modeled around agent workflow stages and task ownership.",
-      "Backend endpoints expose structured status and action contracts.",
-      "Project structure favors maintainability for feature iteration on operations tooling.",
-    ],
-    valueSignals: [
-      "Shows execution in operations-facing product design, not just consumer UI.",
-      "Demonstrates full-stack ownership on workflow and status-heavy surfaces.",
-      "Strengthens portfolio evidence for scalable internal tooling.",
-    ],
-    evidence: [
-      "Portal flow components and stateful task interfaces.",
-      "Service and API integration points for workflow updates.",
-      "End-to-end handling of interaction, status updates, and UI feedback.",
-    ],
-    lessonsLearned: [
-      "Operations portals are most effective when state transitions are explicit and low-friction.",
-      "Agent workflows benefit from clear ownership cues and predictable next actions.",
-      "Typed status contracts reduce regressions in high-change workflow UIs.",
-    ],
-  },
-  {
-    id: "agent-queues",
-    title: "Agent Queues",
-    kicker: "Async workflow orchestration demo",
-    headline: "Queue-backed workbench for agentic refund operations.",
-    summary:
-      "A Next.js and custom Node server demo that turns Redis lists and QStash delivery into a visible operator workflow. It is a good example of building AI-adjacent systems with operational clarity instead of black-box behavior.",
-    role:
-      "Built the end-to-end queue model, strict API contracts, and UI panels that expose processing, success, and failure states.",
-    githubSlug: "ninawekunal/agent-queues",
-    repoUrl: "https://github.com/ninawekunal/agent-queues",
-    liveUrl: "https://agent-queues.vercel.app",
-    demoInteractionHint:
-      "Create a sample refund request, then watch queue, processing, success, and failure lanes update in real time.",
-    posterSrc: "/projects/agent-queues.svg",
-    posterAlt: "Agent Queues project poster showing a queue flowing into processing and outcome buckets.",
-    tags: ["AI", "Full Stack", "Scalable Systems"],
-    stack: ["Next.js", "TypeScript", "Node.js", "Upstash Redis", "QStash", "Zod"],
-    highlights: [
-      "Shared typed API envelope for every endpoint.",
-      "Build and startup validation for Redis and QStash connectivity.",
-      "Queue, stream, success, and failure states surfaced directly in the UI.",
-    ],
-    architecture: [
-      "Custom Node server alongside the Next.js App Router.",
-      "Redis lists power queue semantics while the UI models lifecycle state separately.",
-      "Endpoints validate both inputs and outputs to keep contracts explicit.",
-    ],
-    valueSignals: [
-      "Shows readiness for background jobs, async processing, and operations-facing tools.",
-      "Demonstrates engineering maturity through observability and failure-path thinking.",
-      "Connects AI-native workflow patterns to real product UX instead of just API demos.",
-    ],
-    evidence: [
-      "Refund queue routes, process routes, and Upstash setup endpoints.",
-      "Shared contract validation helpers and API response envelope.",
-      "Dedicated panels for queue stream, success bucket, and failure bucket.",
-    ],
-    lessonsLearned: [
-      "Batch-style queue processing smooths burst traffic and protects downstream services under load.",
-      "Redis stream events partitioned by agent ID let the client subscribe to only the updates it needs.",
-      "A publish/subscribe flow is practical for real-time operator dashboards where state changes rapidly.",
-    ],
-  },
-  {
-    id: "smarttrip",
-    title: "SmartTrip",
-    kicker: "Map-led travel planner",
-    headline: "Route-aware itinerary planning with layered architecture.",
-    summary:
-      "A trip planner where users create trips, reorder stops, compute walking routes, and export the final journey to Google Maps. The project highlights disciplined MVP scoping and clean separation between client, server, and shared layers.",
-    role:
-      "Designed a layered full-stack architecture around trip management, routing, API documentation, and persistent travel data.",
-    githubSlug: "ninawekunal/SmartTrip",
-    repoUrl: "https://github.com/ninawekunal/SmartTrip",
-    demoInteractionHint:
-      "Create a trip, add and reorder stops, then compute routes and export the journey to Google Maps.",
-    posterSrc: "/projects/smarttrip.svg",
-    posterAlt: "SmartTrip project poster showing route nodes connected across a map-like grid.",
-    tags: ["Full Stack", "Frontend"],
-    stack: ["Next.js", "TypeScript", "Hapi", "Supabase", "Postgres", "Mapbox"],
-    highlights: [
-      "Explicit client, server, and shared code boundaries.",
-      "Swagger and OpenAPI-backed route documentation.",
-      "Trip, stop, and route lifecycle handled through both REST and GraphQL.",
-    ],
-    architecture: [
-      "Next.js fronts the UI while Hapi owns API routes and downstream integrations.",
-      "Supabase Postgres stores trips, ordered stops, and route metadata.",
-      "Mapbox computes travel information and Google Maps handles export.",
-    ],
-    valueSignals: [
-      "Signals comfort with service decomposition and data modeling.",
-      "Shows product judgment by keeping AI generation out of the MVP until the core routing flow is solid.",
-      "Balances interface polish with backend structure and documentation.",
-    ],
-    evidence: [
-      "Layered folders for controllers, data-sources, plugins, and stores.",
-      "Migration-backed schema for trips, stops, and routes.",
-      "Health checks and API docs surfaced as first-class product features.",
-    ],
-    lessonsLearned: [
-      "Strong domain models for trips and stops make route orchestration easier to evolve safely.",
-      "Separating UI, API, and shared contracts keeps frontend changes from destabilizing backend logic.",
-      "MVP discipline matters: nailing core routing and export first creates a stronger base for AI features later.",
-    ],
-  },
-  {
     id: "pdf-highlighter",
     title: "Invoice PDF Field Highlighter",
     kicker: "Document intelligence UI",
@@ -771,6 +640,137 @@ export const projects: PortfolioProject[] = [
       "Classical ML pipelines still deliver practical value when feature preparation is explicit and well evaluated.",
       "Preprocessing quality (detection, cropping, normalization) heavily influences downstream classifier performance.",
       "Model metrics are not enough without communicating dataset bias and reliability boundaries to users.",
+    ],
+  },
+  {
+    id: "agent-queues",
+    title: "Agent Queues",
+    kicker: "Async workflow orchestration demo",
+    headline: "Queue-backed workbench for agentic refund operations.",
+    summary:
+      "A Next.js and custom Node server demo that turns Redis lists and QStash delivery into a visible operator workflow. It is a good example of building AI-adjacent systems with operational clarity instead of black-box behavior.",
+    role:
+      "Built the end-to-end queue model, strict API contracts, and UI panels that expose processing, success, and failure states.",
+    githubSlug: "ninawekunal/agent-queues",
+    repoUrl: "https://github.com/ninawekunal/agent-queues",
+    liveUrl: "https://agent-queues.vercel.app",
+    demoInteractionHint:
+      "Create a sample refund request, then watch queue, processing, success, and failure lanes update in real time.",
+    posterSrc: "/projects/agent-queues.svg",
+    posterAlt: "Agent Queues project poster showing a queue flowing into processing and outcome buckets.",
+    tags: ["AI", "Full Stack", "Scalable Systems"],
+    stack: ["Next.js", "TypeScript", "Node.js", "Upstash Redis", "QStash", "Zod"],
+    highlights: [
+      "Shared typed API envelope for every endpoint.",
+      "Build and startup validation for Redis and QStash connectivity.",
+      "Queue, stream, success, and failure states surfaced directly in the UI.",
+    ],
+    architecture: [
+      "Custom Node server alongside the Next.js App Router.",
+      "Redis lists power queue semantics while the UI models lifecycle state separately.",
+      "Endpoints validate both inputs and outputs to keep contracts explicit.",
+    ],
+    valueSignals: [
+      "Shows readiness for background jobs, async processing, and operations-facing tools.",
+      "Demonstrates engineering maturity through observability and failure-path thinking.",
+      "Connects AI-native workflow patterns to real product UX instead of just API demos.",
+    ],
+    evidence: [
+      "Refund queue routes, process routes, and Upstash setup endpoints.",
+      "Shared contract validation helpers and API response envelope.",
+      "Dedicated panels for queue stream, success bucket, and failure bucket.",
+    ],
+    lessonsLearned: [
+      "Batch-style queue processing smooths burst traffic and protects downstream services under load.",
+      "Redis stream events partitioned by agent ID let the client subscribe to only the updates it needs.",
+      "A publish/subscribe flow is practical for real-time operator dashboards where state changes rapidly.",
+    ],
+  },
+  {
+    id: "agent-portal",
+    title: "AgentPortal",
+    kicker: "Agent operations portal",
+    headline: "Operational portal focused on agent workflows and queue state visibility.",
+    summary:
+      "A full-stack portal project oriented around agent-facing workflows, routing, and high-signal operational state. It emphasizes practical interfaces for day-to-day execution over static dashboards.",
+    role:
+      "Owned interface orchestration, workflow state handling, and service integration surfaces for agent operations.",
+    githubSlug: "ninawekunal/AgentPortal",
+    repoUrl: "https://github.com/ninawekunal/AgentPortal",
+    liveUrl: "https://agent-portal-production-590e.up.railway.app/login",
+    demoInteractionHint:
+      "Navigate core portal flows and inspect how task state, agent actions, and workflow transitions are represented.",
+    posterSrc: "/projects/agent-portal.svg",
+    posterAlt: "AgentPortal poster showing agent cards, state lanes, and workflow controls.",
+    tags: ["Full Stack", "Scalable Systems", "Frontend"],
+    stack: ["Next.js", "TypeScript", "Node.js", "React", "Postgres"],
+    highlights: [
+      "Agent-centric task surfaces designed for operational clarity.",
+      "Explicit state transitions across assignment and completion stages.",
+      "Typed contracts and predictable UI behavior for workflow-heavy views.",
+    ],
+    architecture: [
+      "Frontend state modeled around agent workflow stages and task ownership.",
+      "Backend endpoints expose structured status and action contracts.",
+      "Project structure favors maintainability for feature iteration on operations tooling.",
+    ],
+    valueSignals: [
+      "Shows execution in operations-facing product design, not just consumer UI.",
+      "Demonstrates full-stack ownership on workflow and status-heavy surfaces.",
+      "Strengthens portfolio evidence for scalable internal tooling.",
+    ],
+    evidence: [
+      "Portal flow components and stateful task interfaces.",
+      "Service and API integration points for workflow updates.",
+      "End-to-end handling of interaction, status updates, and UI feedback.",
+    ],
+    lessonsLearned: [
+      "Operations portals are most effective when state transitions are explicit and low-friction.",
+      "Agent workflows benefit from clear ownership cues and predictable next actions.",
+      "Typed status contracts reduce regressions in high-change workflow UIs.",
+    ],
+  },
+  {
+    id: "smarttrip",
+    title: "SmartTrip",
+    kicker: "Map-led travel planner",
+    headline: "Route-aware itinerary planning with layered architecture.",
+    summary:
+      "A trip planner where users create trips, reorder stops, compute walking routes, and export the final journey to Google Maps. The project highlights disciplined MVP scoping and clean separation between client, server, and shared layers.",
+    role:
+      "Designed a layered full-stack architecture around trip management, routing, API documentation, and persistent travel data.",
+    githubSlug: "ninawekunal/SmartTrip",
+    repoUrl: "https://github.com/ninawekunal/SmartTrip",
+    demoInteractionHint:
+      "Create a trip, add and reorder stops, then compute routes and export the journey to Google Maps.",
+    posterSrc: "/projects/smarttrip.svg",
+    posterAlt: "SmartTrip project poster showing route nodes connected across a map-like grid.",
+    tags: ["Full Stack", "Frontend"],
+    stack: ["Next.js", "TypeScript", "Hapi", "Supabase", "Postgres", "Mapbox"],
+    highlights: [
+      "Explicit client, server, and shared code boundaries.",
+      "Swagger and OpenAPI-backed route documentation.",
+      "Trip, stop, and route lifecycle handled through both REST and GraphQL.",
+    ],
+    architecture: [
+      "Next.js fronts the UI while Hapi owns API routes and downstream integrations.",
+      "Supabase Postgres stores trips, ordered stops, and route metadata.",
+      "Mapbox computes travel information and Google Maps handles export.",
+    ],
+    valueSignals: [
+      "Signals comfort with service decomposition and data modeling.",
+      "Shows product judgment by keeping AI generation out of the MVP until the core routing flow is solid.",
+      "Balances interface polish with backend structure and documentation.",
+    ],
+    evidence: [
+      "Layered folders for controllers, data-sources, plugins, and stores.",
+      "Migration-backed schema for trips, stops, and routes.",
+      "Health checks and API docs surfaced as first-class product features.",
+    ],
+    lessonsLearned: [
+      "Strong domain models for trips and stops make route orchestration easier to evolve safely.",
+      "Separating UI, API, and shared contracts keeps frontend changes from destabilizing backend logic.",
+      "MVP discipline matters: nailing core routing and export first creates a stronger base for AI features later.",
     ],
   },
 ];
