@@ -66,12 +66,10 @@ function LessonsList({
 
 export function ProjectShowcase() {
   const theme = useTheme();
-  const isCompactScreen = useMediaQuery(theme.breakpoints.down("lg"));
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const [activeFilter, setActiveFilter] = useState("All");
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(projects[0]?.id ?? null);
-  const [demoProject, setDemoProject] = useState<PortfolioProject | null>(null);
   const [mobileProjectDetail, setMobileProjectDetail] = useState<PortfolioProject | null>(null);
   const carouselRef = useRef<HTMLDivElement | null>(null);
 
@@ -90,11 +88,6 @@ export function ProjectShowcase() {
 
   const openLiveDemo = (project: PortfolioProject) => {
     if (!project.liveUrl) {
-      return;
-    }
-
-    if (isCompactScreen) {
-      setDemoProject(project);
       return;
     }
 
@@ -438,39 +431,26 @@ export function ProjectShowcase() {
                     </Stack>
                   </Stack>
 
-                  {selectedProject.liveUrl && !isMobile ? (
-                    <Box sx={{ width: "100%", height: "66dvh", minHeight: 460, bgcolor: "#ffffff" }}>
-                      <Box
-                        component="iframe"
-                        src={selectedProject.liveUrl}
-                        title={`${selectedProject.title} live demo`}
-                        loading="lazy"
-                        referrerPolicy="strict-origin-when-cross-origin"
-                        sx={{ width: "100%", height: "100%", border: 0, display: "block" }}
+                  <Stack spacing={1.2} sx={{ p: 1.7 }}>
+                    <Paper
+                      variant="outlined"
+                      sx={{
+                        overflow: "hidden",
+                        borderRadius: "18px",
+                        bgcolor: alpha("#0a1528", 0.75),
+                        borderColor: alpha("#ffffff", 0.16),
+                      }}
+                    >
+                      <Image
+                        src={withBasePath(selectedProject.posterSrc)}
+                        alt={selectedProject.posterAlt}
+                        width={960}
+                        height={720}
+                        priority={selectedProject.id === projects[0].id}
+                        style={{ display: "block", width: "100%", height: "auto" }}
                       />
-                    </Box>
-                  ) : (
-                    <Stack spacing={1.2} sx={{ p: 1.7 }}>
-                      <Paper
-                        variant="outlined"
-                        sx={{
-                          overflow: "hidden",
-                          borderRadius: "18px",
-                          bgcolor: alpha("#0a1528", 0.75),
-                          borderColor: alpha("#ffffff", 0.16),
-                        }}
-                      >
-                        <Image
-                          src={withBasePath(selectedProject.posterSrc)}
-                          alt={selectedProject.posterAlt}
-                          width={960}
-                          height={720}
-                          priority={selectedProject.id === projects[0].id}
-                          style={{ display: "block", width: "100%", height: "auto" }}
-                        />
-                      </Paper>
-                    </Stack>
-                  )}
+                    </Paper>
+                  </Stack>
                 </Paper>
               ) : null}
             </Box>
@@ -554,68 +534,6 @@ export function ProjectShowcase() {
               </Stack>
             </Stack>
           ) : null}
-        </DialogContent>
-      </Dialog>
-
-      <Dialog
-        open={Boolean(demoProject)}
-        onClose={() => setDemoProject(null)}
-        maxWidth="xl"
-        fullWidth
-        fullScreen={isMobile}
-        PaperProps={{
-          sx: {
-            borderRadius: isMobile ? 0 : "20px",
-            overflow: "hidden",
-          },
-        }}
-      >
-        <DialogTitle
-          sx={{
-            display: "flex",
-            alignItems: "flex-start",
-            justifyContent: "space-between",
-            gap: 1,
-            pr: 1,
-          }}
-        >
-          <Box>
-            <Typography variant="h6" sx={{ lineHeight: 1.2 }}>
-              {demoProject?.title} · Live demo
-            </Typography>
-            {demoProject?.liveUrl ? (
-              <Typography
-                variant="caption"
-                sx={{ color: "text.secondary", display: "block", mt: 0.4, lineHeight: 1.55 }}
-              >
-                {demoProject.demoInteractionHint ??
-                  "Interact with the demo to inspect the main flow and transitions."}
-              </Typography>
-            ) : null}
-          </Box>
-          <IconButton aria-label="Close live demo" onClick={() => setDemoProject(null)}>
-            <CloseRoundedIcon />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent sx={{ p: 0 }}>
-          {demoProject?.liveUrl ? (
-            <Box sx={{ width: "100%", height: { xs: "calc(100dvh - 112px)", md: "80dvh" }, bgcolor: "#ffffff" }}>
-              <Box
-                component="iframe"
-                src={demoProject.liveUrl}
-                title={`${demoProject.title} live demo`}
-                loading="lazy"
-                referrerPolicy="strict-origin-when-cross-origin"
-                sx={{ width: "100%", height: "100%", border: 0, display: "block" }}
-              />
-            </Box>
-          ) : (
-            <Box sx={{ p: 2.2 }}>
-              <Typography variant="body2" color="text.secondary">
-                This project does not currently expose a live demo URL.
-              </Typography>
-            </Box>
-          )}
         </DialogContent>
       </Dialog>
     </Box>
