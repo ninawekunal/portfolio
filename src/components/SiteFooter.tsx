@@ -42,23 +42,13 @@ export function SiteFooter() {
 
               <Stack direction="row" spacing={1.3} flexWrap="wrap" useFlexGap>
                 <Button
-                  href="#projects"
+                  href={profile.githubUrl + "/?tab=repositories"}
+                  target="_blank"
                   variant="contained"
                   color="secondary"
                   endIcon={<LaunchRoundedIcon />}
                 >
                   Review projects
-                </Button>
-                <Button
-                  href={profile.resumeUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  variant="outlined"
-                  color="inherit"
-                  startIcon={<DescriptionRoundedIcon />}
-                  sx={{ borderColor: alpha("#ffffff", 0.22) }}
-                >
-                  Open resume
                 </Button>
               </Stack>
 
