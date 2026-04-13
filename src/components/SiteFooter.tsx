@@ -1,4 +1,3 @@
-import DescriptionRoundedIcon from "@mui/icons-material/DescriptionRounded";
 import EmailRoundedIcon from "@mui/icons-material/EmailRounded";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import LaunchRoundedIcon from "@mui/icons-material/LaunchRounded";

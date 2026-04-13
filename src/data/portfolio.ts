@@ -555,6 +555,117 @@ export const projectFilters = [
 
 export const projects: PortfolioProject[] = [
   {
+    id: "paws-email-notifications",
+    title: "PAWS Email Notifications",
+    kicker: "Monorepo full-stack system",
+    headline: "Admin console + scraper + outbox-driven email notifications.",
+    summary:
+      "An end-to-end notification system for a shelter adoption site: an admin dashboard to manage subscribers and rules, a Hapi API, a Postgres system of record, and a scheduled runner that scrapes adoption listings and fans out email alerts. The design leans on pragmatic, low-cost queue semantics via a Postgres outbox model to keep the system operable before introducing dedicated infrastructure.",
+    role:
+      "Designed the monorepo boundaries (client/server/contracts), defined typed Zod contracts, and implemented the scaffold for scraping, rule execution, and notification delivery with strong operational visibility.",
+    githubSlug: "ninawekunal/paws-email-notifications",
+    repoUrl: "https://github.com/ninawekunal/paws-email-notifications",
+    demoInteractionHint:
+      "Run the client and server workspace locally, then use the admin dashboard to sync animals, manage subscribers, and validate rules-driven notification behavior.",
+    posterSrc: "/projects/paws-email-notifications.svg",
+    posterAlt:
+      "PAWS Email Notifications project poster showing an admin panel, a scraper flow, and an outbox queue feeding email delivery.",
+    tags: ["Full Stack", "Scalable Systems"],
+    stack: [
+      "React",
+      "TypeScript",
+      "Vite",
+      "Material UI",
+      "Hapi",
+      "Zod",
+      "Postgres",
+      "Drizzle",
+      "TanStack Query",
+      "Cheerio",
+      "undici",
+    ],
+    highlights: [
+      "Monorepo with shared typed contracts to keep client and API aligned.",
+      "Postgres-backed outbox pattern for queue semantics without extra infrastructure.",
+      "Admin control surface for scraper and notification rules (designed for small non-profits).",
+    ],
+    architecture: [
+      "React + Vite admin client consumes a typed API surface backed by Zod validation.",
+      "Hapi server reads/writes the system-of-record tables in Postgres via Drizzle ORM.",
+      "A scheduled runner claims due rules, scrapes listings, writes events, and triggers delivery fan-out.",
+    ],
+    valueSignals: [
+      "Shows practical system design: start simple, keep ops easy, then scale when needed.",
+      "Strong boundary discipline via contracts package and runtime env validation.",
+      "Focuses on reliability and observability for a workflow that can’t silently fail.",
+    ],
+    evidence: [
+      "Shared `packages/contracts` with Zod schemas and types for API parsing.",
+      "Documented system design covering security, scaling, and scheduling strategy.",
+      "Operational logging and health endpoints designed into the server from the start.",
+    ],
+    lessonsLearned: [
+      "Queue semantics can start as a relational outbox when traffic is low and budgets are tight.",
+      "Typed contracts reduce drift between admin UI expectations and server behavior.",
+      "Scrapers need flexible fallbacks (proxies, retries, and rule controls) to survive real-world constraints.",
+    ],
+  },
+  {
+    id: "cat-whisperer",
+    title: "Cat Whisperer",
+    kicker: "Privacy-first browser ML",
+    headline: "Decode cat vocalizations with in-browser audio intelligence.",
+    summary:
+      "A React web app that records or accepts uploaded audio of cat meows and purrs, runs audio analysis locally in the browser, and executes YAMNet via MediaPipe Audio Tasks for on-device classification. It also supports a lightweight, per-cat teaching profile so the app can learn intent labels (like food, attention, or door) from examples you provide.",
+    role:
+      "Built the recording + upload workflows, local audio preprocessing pipeline, on-device model integration, and the teaching profile that adapts to user-labeled examples.",
+    githubSlug: "ninawekunal/cat_whisperer",
+    repoUrl: "https://github.com/ninawekunal/cat_whisperer",
+    liveUrl: "https://ninawekunal.github.io/cat_whisperer",
+    demoInteractionHint:
+      "Record a short clip (or upload audio), review the model decoding, then label a few clips to teach your own cat’s intent profile.",
+    posterSrc: "/projects/cat-whisperer.svg",
+    posterAlt:
+      "Cat Whisperer project poster showing an audio waveform, a local model chip, and intent labels for cat vocalizations.",
+    tags: ["AI", "Frontend", "Data / ML"],
+    stack: [
+      "React",
+      "TypeScript",
+      "Vite",
+      "Web Audio API",
+      "MediaRecorder API",
+      "MediaPipe Audio Tasks",
+      "YAMNet",
+      "localStorage",
+      "GitHub Pages",
+    ],
+    highlights: [
+      "On-device audio classification with privacy-first defaults (no upload required).",
+      "Local noise reduction and validation using Web Audio analysis utilities.",
+      "Teach-and-adapt workflow via a per-cat intent profile stored locally.",
+    ],
+    architecture: [
+      "Capture audio via MediaRecorder or file upload, then normalize and filter in-browser.",
+      "Run YAMNet locally for general audio decoding and gate results with cat-vocalization heuristics.",
+      "Persist labeled examples and intent weights in localStorage for lightweight personalization.",
+    ],
+    valueSignals: [
+      "Demonstrates applied ML UX without server complexity or privacy tradeoffs.",
+      "Shows comfort with real-time media pipelines and browser constraints.",
+      "Pairs “cool model” capability with a teachable workflow that improves over time.",
+    ],
+    evidence: [
+      "Mic + upload support with clear constraints (duration, size, supported formats).",
+      "Noise reduction pipeline (filtering + compression) executed locally before inference.",
+      "GitHub Pages deployment configuration with base-path handling for static hosting.",
+    ],
+    lessonsLearned: [
+      "On-device ML works best when the UI makes constraints and confidence legible.",
+      "Small, teachable user loops can outperform one-size-fits-all labels for personal contexts.",
+      "Audio pipelines need careful normalization to make model outputs stable across devices.",
+    ],
+  },
+  {
     id: "pdf-highlighter",
     title: "Invoice PDF Field Highlighter",
     kicker: "Document intelligence UI",
@@ -772,7 +883,7 @@ export const projects: PortfolioProject[] = [
       "Separating UI, API, and shared contracts keeps frontend changes from destabilizing backend logic.",
       "MVP discipline matters: nailing core routing and export first creates a stronger base for AI features later.",
     ],
-  },
+  }
 ];
 
 export const deliveryPrinciples = [
