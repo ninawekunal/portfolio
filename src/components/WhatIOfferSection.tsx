@@ -9,15 +9,21 @@ import {
   type TouchEvent as ReactTouchEvent,
 } from "react";
 import AutoAwesomeRoundedIcon from "@mui/icons-material/AutoAwesomeRounded";
+import BoltRoundedIcon from "@mui/icons-material/BoltRounded";
 import BuildRoundedIcon from "@mui/icons-material/BuildRounded";
 import CloudQueueRoundedIcon from "@mui/icons-material/CloudQueueRounded";
 import CodeRoundedIcon from "@mui/icons-material/CodeRounded";
 import DnsRoundedIcon from "@mui/icons-material/DnsRounded";
 import ExpandMoreRoundedIcon from "@mui/icons-material/ExpandMoreRounded";
+import FactCheckRoundedIcon from "@mui/icons-material/FactCheckRounded";
+import FlagRoundedIcon from "@mui/icons-material/FlagRounded";
+import GitHubIcon from "@mui/icons-material/GitHub";
 import HubRoundedIcon from "@mui/icons-material/HubRounded";
 import InsightsRoundedIcon from "@mui/icons-material/InsightsRounded";
+import PersonSearchRoundedIcon from "@mui/icons-material/PersonSearchRounded";
 import PictureAsPdfRoundedIcon from "@mui/icons-material/PictureAsPdfRounded";
 import RouteRoundedIcon from "@mui/icons-material/RouteRounded";
+import SchemaRoundedIcon from "@mui/icons-material/SchemaRounded";
 import SecurityRoundedIcon from "@mui/icons-material/SecurityRounded";
 import SendRoundedIcon from "@mui/icons-material/SendRounded";
 import SettingsEthernetRoundedIcon from "@mui/icons-material/SettingsEthernetRounded";
@@ -62,6 +68,13 @@ const fallbackIconMap: Record<string, ElementType> = {
   sql: TableChartRoundedIcon,
   style: AutoAwesomeRoundedIcon,
   javascript: CodeRoundedIcon,
+  product: PersonSearchRoundedIcon,
+  test: FactCheckRoundedIcon,
+  tanstack: TableChartRoundedIcon,
+  sse: BoltRoundedIcon,
+  openapi: SchemaRoundedIcon,
+  flag: FlagRoundedIcon,
+  github: GitHubIcon,
 };
 
 const brandIconMap: Record<string, string> = {
@@ -85,6 +98,7 @@ const brandIconMap: Record<string, string> = {
   kotlin: "/brand-icons/kotlin.svg",
   jest: "/brand-icons/jest.svg",
   cypress: "/brand-icons/cypress.svg",
+  anthropic: "/brand-icons/anthropic.svg",
 };
 
 function clamp(value: number, min: number, max: number) {
@@ -149,6 +163,8 @@ function TechnologyPin({
               component="img"
               src={brandSrcWithBasePath}
               alt={`${technology.label} logo`}
+              loading="lazy"
+              decoding="async"
               sx={{ width: 16, height: 16, objectFit: "contain", flexShrink: 0 }}
             />
           ) : (
@@ -181,6 +197,7 @@ export function WhatIOfferSection() {
   const totalSteps = offerViews.length;
   const activeView: OfferView = offerViews[activeIndex] ?? offerViews[0];
   const showTechnologyPins = activeView.id !== "working-style";
+  const technologyPinsLabel = activeView.id === "product" ? "How it shows up" : "Worked with";
   const progress = activeIndex / Math.max(totalSteps - 1, 1);
   const visualProgress =
     dragPreviewIndex !== null ? dragPreviewIndex / Math.max(totalSteps - 1, 1) : progress;
@@ -349,14 +366,14 @@ export function WhatIOfferSection() {
                 variant="overline"
                 sx={{
                   fontSize: { xs: "0.88rem", md: "1.02rem" },
-                  fontWeight: 500,
+                  fontWeight: 600,
                   letterSpacing: "0.22em",
                   opacity: 0.78,
                   display: "block",
                   textAlign: "center",
                 }}
               >
-                MY SKILLSET
+                {offerHeading.eyebrow.toUpperCase()}
               </Typography>
               <Typography
                 variant="h2"
@@ -439,19 +456,15 @@ export function WhatIOfferSection() {
                     pt: { xs: 1.2, md: 1.9 },
                     pb: { xs: 2.2, md: 2.4 },
                     borderRadius: "20px",
-                    bgcolor: alpha("#0f1321", 0.9),
+                    bgcolor: "#0f1321",
                     border: `1px solid ${alpha("#ffffff", 0.12)}`,
                     position: "sticky",
-                    top: {
-                      xs: "calc(env(safe-area-inset-top) + 108px)",
-                      md: "calc(env(safe-area-inset-top) + 92px)",
-                      lg: "calc(env(safe-area-inset-top) + 92px)",
-                    },
+                    top: "calc(var(--site-header-height, 96px) + 8px)",
                     zIndex: 7,
                   }}
                 >
                   <Typography variant="subtitle1" sx={{ color: alpha("#ffffff", 0.95), fontWeight: 600 }}>
-                    Drag or tap to jump between core skills
+                    Drag or tap to switch lanes
                   </Typography>
                   <Box
                     sx={{ mt: 1.45, mb: 1.35, px: { xs: 1.1, md: 1.45 } }}
@@ -618,12 +631,19 @@ export function WhatIOfferSection() {
                         <Box>
                           <Typography
                             variant="h4"
+                            component="h3"
                             sx={{
                               color: alpha("#ffffff", 0.98),
                               fontSize: { xs: "1.55rem", md: "1.9rem" },
                             }}
                           >
                             {activeView.label}
+                          </Typography>
+                          <Typography
+                            variant="subtitle1"
+                            sx={{ mt: 0.5, color: alpha("#fff6d8", 0.95), lineHeight: 1.45 }}
+                          >
+                            {activeView.title}
                           </Typography>
                           <Typography
                             variant="body2"
@@ -648,8 +668,12 @@ export function WhatIOfferSection() {
                         >
                           {showTechnologyPins ? (
                             <Box>
-                              <Typography variant="subtitle1" sx={{ color: alpha("#ffffff", 0.96), mb: 0.8 }}>
-                                Worked on
+                              <Typography
+                                variant="subtitle1"
+                                component="h4"
+                                sx={{ color: alpha("#ffffff", 0.96), mb: 0.8 }}
+                              >
+                                {technologyPinsLabel}
                               </Typography>
                               <Stack direction="row" flexWrap="wrap" useFlexGap gap={0.7}>
                                 {activeView.technologies.map((technology) => {
@@ -700,7 +724,7 @@ export function WhatIOfferSection() {
                                         variant="body2"
                                         sx={{
                                           color: alpha("#ffffff", 0.88),
-                                          fontWeight: 500,
+                                          fontWeight: 600,
                                           lineHeight: 1.45,
                                           textAlign: "left",
                                         }}

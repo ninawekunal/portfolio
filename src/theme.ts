@@ -67,7 +67,7 @@ let theme = createTheme({
     },
     h5: {
       fontFamily: "var(--font-display), sans-serif",
-      fontWeight: 600,
+      fontWeight: 700,
     },
     button: {
       textTransform: "none",
@@ -80,6 +80,17 @@ let theme = createTheme({
     },
   },
   components: {
+    // subtitle and overline text are labels, not headings. Real headings pass
+    // component="h2".."h4" explicitly so the outline stays in order.
+    MuiTypography: {
+      defaultProps: {
+        variantMapping: {
+          subtitle1: "p",
+          subtitle2: "p",
+          overline: "span",
+        },
+      },
+    },
     MuiCssBaseline: {
       styleOverrides: {
         "::selection": {
@@ -125,7 +136,6 @@ let theme = createTheme({
         root: {
           borderRadius: 999,
           fontWeight: 600,
-          backdropFilter: "blur(16px)",
         },
       },
     },

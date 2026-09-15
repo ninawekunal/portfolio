@@ -75,7 +75,7 @@ function CertificationItem({
         </Box>
 
         <Box sx={{ minWidth: 0, flex: 1 }}>
-          <Typography variant="subtitle2" sx={{ lineHeight: 1.35 }}>
+          <Typography variant="subtitle2" component="h4" sx={{ lineHeight: 1.35 }}>
             {title}
           </Typography>
           <Typography variant="caption" sx={{ color: "text.secondary", display: "block", mt: 0.1 }}>
@@ -157,8 +157,8 @@ export function EducationCertificationSection() {
           <Stack spacing={2.4}>
             <SectionHeading
               eyebrow="Education and Certifications"
-              title="Education and Certifications"
-              body="Academic foundation and current certification highlights in one place. Education stays on the left while certifications stay as a vertically scrollable list on the right."
+              title="Education and certifications"
+              body="Degrees on the left, certifications on the right. Each certification links to the LinkedIn record."
             />
 
             <Box
@@ -194,14 +194,14 @@ export function EducationCertificationSection() {
                     >
                       <SchoolRoundedIcon fontSize="small" />
                     </Box>
-                    <Typography variant="h5" sx={{ fontSize: { xs: "1.45rem", md: "1.65rem" } }}>
+                    <Typography variant="h5" component="h3" sx={{ fontSize: { xs: "1.45rem", md: "1.65rem" } }}>
                       Education
                     </Typography>
                   </Stack>
 
                   {education.map((entry, index) => (
                     <Box key={entry.school}>
-                      <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                      <Typography variant="subtitle1" component="h4" sx={{ fontWeight: 700 }}>
                         {entry.degree}
                       </Typography>
 
@@ -292,7 +292,7 @@ export function EducationCertificationSection() {
                       >
                         <VerifiedRoundedIcon fontSize="small" />
                       </Box>
-                      <Typography variant="h5" sx={{ fontSize: { xs: "1.45rem", md: "1.65rem" } }}>
+                      <Typography variant="h5" component="h3" sx={{ fontSize: { xs: "1.45rem", md: "1.65rem" } }}>
                         Certifications
                       </Typography>
                     </Stack>

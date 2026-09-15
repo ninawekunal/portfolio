@@ -215,7 +215,7 @@ export function ProjectShowcase() {
                 variant="overline"
                 sx={{
                   fontSize: { xs: "0.88rem", md: "1.02rem" },
-                  fontWeight: 500,
+                  fontWeight: 600,
                   letterSpacing: "0.22em",
                   opacity: 0.78,
                   display: "block",
@@ -251,7 +251,7 @@ export function ProjectShowcase() {
                 </Box>
               </Typography>
               <Typography variant="body1" sx={{ color: alpha("#e4ecff", 0.84), lineHeight: 1.72 }}>
-                Browse a vertical carousel of projects on the left and inspect implementation depth on the right.
+                Side projects with the code public. Pick one on the left to see the stack, what I learned, and the repo.
               </Typography>
             </Stack>
 
@@ -453,7 +453,11 @@ export function ProjectShowcase() {
                           >
                             <Stack spacing={0.75} sx={{ width: "100%", minWidth: 0 }}>
                               <Stack direction="row" spacing={0.75} alignItems="center" flexWrap="wrap" useFlexGap>
-                                <Typography variant="subtitle1" sx={{ color: alpha("#ffffff", 0.97), fontWeight: 700 }}>
+                                <Typography
+                                  variant="subtitle1"
+                                  component="h3"
+                                  sx={{ color: alpha("#ffffff", 0.97), fontWeight: 700 }}
+                                >
                                   {project.title}
                                 </Typography>
                                 <Chip
@@ -500,7 +504,7 @@ export function ProjectShowcase() {
                 <Paper
                   sx={{
                     position: "sticky",
-                    top: "calc(env(safe-area-inset-top) + 104px)",
+                    top: "calc(var(--site-header-height, 96px) + 12px)",
                     overflow: "hidden",
                     borderRadius: "28px",
                     border: `1px solid ${alpha("#ffffff", 0.18)}`,
@@ -511,7 +515,7 @@ export function ProjectShowcase() {
                     <Typography variant="overline" sx={{ letterSpacing: "0.12em", color: alpha("#fff6d8", 0.9) }}>
                       Project Details
                     </Typography>
-                    <Typography variant="h6" sx={{ mt: 0.2, color: alpha("#ffffff", 0.97) }}>
+                    <Typography variant="h6" component="h3" sx={{ mt: 0.2, color: alpha("#ffffff", 0.97) }}>
                       {selectedProject.title}
                     </Typography>
                     <Typography variant="body2" sx={{ color: alpha("#dce8ff", 0.84), lineHeight: 1.66 }}>
@@ -527,7 +531,7 @@ export function ProjectShowcase() {
                       ))}
                     </Stack>
                     <Box>
-                      <Typography variant="subtitle2" sx={{ mb: 0.45, color: alpha("#ffffff", 0.93) }}>
+                      <Typography variant="subtitle2" component="h4" sx={{ mb: 0.45, color: alpha("#ffffff", 0.93) }}>
                         What I learned
                       </Typography>
                       <LessonsList project={selectedProject} itemColor={alpha("#e4ecff", 0.84)} />

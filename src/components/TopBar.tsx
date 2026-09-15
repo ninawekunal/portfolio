@@ -1,8 +1,10 @@
 "use client";
 
+import ArticleRoundedIcon from "@mui/icons-material/ArticleRounded";
 import BuildRoundedIcon from "@mui/icons-material/BuildRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import DescriptionRoundedIcon from "@mui/icons-material/DescriptionRounded";
+import EmojiEventsRoundedIcon from "@mui/icons-material/EmojiEventsRounded";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import MenuBookRoundedIcon from "@mui/icons-material/MenuBookRounded";
@@ -23,15 +25,17 @@ import {
   Typography,
 } from "@mui/material";
 import { alpha } from "@mui/material/styles";
-import { useEffect, useId, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 
 import { navigationItems, profile } from "@/data/portfolio";
 import { withBasePath } from "@/lib/assetPath";
 
 const navigationIcons = {
+  "#wins": EmojiEventsRoundedIcon,
   "#what-i-offer": BuildRoundedIcon,
   "#experience": WorkRoundedIcon,
   "#projects": MenuBookRoundedIcon,
+  "#writing": ArticleRoundedIcon,
   "#education-certifications": SchoolRoundedIcon,
 } as const;
 
@@ -41,7 +45,7 @@ const utilityLinks = [
   { label: "Resume", href: profile.resumeUrl, icon: DescriptionRoundedIcon },
 ] as const;
 
-const brandCaption = "Front-end | Backend | Distributed Systems | AI-native Engineering";
+const brandCaption = profile.tagline;
 
 function LocationBadge({ compact = false }: { compact?: boolean }) {
   return (
@@ -80,7 +84,6 @@ function OpenToWorkAvatar({ onClick }: { onClick: () => void }) {
 
   return (
     <ButtonBase
-      aria-label="Open profile photo"
       onClick={onClick}
       sx={{
         position: "relative",
@@ -96,7 +99,8 @@ function OpenToWorkAvatar({ onClick }: { onClick: () => void }) {
       <Box
         component="svg"
         viewBox="0 0 100 100"
-        aria-hidden
+        role="img"
+        aria-label="Open to work"
         sx={{
           position: "absolute",
           inset: 0,
@@ -126,9 +130,22 @@ function OpenToWorkAvatar({ onClick }: { onClick: () => void }) {
           </textPath>
         </text>
       </Box>
+      <Box
+        component="span"
+        sx={{
+          position: "absolute",
+          width: 1,
+          height: 1,
+          overflow: "hidden",
+          clip: "rect(0 0 0 0)",
+          whiteSpace: "nowrap",
+        }}
+      >
+        View profile photo
+      </Box>
       <Avatar
-        src={withBasePath("/profile_picture.jpeg")}
-        alt={profile.name}
+        src={withBasePath("/profile_avatar.jpeg")}
+        alt=""
         sx={{
           width: { xs: 34, md: 38 },
           height: { xs: 34, md: 38 },
@@ -220,47 +237,95 @@ function BrandIdentity({
 export function TopBar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [profileModalOpen, setProfileModalOpen] = useState(false);
-  const [activeSectionHref, setActiveSectionHref] = useState(navigationItems[0]?.href ?? "#what-i-offer");
+  const [activeSectionHref, setActiveSectionHref] = useState(navigationItems[0]?.href ?? "#wins");
+  const appBarRef = useRef<HTMLElement | null>(null);
 
+  // Publish the real header height so sticky sub-headers can sit under it
+  // instead of guessing a pixel offset per breakpoint.
   useEffect(() => {
-    const updateActiveSection = () => {
-      const marker = window.scrollY + 180;
-      let nextActive = navigationItems[0]?.href ?? "#what-i-offer";
+    const node = appBarRef.current;
+    if (!node) {
+      return;
+    }
 
-      navigationItems.forEach((item) => {
-        const sectionId = item.href.replace("#", "");
-        const sectionNode = document.getElementById(sectionId);
+    const publishHeight = () => {
+      document.documentElement.style.setProperty(
+        "--site-header-height",
+        `${Math.round(node.getBoundingClientRect().height)}px`,
+      );
+    };
 
-        if (!sectionNode) {
+    publishHeight();
+    const observer = new ResizeObserver(publishHeight);
+    observer.observe(node);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [mobileMenuOpen]);
+
+  // Track the active section with an IntersectionObserver so scrolling never
+  // forces layout. The section whose top edge is nearest to the header wins.
+  useEffect(() => {
+    const sections = navigationItems
+      .map((item) => document.getElementById(item.href.replace("#", "")))
+      .filter((node): node is HTMLElement => node !== null);
+
+    if (!sections.length) {
+      return;
+    }
+
+    const visible = new Map<string, number>();
+
+    const pickActive = () => {
+      let nextActive: string | null = null;
+      let nearestTop = Number.POSITIVE_INFINITY;
+
+      sections.forEach((section) => {
+        const ratio = visible.get(section.id) ?? 0;
+        if (ratio <= 0) {
           return;
         }
 
-        if (marker >= sectionNode.offsetTop) {
-          nextActive = item.href;
+        const top = Math.abs(section.getBoundingClientRect().top - 180);
+        if (top < nearestTop) {
+          nearestTop = top;
+          nextActive = `#${section.id}`;
         }
       });
 
-      setActiveSectionHref((previous) => (previous === nextActive ? previous : nextActive));
+      if (nextActive) {
+        const resolved = nextActive;
+        setActiveSectionHref((previous) => (previous === resolved ? previous : resolved));
+      }
     };
 
-    updateActiveSection();
-    window.addEventListener("scroll", updateActiveSection, { passive: true });
-    window.addEventListener("resize", updateActiveSection);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          visible.set(entry.target.id, entry.isIntersecting ? entry.intersectionRatio : 0);
+        });
+        pickActive();
+      },
+      { rootMargin: "-160px 0px -55% 0px", threshold: [0, 0.1, 0.25, 0.5] },
+    );
+
+    sections.forEach((section) => observer.observe(section));
 
     return () => {
-      window.removeEventListener("scroll", updateActiveSection);
-      window.removeEventListener("resize", updateActiveSection);
+      observer.disconnect();
     };
   }, []);
 
   const activeSectionLabel = useMemo(
-    () => navigationItems.find((item) => item.href === activeSectionHref)?.label ?? "My Skillset",
+    () => navigationItems.find((item) => item.href === activeSectionHref)?.label ?? "Wins",
     [activeSectionHref],
   );
-  const ActiveSectionIcon = navigationIcons[activeSectionHref as keyof typeof navigationIcons] ?? BuildRoundedIcon;
+  const ActiveSectionIcon = navigationIcons[activeSectionHref as keyof typeof navigationIcons] ?? EmojiEventsRoundedIcon;
 
   return (
     <AppBar
+      ref={appBarRef}
       position="sticky"
       color="transparent"
       sx={{
@@ -269,7 +334,7 @@ export function TopBar() {
         boxShadow: "none",
       }}
     >
-      <Toolbar disableGutters sx={{ px: { xs: 2, sm: 2.2, md: 3.2 }, py: 1.15 }}>
+      <Toolbar disableGutters sx={{ px: { xs: 1.5, sm: 2.2, md: 3.2 }, py: { xs: 0.8, md: 1.15 } }}>
         <Box sx={{ width: "100%" }}>
           <Stack
             direction="row"
@@ -300,14 +365,8 @@ export function TopBar() {
                 bgcolor: alpha("#ffffff", 0.76),
                 border: `1px solid ${alpha("#132433", 0.15)}`,
                 boxShadow: `0 14px 30px -26px ${alpha("#132433", 0.35)}`,
-                minWidth: "fit-content",
-                width: "fit-content",
                 ml: "auto",
-                maxWidth: "100%",
-                overflowX: "auto",
-                "&::-webkit-scrollbar": {
-                  display: "none",
-                },
+                flexShrink: 0,
               }}
             >
               {navigationItems.map((item) => {
@@ -319,8 +378,11 @@ export function TopBar() {
                     key={item.href}
                     component="a"
                     href={item.href}
+                    aria-label={item.label}
+                    title={item.label}
+                    aria-current={isActive ? "true" : undefined}
                     sx={{
-                      px: 1.35,
+                      px: { md: 1.05, lg: 1.35 },
                       py: 0.85,
                       borderRadius: 999,
                       color: isActive ? "#132433" : alpha("#132433", 0.86),
@@ -341,7 +403,9 @@ export function TopBar() {
                     }}
                   >
                     {Icon ? <Icon sx={{ fontSize: 18 }} /> : null}
-                    {item.label}
+                    <Box component="span" sx={{ display: { md: "none", lg: "inline" } }}>
+                      {item.label}
+                    </Box>
                   </ButtonBase>
                 );
               })}
@@ -394,8 +458,8 @@ export function TopBar() {
             <Box
               sx={{
                 width: "100%",
-                p: 1,
-                borderRadius: "30px",
+                p: 0.8,
+                borderRadius: "26px",
                 bgcolor: alpha("#ffffff", 0.8),
                 border: `1px solid ${alpha("#132433", 0.14)}`,
                 boxShadow: `0 14px 30px -28px ${alpha("#132433", 0.35)}`,
@@ -423,21 +487,21 @@ export function TopBar() {
                 </IconButton>
               </Stack>
 
-              <Box sx={{ mt: 0.82, display: "flex", justifyContent: "center" }}>
+              <Box sx={{ mt: 0.6, display: "flex", justifyContent: "center" }}>
                 <Box
                   sx={{
                     width: "100%",
                     maxWidth: 380,
-                    borderRadius: "18px",
-                    bgcolor: alpha("#132433", 0.12),
-                    border: `1px solid ${alpha("#132433", 0.2)}`,
+                    borderRadius: "14px",
+                    bgcolor: alpha("#132433", 0.1),
+                    border: `1px solid ${alpha("#132433", 0.18)}`,
                     px: 1,
-                    py: 0.72,
+                    py: 0.4,
                   }}
                 >
-                  <Stack direction="row" spacing={0.78} alignItems="center" justifyContent="center">
-                    <ActiveSectionIcon sx={{ fontSize: 20, color: alpha("#132433", 0.9) }} />
-                    <Typography variant="h6" sx={{ fontSize: "1.16rem", lineHeight: 1.2 }}>
+                  <Stack direction="row" spacing={0.7} alignItems="center" justifyContent="center">
+                    <ActiveSectionIcon sx={{ fontSize: 17, color: alpha("#132433", 0.9) }} />
+                    <Typography component="p" variant="subtitle2" sx={{ fontSize: "0.95rem", lineHeight: 1.2 }}>
                       {activeSectionLabel}
                     </Typography>
                   </Stack>
@@ -567,8 +631,13 @@ export function TopBar() {
               id="profile-photo-modal-title"
               src={withBasePath("/profile_picture.jpeg")}
               alt={`${profile.name} profile`}
+              width={496}
+              height={435}
+              loading="lazy"
+              decoding="async"
               sx={{
                 width: "100%",
+                height: "auto",
                 display: "block",
                 objectFit: "cover",
               }}

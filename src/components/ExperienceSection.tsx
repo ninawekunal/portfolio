@@ -69,9 +69,10 @@ type TimelineMilestone = ParsedTimelinePoint & {
 
 const MAGIC_GRADIENT_START = "#ff3bb5";
 const MAGIC_GRADIENT_END = "#ff7b38";
-const MOBILE_TIMELINE_TOP = "calc(env(safe-area-inset-top) + 112px)";
+const MOBILE_TIMELINE_TOP = "calc(var(--site-header-height, 112px) + 8px)";
 const REQUESTED_MILESTONES = [
   "Present",
+  "April 2026",
   "May 2022",
   "April 2022",
   "June 2021",
@@ -80,7 +81,8 @@ const REQUESTED_MILESTONES = [
   "August 2018",
 ] as const;
 const EXPERIENCE_SEGMENT_TOKENS: Record<string, { start: string; end: string }> = {
-  "Expedia Group": { start: "Present", end: "May 2022" },
+  OpenCFO: { start: "Present", end: "April 2026" },
+  "Expedia Group": { start: "April 2026", end: "May 2022" },
   "Global Traffic Technologies": { start: "April 2022", end: "June 2021" },
   "Moaedat Ltd.": { start: "May 2021", end: "August 2018" },
 };
@@ -456,7 +458,7 @@ function ExperienceProjectCard({
         }}
       >
         <Stack spacing={0.5} sx={{ minWidth: 0 }}>
-          <Typography variant="subtitle2" sx={{ lineHeight: 1.28 }}>
+          <Typography variant="subtitle2" component="h5" sx={{ lineHeight: 1.28 }}>
             {project.name}
           </Typography>
           <Typography variant="caption" sx={{ color: "primary.dark", lineHeight: 1.5 }}>
@@ -827,8 +829,8 @@ export function ExperienceSection() {
         <Stack spacing={3}>
           <SectionHeading
             eyebrow="Experience"
-            title="Professional Experience"
-            body="A role-by-role interactive journey. Use the timeline to move through each role, then inspect expandable skill bullets and project depth for concrete delivery evidence."
+            title="Where I have worked"
+            body="Newest first. Step through the timeline, then open a project or a skill for the detail behind it."
           />
 
           <Box
@@ -865,6 +867,7 @@ export function ExperienceSection() {
               >
                 <IconButton
                   size="small"
+                  aria-label="Previous role"
                   onClick={handlePreviousButton}
                   disabled={activeIndex === 0}
                   sx={{
@@ -890,6 +893,7 @@ export function ExperienceSection() {
                 </IconButton>
                 <IconButton
                   size="small"
+                  aria-label="Next role"
                   onClick={handleNextButton}
                   disabled={activeIndex === stopCount - 1}
                   sx={{
@@ -916,6 +920,7 @@ export function ExperienceSection() {
 
                 <Typography
                   variant="h3"
+                  component="p"
                   sx={{
                     fontSize: { xs: "1.02rem", md: "1.16rem" },
                     lineHeight: 1.3,
@@ -1098,7 +1103,7 @@ export function ExperienceSection() {
                 {!isDesktop ? (
                   <Stack spacing={0.45} sx={{ mt: 0.6, px: 0.35 }}>
                     <Typography variant="caption" sx={{ color: alpha("#132433", 0.72), lineHeight: 1.42 }}>
-                      Swipe left/right on this timeline or use arrows to navigate experiences.
+                      Swipe this card or use the arrows to change roles.
                     </Typography>
                   </Stack>
                 ) : null}
@@ -1150,6 +1155,7 @@ export function ExperienceSection() {
                     <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1}>
                       <Typography
                         variant="h4"
+                        component="h3"
                         sx={{
                           fontSize: { xs: "1.38rem", sm: "1.5rem", md: "2rem" },
                           fontWeight: 800,
@@ -1182,7 +1188,7 @@ export function ExperienceSection() {
                       </Typography>
                       <Typography
                         variant="body2"
-                        sx={{ color: "text.secondary", fontWeight: 700, whiteSpace: "nowrap", flexShrink: 0 }}
+                        sx={{ color: "text.secondary", fontWeight: 700, flexShrink: 0, textAlign: "right" }}
                       >
                         {activePeriod.label}
                       </Typography>
@@ -1191,7 +1197,9 @@ export function ExperienceSection() {
 
                   {activeEntry.projects?.length ? (
                     <Stack spacing={0.9}>
-                      <Typography variant="subtitle1">Projects</Typography>
+                      <Typography variant="subtitle1" component="h4">
+                        Projects
+                      </Typography>
                       <Box
                         sx={{
                           display: "grid",
@@ -1215,7 +1223,9 @@ export function ExperienceSection() {
 
                   {activeEntry.skillsApplied?.length ? (
                     <Stack spacing={0.9}>
-                      <Typography variant="subtitle1">Learnings/Niches</Typography>
+                      <Typography variant="subtitle1" component="h4">
+                        Skills, with where I used them
+                      </Typography>
                       <Box
                         sx={{
                           display: "grid",

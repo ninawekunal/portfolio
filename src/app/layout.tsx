@@ -7,40 +7,56 @@ import { withBasePath } from "@/lib/assetPath";
 import theme from "@/theme";
 import "./globals.css";
 
+// Three body weights and one display weight keep the font payload to four files.
 const bodyFont = IBM_Plex_Sans({
   subsets: ["latin"],
   variable: "--font-body",
   display: "swap",
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "600", "700"],
 });
 
 const displayFont = Space_Grotesk({
   subsets: ["latin"],
   variable: "--font-display",
   display: "swap",
-  weight: ["500", "600", "700"],
+  weight: ["700"],
 });
 
+const siteTitle = "Kunal Ninawe | Product Engineer";
+const siteDescription =
+  "Product engineer who ships the whole surface. Founding full-stack engineer at OpenCFO (AI-native AP/AR), ex-Expedia partner identity. 287 merged PRs, 87 BFF endpoints, 0 to 3,200 tests in 21 weeks.";
+
 export const metadata: Metadata = {
-  title: "Kunal Ninawe | Full-Stack Engineer",
-  description:
-    "Engineering portfolio for Kunal Ninawe, a mid-senior full-stack engineer focused on scalable systems and AI-native product delivery.",
+  title: siteTitle,
+  description: siteDescription,
+  keywords: [
+    "Kunal Ninawe",
+    "product engineer",
+    "full-stack engineer",
+    "React",
+    "TypeScript",
+    "React Router",
+    "BFF",
+    "AI engineering",
+    "Claude Code",
+    "Seattle",
+  ],
+  authors: [{ name: "Kunal Ninawe", url: "https://github.com/ninawekunal" }],
   icons: {
     icon: withBasePath("/favicon.svg"),
     shortcut: withBasePath("/favicon.svg"),
     apple: withBasePath("/favicon.svg"),
   },
   openGraph: {
-    title: "Kunal Ninawe | Full-Stack Engineer",
-    description:
-      "Portfolio focused on full-stack delivery, scalable systems, and AI-native engineering.",
-    type: "website",
+    title: siteTitle,
+    description: siteDescription,
+    type: "profile",
+    siteName: "Kunal Ninawe",
   },
   twitter: {
-    card: "summary_large_image",
-    title: "Kunal Ninawe | Full-Stack Engineer",
-    description:
-      "Portfolio focused on full-stack delivery, scalable systems, and AI-native engineering.",
+    card: "summary",
+    title: siteTitle,
+    description: siteDescription,
   },
 };
 
