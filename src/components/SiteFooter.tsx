@@ -7,6 +7,7 @@ import { Box, Button, Container, Paper, Stack, Typography } from "@mui/material"
 import { alpha } from "@mui/material/styles";
 
 import { footerNotes, profile } from "@/data/portfolio";
+import { withBasePath } from "@/lib/assetPath";
 
 export function SiteFooter() {
   return (
@@ -29,25 +30,34 @@ export function SiteFooter() {
             }}
           >
             <Stack spacing={2.2}>
-              <Typography variant="h4" sx={{ maxWidth: 780 }}>
-                Looking for a full-stack engineer who can ship product surfaces and the systems
-                behind them.
+              <Typography variant="h4" component="h2" sx={{ maxWidth: 780 }}>
+                Hiring a product engineer who can take a fuzzy problem from the customer call to
+                production?
               </Typography>
               <Typography variant="body1" sx={{ maxWidth: 760, opacity: 0.82, lineHeight: 1.8 }}>
-                This portfolio is intentionally structured for fast review. The case studies show
-                engineering range, and the What I Offer section highlights how I approach
-                production ownership, scale, and collaboration.
+                I am in Seattle and open to New York or San Francisco. The fastest way to see
+                how I work is the Wins section at the top. The fastest way to reach me is email.
               </Typography>
 
               <Stack direction="row" spacing={1.3} flexWrap="wrap" useFlexGap>
                 <Button
-                  href={profile.githubUrl + "/?tab=repositories"}
-                  target="_blank"
+                  href={`mailto:${profile.email}`}
                   variant="contained"
                   color="secondary"
-                  endIcon={<LaunchRoundedIcon />}
+                  endIcon={<EmailRoundedIcon />}
                 >
-                  Review projects
+                  Email me
+                </Button>
+                <Button
+                  href={withBasePath(profile.resumeUrl)}
+                  target="_blank"
+                  rel="noreferrer"
+                  variant="outlined"
+                  color="inherit"
+                  endIcon={<LaunchRoundedIcon />}
+                  sx={{ borderColor: alpha("#ffffff", 0.3) }}
+                >
+                  Resume (PDF)
                 </Button>
               </Stack>
 
@@ -71,7 +81,9 @@ export function SiteFooter() {
               }}
             >
               <Stack spacing={1.6}>
-                <Typography variant="h6">Contact & profile</Typography>
+                <Typography variant="h6" component="h3">
+                  Contact
+                </Typography>
                 <Stack direction="row" spacing={1} alignItems="center">
                   <PlaceRoundedIcon fontSize="small" sx={{ opacity: 0.74 }} />
                   <Typography variant="body2" sx={{ opacity: 0.84 }}>

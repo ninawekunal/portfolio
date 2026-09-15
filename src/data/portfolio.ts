@@ -20,12 +20,6 @@ export type PortfolioProject = {
   lessonsLearned: string[];
 };
 
-export type Metric = {
-  label: string;
-  value: string;
-  detail: string;
-};
-
 export type CareerEntry = {
   company: string;
   location: string;
@@ -77,200 +71,212 @@ export type CertificationEntry = {
   logoSrc?: string;
 };
 
-export type SkillCluster = {
-  title: string;
-  summary: string;
-  items: string[];
-  evidence: string;
-};
-
-export type FocusItem = {
-  label: string;
-  detail: string;
-};
-
 export const profile = {
   name: "Kunal Ninawe",
-  role: "Software Engineering | Full-Stack Engineering | Native-AI Product Engineering",
-  headline: "Building identity-aware products, reliable UI systems, and AI-native tools.",
+  role: "Product Engineer",
+  tagline: "Product Engineer · Full-stack · AI-native",
+  headline: "Product engineer who ships the whole thing, fast, for the person on the other side of the screen.",
   summary:
-    "I have 4+ years of professional software engineering experience across React and TypeScript interfaces, identity-heavy backend systems, and cloud workflows in production. My recent work spans partner account platforms used by 100k+ users, authentication and MFA flows, queue orchestration, map-led planning, document intelligence, and computer vision.",
+    "Founding full-stack engineer at OpenCFO, an AI-native AP/AR platform, after four years owning partner identity at Expedia. I take an ambiguous ask, find out who it is for, write the contract, and ship it in slices. Recent numbers: 287 merged PRs, 87 BFF endpoints, and a test suite from 0 to 3,200 in 21 weeks.",
   audience:
-    "Best fit for hiring managers looking for an engineer who can move from trust-sensitive backend architecture to shipped UI without losing accessibility, reliability, or product clarity.",
+    "Best fit for teams that want one engineer to own a product surface end to end: the screen, the API layer behind it, the deploy, and the customer call that started it.",
   githubUrl: "https://github.com/ninawekunal",
   linkedInUrl: "https://linkedin.com/in/ninawekunal/",
   email: "ninawekunal@gmail.com",
   location: "Seattle, WA",
   resumeUrl: "/Kunal-Ninawe-Resume.pdf",
   knowledgeAreas: [
+    "Product engineering",
+    "React",
+    "React Router v7",
+    "Server-side rendering",
+    "Backend-for-Frontend pattern",
+    "TypeScript",
+    "Next.js",
+    "Node.js",
+    "REST API design",
+    "OpenAPI",
+    "Server-sent events",
+    "Web performance",
     "Identity and access management",
     "OAuth 2.0",
     "OIDC",
-    "JWT",
-    "SSO",
     "MFA",
     "Session management",
-    "Next.js",
-    "React",
-    "TypeScript",
-    "Node.js",
-    "Hapi",
-    "Java",
-    "Kotlin",
-    "Spring Boot",
-    "REST API design",
-    "GraphQL",
-    "gRPC",
+    "Content Security Policy",
     "AWS",
     "Kubernetes",
     "Docker",
     "CI/CD",
-    "Datadog",
-    "Splunk",
+    "Claude Code",
+    "Agentic engineering workflows",
+    "Context engineering",
     "Document extraction",
-    "Map APIs",
-    "Computer vision",
-    "Machine learning",
-    "AI-native product engineering",
-    "Scalable systems design",
+    "LLM product UX",
+    "Accounts payable automation",
+    "Java",
+    "Python",
   ],
 };
 
 export const navigationItems = [
-  { label: "My Skillset", href: "#what-i-offer" },
+  { label: "Wins", href: "#wins" },
+  { label: "Skillset", href: "#what-i-offer" },
   { label: "Experience", href: "#experience" },
   { label: "Projects", href: "#projects" },
+  { label: "Writing", href: "#writing" },
   { label: "Education", href: "#education-certifications" },
-];
-
-export const heroBadges = [
-  "Identity & trust systems",
-  "Frontend systems",
-  "Cloud-native delivery",
-  "AI-native product work",
-];
-
-export const heroSignals = [
-  {
-    title: "Identity in production",
-    detail: "Built secure auth, MFA, email update, and account management flows across partner and traveler systems serving 100k+ users.",
-  },
-  {
-    title: "Frontend depth with backend range",
-    detail: "Strong in React and Next.js UI systems, with production experience across Node.js, Hapi, Java, Kotlin, Spring Boot, GraphQL, REST, gRPC, and SQL.",
-  },
-  {
-    title: "Cloud and release discipline",
-    detail: "Hands-on with Kubernetes, AWS, CI/CD, progressive rollouts, observability, and incident response in distributed systems.",
-  },
-  {
-    title: "AI with engineering discipline",
-    detail: "Builds GenAI, document, and ML-driven experiences where the UX makes the underlying system inspectable and useful.",
-  },
-];
-
-export const impactMetrics: Metric[] = [
-  {
-    label: "Users supported",
-    value: "100k+",
-    detail: "Partner workflows delivered for global account surfaces at Expedia Group.",
-  },
-  {
-    label: "Feature adoption",
-    value: "90%",
-    detail: "Adoption reached across critical partner portal features and account management flows.",
-  },
-  {
-    label: "Test coverage",
-    value: "92%",
-    detail: "Expanded Jest and Cypress coverage for auth, MFA, OTP, email, and form-driven experiences.",
-  },
-  {
-    label: "Support reduction",
-    value: "~20%",
-    detail: "Used L3 on-call debugging, logs, metrics, and RCA improvements to cut support volume.",
-  },
-  {
-    label: "Identity bugs resolved",
-    value: "~45%",
-    detail: "Resolved identity-related bugs and inconsistencies by redesigning email update contracts and synchronization logic.",
-  },
-];
-
-export const careerHighlights = [
-  "Software Engineer II at Expedia Group since May 2022.",
-  "Shipped secure identity workflows using React, TypeScript, Node.js, Java, GraphQL, and OIDC services.",
-  "Owned MFA, step-up auth, rollout safety, and incident response for high-trust partner account surfaces.",
-  "Previously built backend APIs and async workflows on AWS Lambda, ECS, ElastiCache, Kinesis, and CloudFormation.",
-  "MS in Computer Engineering from New York University with coursework in distributed systems, cloud computing, and ML.",
-];
-
-export const topSkillsFromProfile = [
-  "Full-Stack Development",
-  "Identity and Access Management (IAM)",
-  "Reliability Engineering",
-];
-
-export const focusItems: FocusItem[] = [
-  {
-    label: "Open to",
-    detail: "Frontend, full-stack, product engineering, and AI application roles.",
-  },
-  {
-    label: "Current domain",
-    detail: "Identity, partner account workflows, and reliability-sensitive product surfaces.",
-  },
-  {
-    label: "Profile-backed stack",
-    detail: "React, TypeScript, Node.js, Java/OIDC, Kubernetes, AWS, Splunk, Datadog, PagerDuty.",
-  },
-];
-
-export const skillClusters: SkillCluster[] = [
-  {
-    title: "Identity & security",
-    summary: "Production ownership of high-trust account workflows and auth-sensitive operations.",
-    items: ["OAuth 2.0", "OIDC", "JWT", "SSO", "MFA", "ACR levels", "Session management"],
-    evidence: "Expedia identity work included step-up MFA, centralized identity contracts, and resilient cross-domain account flows.",
-  },
-  {
-    title: "Frontend systems",
-    summary: "Accessible, scalable UI systems with a strong testing and product quality mindset.",
-    items: ["TypeScript", "React", "Next.js", "Jest", "Cypress", "MobX", "Localization"],
-    evidence: "Built account management surfaces, auth flows, maps, document tooling, and polished product-facing interfaces.",
-  },
-  {
-    title: "Backend & APIs",
-    summary: "Comfortable working across service layers, typed contracts, and distributed integration points.",
-    items: ["Node.js", "Hapi", "Java", "Kotlin", "Spring Boot", "REST", "GraphQL", "gRPC", "SQL"],
-    evidence: "Shipped identity-connected account workflows, layered services, API contracts, and async queue-backed demos.",
-  },
-  {
-    title: "Cloud & operations",
-    summary: "Release discipline, observability, and cloud systems that hold up in production.",
-    items: ["Docker", "Kubernetes", "AWS", "CI/CD", "Spinnaker", "Datadog", "Splunk", "PagerDuty", "Istio"],
-    evidence: "Owned production releases, progressive deployment, metrics, RCA work, and AWS-backed workflows in containerized environments.",
-  },
-  {
-    title: "AI & applied systems",
-    summary: "Uses AI/ML where it improves workflow quality and user decision-making.",
-    items: ["OpenAI", "MCP", "Document extraction", "Map APIs", "Computer vision", "ML evaluation"],
-    evidence: "Current and recent work spans itinerary planning, PDF extraction, agentic flows, and computer vision experiments.",
-  },
 ];
 
 export const experienceTimeline: CareerEntry[] = [
   {
+    company: "OpenCFO",
+    location: "Seattle, WA",
+    role: "Founding Full Stack Engineer",
+    period: "April 2026 - Present",
+    summary:
+      "First full-stack hire on an AI-native accounts payable and receivable platform. I own the web app end to end and sit in the customer calls that shape it.",
+    highlights: [
+      "Owned the entire web app (React Router v7 SSR, React 19, TypeScript) while the company went from 0 to 10 customers: 287 merged PRs, 136 routes, 87 BFF endpoints, 0 to 3,200 tests in 21 weeks.",
+      "Moved a localStorage-JWT SPA to SSR with a Backend-for-Frontend in one week: httpOnly cookie auth, loader-enforced RBAC, per-request nonce CSP, immutable-SHA ECS deploys.",
+      "Worked directly with a customer's finance and engineering teams to ship invoice / PO / goods-receipt matching against a demo pulled forward by three days.",
+      "Built the team's Claude Code system: 26 skills, 3 review subagents, 9 hooks, machine-checked design manifests. Peak week: 40 PRs merged.",
+    ],
+    stack: [
+      "React 19",
+      "React Router v7",
+      "TypeScript",
+      "Node.js",
+      "Express",
+      "BFF",
+      "zod",
+      "SSE",
+      "Vitest",
+      "AWS ECS",
+      "Claude Code",
+    ],
+    skillsApplied: [
+      {
+        skill: "Product thinking",
+        whereApplied:
+          "Wrote a page contract before any UI: the verbs, their preconditions, permissions, the API behind each, and what the user must see to choose one.",
+        outcome:
+          "Cut a PO match page from 5 redesigns to one 20-minute conversation, and the method now lives in the repo as a rule.",
+      },
+      {
+        skill: "Customer-facing delivery",
+        whereApplied:
+          "Turned an Epicor Prophet 21 customer's call transcript into a 12-doc spec and shipped three-way matching in about 25 PRs.",
+        outcome:
+          "Demo shipped on the pulled-forward date, with scope cut in the open instead of quietly.",
+      },
+      {
+        skill: "Performance, measured first",
+        whereApplied:
+          "Parsed production Chrome traces with a Node script to find 2.4s of main-thread blocking on the bill review page.",
+        outcome:
+          "pdf.js text layer 1.2s to 0, 226 tooltip providers to 1, PDF canvas 58MB to 8.8MB, match API 1,087ms to 738ms.",
+      },
+      {
+        skill: "Security and tenancy",
+        whereApplied:
+          "Reproduced a cross-user data leak through the browser HTTP cache and proved mid-session sign-outs were a backend design choice.",
+        outcome:
+          "44 routes patched with a CI test that scans the source. Backend requirements doc written with the proof attached.",
+      },
+      {
+        skill: "Agentic engineering",
+        whereApplied:
+          "Designed the CLAUDE.md hierarchy, skills, hooks, review subagents, an authenticated-browser handoff for agents, and an OpenAPI spec-sync bot.",
+        outcome:
+          "242 co-authored commits and a peak of 40 PRs merged in one week on a three-person team.",
+      },
+      {
+        skill: "Cross-team influence",
+        whereApplied:
+          "Wrote 12 backend requirement and ranked-asks documents (New / Amend / Confirm, stable IDs) and started a pre-demo readiness walk plus a weekly FE/BE sync.",
+        outcome:
+          "The backend team shipped against the asks, and demo bugs stopped surfacing in front of customers.",
+      },
+    ],
+    projects: [
+      {
+        name: "SSR + BFF migration",
+        impact: "One week, one PR, 87 endpoints ride on it now",
+        summary:
+          "Replaced a localStorage-JWT SPA with React Router v7 SSR, a signed httpOnly session cookie, same-origin BFF routes for auth, permission checks in every protected loader, and a per-request nonce CSP.",
+        technologies: ["React Router v7", "Express", "httpOnly cookies", "CSP", "AWS ECS"],
+        learnings: [
+          "The server should be the only thing that talks to the API. Everything else is a leak waiting to happen.",
+          "A per-screen BFF answers 'what does this page need' better than a graph does, at this size.",
+          "Set no-store on every user-scoped response, then write a test so nobody can forget.",
+        ],
+        metrics: [
+          { label: "BFF endpoints", value: "87" },
+          { label: "Routes", value: "136" },
+        ],
+      },
+      {
+        name: "Three-way match for an ERP customer",
+        impact: "~25 PRs against a demo moved from Tuesday to Friday",
+        summary:
+          "Invoice vs PO vs goods-receipt matching for a distributor on Epicor Prophet 21: match BFF, receipts at PO-line grain, shortage adjustments, and an exception-first review table.",
+        technologies: ["BFF", "TanStack Table", "zod", "Epicor Prophet 21", "OData"],
+        learnings: [
+          "Read the customer's transcript before the ticket. Their GL variance habit became a first-class concept.",
+          "Cut scope at standup, out loud, and hide unbuilt features instead of stubbing them.",
+          "When a match surface looks empty, diff the payload against the compute layer before blaming the backend.",
+        ],
+        metrics: [
+          { label: "Spec", value: "12 docs" },
+          { label: "Match API", value: "1,087ms to 738ms" },
+        ],
+      },
+      {
+        name: "Bill review performance",
+        impact: "2.4s of main-thread blocking removed",
+        summary:
+          "Traced a frozen 20-page bill from a 145MB Chrome trace: pdf.js text layer, 226 tooltip providers, a measuring collapsible, and 2,932 text spans. Fixed each at the source and windowed the PDF viewer.",
+        technologies: ["Chrome tracing", "pdf.js", "React 19", "Radix"],
+        learnings: [
+          "Read the trace instead of guessing at re-renders. Three of four fixes were one-line mount changes.",
+          "IntersectionObserver can starve under load and show blank pages. Scroll arithmetic does not.",
+          "Ship the regression tests with the fix, not after.",
+        ],
+        metrics: [
+          { label: "Text layer", value: "1,198ms to 0" },
+          { label: "PDF canvas", value: "58MB to 8.8MB" },
+        ],
+      },
+      {
+        name: "Agentic engineering system",
+        impact: "40 PRs merged in the peak week",
+        summary:
+          "A CLAUDE.md hierarchy with a routing table to 14 docs, 26 skills, 3 read-only review subagents, 9 hooks, machine-checked design manifests with a CI review boundary, and a 480-entry decision log.",
+        technologies: ["Claude Code", "Skills", "Hooks", "Subagents", "GitHub Actions"],
+        learnings: [
+          "Rules in a doc get skipped. Rules in a hook or a read-only reviewer do not.",
+          "An LLM-drafted spec will claim components exist. Resolve every one against real code.",
+          "Log every decision with a plain-English why, in the same commit as the change.",
+        ],
+        metrics: [
+          { label: "Skills / hooks", value: "26 / 9" },
+          { label: "Decision log", value: "480 entries" },
+        ],
+      },
+    ],
+  },
+  {
     company: "Expedia Group",
     location: "Seattle, WA",
     role: "Software Engineer II",
-    period: "May 2022 - Present",
+    period: "May 2022 - April 2026",
     summary:
-      "Owned end-to-end delivery across critical identity and partner account workflows, balancing frontend systems work with service contracts, security posture, and release reliability.",
+      "Owned partner identity workflows (login, MFA, password and email reset, account disable) for about 100K partners across four portals, from the React screens to the OAuth and OIDC contracts behind them.",
     highlights: [
       "Unified fragmented B2B identity flows across partner and traveler systems using React, TypeScript, Node.js (Hapi), and Java/OIDC services for 100k+ partners with roughly 90% feature adoption.",
-      "Designed email update architecture across decoupled domains, defined REST and GraphQL contracts with centralized identity services, and resolved about 45% of identity-related bugs and inconsistencies.",
-      "Implemented step-up MFA with ACR policies, shipped staged rollouts via feature flags and analytics, and improved release confidence through 92% smoke coverage, progressive deployments, and L3 incident ownership using Splunk, Datadog, and PagerDuty.",
+      "Led the Update Email initiative: found that 4 to 5% of global users shared traveler and partner accounts at risk of lockout, then designed the async API fixes and a Change Data Capture pipeline with downstream brand teams.",
+      "Implemented step-up MFA with ACR policies, shipped auth changes through data-driven feature-flag rollouts, and owned L3 incidents with Splunk, Datadog, and PagerDuty.",
     ],
     stack: ["React", "TypeScript", "Node.js", "Hapi", "GraphQL", "OIDC", "Kubernetes", "Istio", "Splunk"],
     skillsApplied: [
@@ -886,43 +892,7 @@ export const projects: PortfolioProject[] = [
   }
 ];
 
-export const deliveryPrinciples = [
-  {
-    icon: "scope",
-    title: "Scope with intent",
-    description:
-      "Start with the core user flow, ship the high-signal path first, and leave room for later expansion.",
-    example:
-      "SmartTrip explicitly holds AI itinerary generation out of the MVP so trip creation, ordering, routing, and export stay solid.",
-  },
-  {
-    icon: "contract",
-    title: "Design crisp boundaries",
-    description:
-      "Typed inputs, typed outputs, and clear ownership lines make systems easier to scale and debug.",
-    example:
-      "Identity work at Expedia and Agent Queues both lean on explicit contracts, clear service responsibilities, and observable state.",
-  },
-  {
-    icon: "visibility",
-    title: "Make complex state visible",
-    description:
-      "Users and operators trust systems more when transitions are inspectable instead of hidden.",
-    example:
-      "PDF Highlighter exposes extraction decisions through direct highlights, and identity rollouts used metrics plus staged releases to keep risk visible.",
-  },
-  {
-    icon: "ship",
-    title: "Ship across the stack",
-    description:
-      "Move from data model to UI finish without losing pace or maintainability.",
-    example:
-      "Recent work spans React and Next.js fronts, Hapi and Node services, identity backends, AWS infrastructure, and ML workflows.",
-  },
-];
-
 export const footerNotes = [
-  "This portfolio is built in Next.js with Material UI and statically exports cleanly for GitHub Pages.",
-  "The same codebase also deploys directly to Vercel when you want the simpler hosting path.",
-  "Skills and experience here are consolidated from the identity-focused resume, LinkedIn profile export, project repos, and current professional experience.",
+  "Built with Next.js and Material UI, exported statically to GitHub Pages.",
+  "Every number on this page comes from git, GitHub, or a doc written at the time. The customer count is my own tally.",
 ];
