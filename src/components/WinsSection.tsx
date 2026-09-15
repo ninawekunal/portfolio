@@ -1,20 +1,19 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import BoltRoundedIcon from "@mui/icons-material/BoltRounded";
 import BuildRoundedIcon from "@mui/icons-material/BuildRounded";
 import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
-import ExpandMoreRoundedIcon from "@mui/icons-material/ExpandMoreRounded";
 import GroupsRoundedIcon from "@mui/icons-material/GroupsRounded";
+import KeyboardArrowLeftRoundedIcon from "@mui/icons-material/KeyboardArrowLeftRounded";
+import KeyboardArrowRightRoundedIcon from "@mui/icons-material/KeyboardArrowRightRounded";
 import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
 import ShieldRoundedIcon from "@mui/icons-material/ShieldRounded";
 import {
   Box,
-  Button,
-  ButtonBase,
   Chip,
-  Collapse,
   Container,
+  IconButton,
   Paper,
   Stack,
   Typography,
@@ -38,124 +37,18 @@ const themeMeta: Record<WinTheme, { label: string; color: string; Icon: typeof B
   tooling: { label: "Team tooling", color: "#285873", Icon: BuildRoundedIcon },
 };
 
-function WinCard({
-  win,
-  expanded,
-  onToggle,
-}: {
-  win: Win;
-  expanded: boolean;
-  onToggle: () => void;
-}) {
-  const meta = themeMeta[win.theme];
-  const detailId = `win-${win.id}-detail`;
+// Same fixed height on the rail and the panel, at every breakpoint, so neither
+// container grows to match the other's content.
+const RAIL_HEIGHT = { xs: 280, sm: 320, md: 560 };
 
-  return (
-    <Paper
-      component="article"
-      sx={{
-        borderRadius: "20px",
-        bgcolor: alpha("#ffffff", 0.78),
-        borderColor: expanded ? alpha(meta.color, 0.45) : alpha("#132433", 0.1),
-        overflow: "hidden",
-        transition: "border-color 160ms ease",
-      }}
-    >
-      <ButtonBase
-        onClick={onToggle}
-        aria-expanded={expanded}
-        aria-controls={detailId}
-        sx={{
-          width: "100%",
-          textAlign: "left",
-          display: "block",
-          px: { xs: 1.6, md: 1.9 },
-          py: { xs: 1.4, md: 1.6 },
-        }}
-      >
-        <Stack spacing={1}>
-          <Stack direction="row" alignItems="flex-start" justifyContent="space-between" spacing={1}>
-            <Stack direction="row" spacing={0.7} alignItems="center" sx={{ minWidth: 0 }}>
-              <meta.Icon sx={{ fontSize: 16, color: meta.color, flexShrink: 0 }} aria-hidden />
-              <Typography
-                variant="caption"
-                sx={{ color: meta.color, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase" }}
-              >
-                {meta.label}
-              </Typography>
-            </Stack>
-            <ExpandMoreRoundedIcon
-              sx={{
-                color: alpha("#132433", 0.6),
-                transform: expanded ? "rotate(180deg)" : "rotate(0deg)",
-                transition: "transform 160ms ease",
-                flexShrink: 0,
-              }}
-              aria-hidden
-            />
-          </Stack>
-
-          <Typography
-            variant="h3"
-            sx={{ fontSize: { xs: "1.08rem", md: "1.18rem" }, lineHeight: 1.3, letterSpacing: "-0.01em" }}
-          >
-            {win.title}
-          </Typography>
-
-          <Stack direction="row" alignItems="baseline" spacing={1} flexWrap="wrap" useFlexGap>
-            <Typography
-              component="span"
-              sx={{
-                fontFamily: "var(--font-display), sans-serif",
-                fontWeight: 700,
-                fontSize: { xs: "1.45rem", md: "1.6rem" },
-                lineHeight: 1,
-                letterSpacing: "-0.03em",
-                color: meta.color,
-                whiteSpace: "nowrap",
-              }}
-            >
-              {win.metric}
-            </Typography>
-            <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.5 }}>
-              {win.metricLabel}
-            </Typography>
-          </Stack>
-
-          <Stack direction="row" spacing={0.75} alignItems="flex-start">
-            <PersonRoundedIcon sx={{ fontSize: 16, mt: "3px", color: alpha("#132433", 0.55), flexShrink: 0 }} aria-hidden />
-            <Typography variant="body2" sx={{ lineHeight: 1.6 }}>
-              <Box component="span" sx={{ fontWeight: 700 }}>
-                Who felt it:{" "}
-              </Box>
-              {win.who}
-            </Typography>
-          </Stack>
-        </Stack>
-      </ButtonBase>
-
-      <Collapse in={expanded} timeout={200} unmountOnExit>
-        <Stack
-          id={detailId}
-          spacing={1.1}
-          sx={{
-            px: { xs: 1.6, md: 1.9 },
-            pb: { xs: 1.6, md: 1.9 },
-            pt: 0.4,
-            borderTop: `1px solid ${alpha("#132433", 0.08)}`,
-          }}
-        >
-          <DetailRow label="What was wrong" text={win.problem} />
-          <DetailRow label="What I did" text={win.action} />
-          <DetailRow label="What changed" text={win.result} accent={meta.color} />
-          {win.tradeoff ? <DetailRow label="What I said no to" text={win.tradeoff} /> : null}
-        </Stack>
-      </Collapse>
-    </Paper>
-  );
+function splitLead(text: string): [string, string] {
+  const match = text.match(/^(.*?[.!?])(\s|$)/);
+  if (!match) return [text, ""];
+  return [match[1], text.slice(match[1].length).trim()];
 }
 
-function DetailRow({ label, text, accent }: { label: string; text: string; accent?: string }) {
+function DetailBlock({ label, text, accent }: { label: string; text: string; accent?: string }) {
+  const [lead, rest] = splitLead(text);
   return (
     <Box>
       <Typography
@@ -166,31 +59,303 @@ function DetailRow({ label, text, accent }: { label: string; text: string; accen
           letterSpacing: "0.06em",
           textTransform: "uppercase",
           color: accent ?? alpha("#132433", 0.6),
-          mb: 0.25,
+          mb: 0.4,
         }}
       >
         {label}
       </Typography>
-      <Typography variant="body2" sx={{ lineHeight: 1.68 }}>
-        {text}
+      <Typography variant="body2" sx={{ fontWeight: 600, lineHeight: 1.5, color: "text.primary" }}>
+        {lead}
       </Typography>
+      {rest ? (
+        <Typography variant="body2" sx={{ lineHeight: 1.68, color: "text.secondary", mt: 0.35 }}>
+          {rest}
+        </Typography>
+      ) : null}
     </Box>
   );
 }
 
-const INITIAL_VISIBLE = 6;
+function WinsRail({
+  items,
+  activeId,
+  onSelect,
+}: {
+  items: Win[];
+  activeId: string | null;
+  onSelect: (id: string) => void;
+}) {
+  const activeRef = useRef<HTMLButtonElement | null>(null);
+
+  useEffect(() => {
+    activeRef.current?.scrollIntoView({ block: "nearest" });
+  }, [activeId]);
+
+  return (
+    <Paper
+      component="nav"
+      aria-label="Ship list"
+      sx={{
+        height: RAIL_HEIGHT,
+        borderRadius: "20px",
+        bgcolor: alpha("#ffffff", 0.78),
+        borderColor: alpha("#132433", 0.1),
+        overflowY: "auto",
+        p: 0.8,
+      }}
+    >
+      <Stack spacing={0.3} role="listbox" aria-label="Wins">
+        {items.map((win) => {
+          const meta = themeMeta[win.theme];
+          const isActive = win.id === activeId;
+          return (
+            <Box
+              key={win.id}
+              component="button"
+              type="button"
+              ref={isActive ? activeRef : undefined}
+              role="option"
+              aria-selected={isActive}
+              onClick={() => onSelect(win.id)}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+                width: "100%",
+                textAlign: "left",
+                border: "1px solid",
+                borderColor: isActive ? alpha(meta.color, 0.4) : "transparent",
+                bgcolor: isActive ? alpha(meta.color, 0.1) : "transparent",
+                borderRadius: "12px",
+                px: 1.1,
+                py: 0.9,
+                cursor: "pointer",
+                font: "inherit",
+                color: "inherit",
+                "&:hover": { bgcolor: isActive ? alpha(meta.color, 0.12) : alpha("#132433", 0.05) },
+              }}
+            >
+              <Box sx={{ width: 8, height: 8, borderRadius: "50%", bgcolor: meta.color, flexShrink: 0 }} />
+              <Box sx={{ minWidth: 0, flex: 1 }}>
+                <Typography
+                  sx={{
+                    fontSize: "0.84rem",
+                    fontWeight: isActive ? 700 : 600,
+                    lineHeight: 1.3,
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
+                >
+                  {win.title}
+                </Typography>
+                <Typography variant="caption" sx={{ color: "text.secondary" }}>
+                  {meta.label}
+                </Typography>
+              </Box>
+              <Typography
+                sx={{
+                  fontFamily: "var(--font-display), sans-serif",
+                  fontWeight: 700,
+                  fontSize: "0.76rem",
+                  color: meta.color,
+                  flexShrink: 0,
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {win.metric}
+              </Typography>
+            </Box>
+          );
+        })}
+      </Stack>
+    </Paper>
+  );
+}
+
+function WinPanel({
+  win,
+  index,
+  total,
+  onPrev,
+  onNext,
+}: {
+  win: Win;
+  index: number;
+  total: number;
+  onPrev: () => void;
+  onNext: () => void;
+}) {
+  const meta = themeMeta[win.theme];
+
+  return (
+    <Paper
+      component="article"
+      aria-live="polite"
+      sx={{
+        height: RAIL_HEIGHT,
+        borderRadius: "20px",
+        bgcolor: alpha("#ffffff", 0.86),
+        borderColor: alpha(meta.color, 0.35),
+        display: "flex",
+        flexDirection: "column",
+        overflow: "hidden",
+      }}
+    >
+      <Box sx={{ flex: 1, overflowY: "auto", px: { xs: 1.8, md: 2.4 }, py: { xs: 1.8, md: 2.2 } }}>
+        <Stack direction="row" alignItems="flex-start" justifyContent="space-between" spacing={1}>
+          <Stack direction="row" spacing={0.7} alignItems="center">
+            <meta.Icon sx={{ fontSize: 16, color: meta.color, flexShrink: 0 }} aria-hidden />
+            <Typography
+              variant="caption"
+              sx={{ color: meta.color, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase" }}
+            >
+              {meta.label}
+            </Typography>
+          </Stack>
+          <Stack direction="row" spacing={0.5} sx={{ flexShrink: 0 }}>
+            <IconButton
+              size="small"
+              onClick={onPrev}
+              aria-label="Previous win"
+              sx={{ border: `1px solid ${alpha("#132433", 0.12)}` }}
+            >
+              <KeyboardArrowLeftRoundedIcon fontSize="small" />
+            </IconButton>
+            <IconButton
+              size="small"
+              onClick={onNext}
+              aria-label="Next win"
+              sx={{ border: `1px solid ${alpha("#132433", 0.12)}` }}
+            >
+              <KeyboardArrowRightRoundedIcon fontSize="small" />
+            </IconButton>
+          </Stack>
+        </Stack>
+
+        <Typography
+          variant="h3"
+          sx={{ fontSize: { xs: "1.2rem", md: "1.4rem" }, lineHeight: 1.28, letterSpacing: "-0.01em", fontWeight: 700, mt: 0.8 }}
+        >
+          {win.title}
+        </Typography>
+
+        <Stack direction="row" alignItems="baseline" spacing={1} flexWrap="wrap" useFlexGap sx={{ mt: 0.8 }}>
+          <Typography
+            component="span"
+            sx={{
+              fontFamily: "var(--font-display), sans-serif",
+              fontWeight: 700,
+              fontSize: { xs: "1.7rem", md: "2rem" },
+              lineHeight: 1,
+              letterSpacing: "-0.03em",
+              color: meta.color,
+            }}
+          >
+            {win.metric}
+          </Typography>
+          <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.5 }}>
+            {win.metricLabel}
+          </Typography>
+        </Stack>
+
+        <Stack
+          direction="row"
+          spacing={0.75}
+          alignItems="flex-start"
+          sx={{ mt: 1.1, pt: 1.1, borderTop: `1px solid ${alpha("#132433", 0.08)}` }}
+        >
+          <PersonRoundedIcon sx={{ fontSize: 16, mt: "3px", color: alpha("#132433", 0.55), flexShrink: 0 }} aria-hidden />
+          <Typography variant="body2" sx={{ lineHeight: 1.6, color: "text.secondary" }}>
+            <Box component="span" sx={{ fontWeight: 700, color: "text.primary" }}>
+              Who felt it:{" "}
+            </Box>
+            {win.who}
+          </Typography>
+        </Stack>
+
+        <Stack spacing={1.4} sx={{ mt: 1.6 }}>
+          <DetailBlock label="What was wrong" text={win.problem} />
+          <DetailBlock label="What I did" text={win.action} />
+          <DetailBlock label="What changed" text={win.result} accent={meta.color} />
+          {win.tradeoff ? (
+            <Box
+              sx={{
+                borderLeft: `3px solid ${meta.color}`,
+                bgcolor: alpha("#132433", 0.04),
+                borderRadius: "10px",
+                px: 1.4,
+                py: 1,
+              }}
+            >
+              <Typography
+                variant="caption"
+                sx={{ display: "block", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: meta.color, mb: 0.3 }}
+              >
+                What I said no to
+              </Typography>
+              <Typography variant="body2" sx={{ lineHeight: 1.6 }}>
+                {win.tradeoff}
+              </Typography>
+            </Box>
+          ) : null}
+        </Stack>
+      </Box>
+
+      <Stack
+        direction="row"
+        alignItems="center"
+        justifyContent="space-between"
+        sx={{ px: { xs: 1.8, md: 2.4 }, py: 1, borderTop: `1px solid ${alpha("#132433", 0.08)}`, flexShrink: 0 }}
+      >
+        <Typography variant="caption" sx={{ color: "text.secondary" }}>
+          {index + 1} of {total}
+        </Typography>
+        <Stack direction="row" spacing={0.4} sx={{ display: { xs: "none", sm: "flex" } }}>
+          {Array.from({ length: total }).map((_, i) => (
+            <Box
+              key={i}
+              sx={{
+                width: 14,
+                height: 4,
+                borderRadius: "3px",
+                bgcolor: i <= index ? meta.color : alpha("#132433", 0.12),
+              }}
+            />
+          ))}
+        </Stack>
+      </Stack>
+    </Paper>
+  );
+}
 
 export function WinsSection() {
   const [activeFilter, setActiveFilter] = useState<WinThemeFilter["id"]>("all");
-  const [expandedId, setExpandedId] = useState<string | null>(null);
-  const [showAll, setShowAll] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   const filteredWins = useMemo(
     () => (activeFilter === "all" ? wins : wins.filter((win) => win.theme === activeFilter)),
     [activeFilter],
   );
-  const hiddenCount = Math.max(filteredWins.length - INITIAL_VISIBLE, 0);
-  const visibleWins = showAll || hiddenCount === 0 ? filteredWins : filteredWins.slice(0, INITIAL_VISIBLE);
+
+  const activeWin = filteredWins[activeIndex] ?? filteredWins[0] ?? null;
+
+  const goTo = (index: number) => {
+    const total = filteredWins.length;
+    setActiveIndex(((index % total) + total) % total);
+  };
+  const goPrev = () => goTo(activeIndex - 1);
+  const goNext = () => goTo(activeIndex + 1);
+
+  const handleKeyDown = (event: KeyboardEvent) => {
+    if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+      event.preventDefault();
+      goNext();
+    } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+      event.preventDefault();
+      goPrev();
+    }
+  };
 
   return (
     <Box component="section" id="wins" sx={{ pt: { xs: 3, md: 5 }, pb: { xs: 3, md: 4 }, scrollMarginTop: 100 }}>
@@ -306,7 +471,7 @@ export function WinsSection() {
                 What I shipped, one card each
               </Typography>
               <Typography variant="body2" sx={{ color: "text.secondary" }}>
-                Tap a card for the problem, the fix, and what I said no to.
+                Scan the list, open one for the problem, the fix, and what I said no to.
               </Typography>
             </Stack>
 
@@ -322,8 +487,7 @@ export function WinsSection() {
                     clickable
                     onClick={() => {
                       setActiveFilter(filter.id);
-                      setExpandedId(null);
-                      setShowAll(false);
+                      setActiveIndex(0);
                     }}
                     variant={isActive ? "filled" : "outlined"}
                     aria-pressed={isActive}
@@ -340,44 +504,22 @@ export function WinsSection() {
           </Stack>
 
           <Box
+            onKeyDown={handleKeyDown}
             sx={{
               display: "grid",
               gap: 1.4,
-              gridTemplateColumns: {
-                xs: "1fr",
-                md: "repeat(2, minmax(0, 1fr))",
-                xl: "repeat(3, minmax(0, 1fr))",
-              },
+              gridTemplateColumns: { xs: "1fr", md: "300px minmax(0, 1fr)" },
               alignItems: "start",
             }}
           >
-            {visibleWins.map((win) => (
-              <WinCard
-                key={win.id}
-                win={win}
-                expanded={expandedId === win.id}
-                onToggle={() => setExpandedId((previous) => (previous === win.id ? null : win.id))}
-              />
-            ))}
+            <WinsRail items={filteredWins} activeId={activeWin?.id ?? null} onSelect={(id) => {
+              const index = filteredWins.findIndex((win) => win.id === id);
+              if (index >= 0) setActiveIndex(index);
+            }} />
+            {activeWin ? (
+              <WinPanel win={activeWin} index={activeIndex} total={filteredWins.length} onPrev={goPrev} onNext={goNext} />
+            ) : null}
           </Box>
-
-          {hiddenCount > 0 ? (
-            <Box sx={{ display: "flex", justifyContent: "center" }}>
-              <Button
-                variant={showAll ? "text" : "outlined"}
-                color="inherit"
-                onClick={() => setShowAll((previous) => !previous)}
-                endIcon={
-                  <ExpandMoreRoundedIcon
-                    sx={{ transform: showAll ? "rotate(180deg)" : "none", transition: "transform 160ms ease" }}
-                  />
-                }
-                sx={{ borderColor: alpha("#132433", 0.3) }}
-              >
-                {showAll ? "Show fewer" : `Show ${hiddenCount} more`}
-              </Button>
-            </Box>
-          ) : null}
 
           <Typography variant="caption" sx={{ color: "text.secondary" }}>
             {winsHeading.footnote}
