@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { IBM_Plex_Sans, Space_Grotesk } from "next/font/google";
+import { IBM_Plex_Mono, IBM_Plex_Sans, Space_Grotesk } from "next/font/google";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v16-appRouter";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 
@@ -7,7 +7,7 @@ import { withBasePath } from "@/lib/assetPath";
 import theme from "@/theme";
 import "./globals.css";
 
-// Three body weights and one display weight keep the font payload to four files.
+// Three body weights, one display weight and two numeric weights keep the font payload to six files.
 const bodyFont = IBM_Plex_Sans({
   subsets: ["latin"],
   variable: "--font-body",
@@ -20,6 +20,14 @@ const displayFont = Space_Grotesk({
   variable: "--font-display",
   display: "swap",
   weight: ["700"],
+});
+
+// Every metric on the page renders in a monospace so digits line up and read as data, not prose.
+const numericFont = IBM_Plex_Mono({
+  subsets: ["latin"],
+  variable: "--font-numeric",
+  display: "swap",
+  weight: ["500", "600"],
 });
 
 const siteTitle = "Kunal Ninawe | Product Engineer";
@@ -67,7 +75,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${bodyFont.variable} ${displayFont.variable}`}>
+      <body className={`${bodyFont.variable} ${displayFont.variable} ${numericFont.variable}`}>
         <AppRouterCacheProvider options={{ enableCssLayer: true }}>
           <ThemeProvider theme={theme}>
             <CssBaseline />

@@ -7,7 +7,6 @@ import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
 import GroupsRoundedIcon from "@mui/icons-material/GroupsRounded";
 import KeyboardArrowLeftRoundedIcon from "@mui/icons-material/KeyboardArrowLeftRounded";
 import KeyboardArrowRightRoundedIcon from "@mui/icons-material/KeyboardArrowRightRounded";
-import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
 import ShieldRoundedIcon from "@mui/icons-material/ShieldRounded";
 import {
   Box,
@@ -29,6 +28,9 @@ import {
   type WinTheme,
   type WinThemeFilter,
 } from "@/data/wins";
+import { CarlCard, WinMetricsCard } from "@/components/WinCarl";
+import { RichText } from "@/components/RichText";
+import { numericSx } from "@/lib/typography";
 
 const themeMeta: Record<WinTheme, { label: string; color: string; Icon: typeof BoltRoundedIcon }> = {
   customers: { label: "For customers", color: "#c75b1e", Icon: GroupsRoundedIcon },
@@ -39,42 +41,8 @@ const themeMeta: Record<WinTheme, { label: string; color: string; Icon: typeof B
 
 // Same fixed height on the rail and the panel, at every breakpoint, so neither
 // container grows to match the other's content.
-const RAIL_HEIGHT = { xs: 280, sm: 320, md: 560 };
-
-function splitLead(text: string): [string, string] {
-  const match = text.match(/^(.*?[.!?])(\s|$)/);
-  if (!match) return [text, ""];
-  return [match[1], text.slice(match[1].length).trim()];
-}
-
-function DetailBlock({ label, text, accent }: { label: string; text: string; accent?: string }) {
-  const [lead, rest] = splitLead(text);
-  return (
-    <Box>
-      <Typography
-        variant="caption"
-        sx={{
-          display: "block",
-          fontWeight: 700,
-          letterSpacing: "0.06em",
-          textTransform: "uppercase",
-          color: accent ?? alpha("#132433", 0.6),
-          mb: 0.4,
-        }}
-      >
-        {label}
-      </Typography>
-      <Typography variant="body2" sx={{ fontWeight: 600, lineHeight: 1.5, color: "text.primary" }}>
-        {lead}
-      </Typography>
-      {rest ? (
-        <Typography variant="body2" sx={{ lineHeight: 1.68, color: "text.secondary", mt: 0.35 }}>
-          {rest}
-        </Typography>
-      ) : null}
-    </Box>
-  );
-}
+const RAIL_HEIGHT = { xs: 280, sm: 320, md: 660 };
+const PANEL_HEIGHT = { xs: 560, sm: 600, md: 660 };
 
 function WinsRail({
   items,
@@ -155,9 +123,8 @@ function WinsRail({
               </Box>
               <Typography
                 sx={{
-                  fontFamily: "var(--font-display), sans-serif",
-                  fontWeight: 700,
-                  fontSize: "0.76rem",
+                  ...numericSx,
+                  fontSize: "0.74rem",
                   color: meta.color,
                   flexShrink: 0,
                   whiteSpace: "nowrap",
@@ -193,7 +160,7 @@ function WinPanel({
       component="article"
       aria-live="polite"
       sx={{
-        height: RAIL_HEIGHT,
+        height: PANEL_HEIGHT,
         borderRadius: "20px",
         bgcolor: alpha("#ffffff", 0.86),
         borderColor: alpha(meta.color, 0.35),
@@ -211,13 +178,14 @@ function WinPanel({
               sx={{ color: meta.color, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase" }}
             >
               {meta.label}
+              {win.company ? ` · ${win.company}` : ""}
             </Typography>
           </Stack>
           <Stack direction="row" spacing={0.5} sx={{ flexShrink: 0 }}>
             <IconButton
               size="small"
               onClick={onPrev}
-              aria-label="Previous win"
+              aria-label="Previous story"
               sx={{ border: `1px solid ${alpha("#132433", 0.12)}` }}
             >
               <KeyboardArrowLeftRoundedIcon fontSize="small" />
@@ -225,7 +193,7 @@ function WinPanel({
             <IconButton
               size="small"
               onClick={onNext}
-              aria-label="Next win"
+              aria-label="Next story"
               sx={{ border: `1px solid ${alpha("#132433", 0.12)}` }}
             >
               <KeyboardArrowRightRoundedIcon fontSize="small" />
@@ -244,11 +212,9 @@ function WinPanel({
           <Typography
             component="span"
             sx={{
-              fontFamily: "var(--font-display), sans-serif",
-              fontWeight: 700,
-              fontSize: { xs: "1.7rem", md: "2rem" },
+              ...numericSx,
+              fontSize: { xs: "1.5rem", md: "1.8rem" },
               lineHeight: 1,
-              letterSpacing: "-0.03em",
               color: meta.color,
             }}
           >
@@ -259,46 +225,35 @@ function WinPanel({
           </Typography>
         </Stack>
 
-        <Stack
-          direction="row"
-          spacing={0.75}
-          alignItems="flex-start"
-          sx={{ mt: 1.1, pt: 1.1, borderTop: `1px solid ${alpha("#132433", 0.08)}` }}
-        >
-          <PersonRoundedIcon sx={{ fontSize: 16, mt: "3px", color: alpha("#132433", 0.55), flexShrink: 0 }} aria-hidden />
-          <Typography variant="body2" sx={{ lineHeight: 1.6, color: "text.secondary" }}>
-            <Box component="span" sx={{ fontWeight: 700, color: "text.primary" }}>
-              Who felt it:{" "}
+        <Stack spacing={1.1} sx={{ mt: 1.8 }}>
+          <CarlCard kind="context">
+            <Typography variant="body2" sx={{ lineHeight: 1.6, fontWeight: 600, color: "text.primary" }}>
+              Who felt it: <Box component="span" sx={{ fontWeight: 400 }}>{win.who}</Box>
+            </Typography>
+            <Typography variant="body2" sx={{ lineHeight: 1.68, color: "text.primary", mt: 0.6 }}>
+              <RichText text={win.context} />
+            </Typography>
+          </CarlCard>
+          <CarlCard kind="action">
+            <Box component="ul" sx={{ m: 0, pl: 2.2, display: "grid", gap: 0.55 }}>
+              {win.action.map((step) => (
+                <Typography key={step} component="li" variant="body2" sx={{ lineHeight: 1.62, color: "text.primary" }}>
+                  <RichText text={step} />
+                </Typography>
+              ))}
             </Box>
-            {win.who}
-          </Typography>
-        </Stack>
-
-        <Stack spacing={1.4} sx={{ mt: 1.6 }}>
-          <DetailBlock label="What was wrong" text={win.problem} />
-          <DetailBlock label="What I did" text={win.action} />
-          <DetailBlock label="What changed" text={win.result} accent={meta.color} />
-          {win.tradeoff ? (
-            <Box
-              sx={{
-                borderLeft: `3px solid ${meta.color}`,
-                bgcolor: alpha("#132433", 0.04),
-                borderRadius: "10px",
-                px: 1.4,
-                py: 1,
-              }}
-            >
-              <Typography
-                variant="caption"
-                sx={{ display: "block", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: meta.color, mb: 0.3 }}
-              >
-                What I said no to
-              </Typography>
-              <Typography variant="body2" sx={{ lineHeight: 1.6 }}>
-                {win.tradeoff}
-              </Typography>
-            </Box>
-          ) : null}
+          </CarlCard>
+          <CarlCard kind="result">
+            <Typography variant="body2" sx={{ lineHeight: 1.68, color: "text.primary" }}>
+              <RichText text={win.result} />
+            </Typography>
+          </CarlCard>
+          <CarlCard kind="learning">
+            <Typography variant="body2" sx={{ lineHeight: 1.68, color: "text.primary" }}>
+              <RichText text={win.learning} />
+            </Typography>
+          </CarlCard>
+          <WinMetricsCard metrics={win.metrics} accent={meta.color} />
         </Stack>
       </Box>
 
@@ -308,7 +263,7 @@ function WinPanel({
         justifyContent="space-between"
         sx={{ px: { xs: 1.8, md: 2.4 }, py: 1, borderTop: `1px solid ${alpha("#132433", 0.08)}`, flexShrink: 0 }}
       >
-        <Typography variant="caption" sx={{ color: "text.secondary" }}>
+        <Typography variant="caption" sx={{ ...numericSx, fontWeight: 500, color: "text.secondary" }}>
           {index + 1} of {total}
         </Typography>
         <Stack direction="row" spacing={0.4} sx={{ display: { xs: "none", sm: "flex" } }}>
@@ -316,7 +271,7 @@ function WinPanel({
             <Box
               key={i}
               sx={{
-                width: 14,
+                width: 12,
                 height: 4,
                 borderRadius: "3px",
                 bgcolor: i <= index ? meta.color : alpha("#132433", 0.12),
@@ -438,11 +393,9 @@ export function WinsSection() {
                     <Typography
                       component="dt"
                       sx={{
-                        fontFamily: "var(--font-display), sans-serif",
-                        fontWeight: 700,
-                        fontSize: { xs: "1.55rem", md: "1.8rem" },
+                        ...numericSx,
+                        fontSize: { xs: "1.4rem", md: "1.6rem" },
                         lineHeight: 1,
-                        letterSpacing: "-0.03em",
                         color: "#f0b07b",
                       }}
                     >
@@ -471,7 +424,7 @@ export function WinsSection() {
                 What I shipped, one card each
               </Typography>
               <Typography variant="body2" sx={{ color: "text.secondary" }}>
-                Scan the list, open one for the problem, the fix, and what I said no to.
+                Each story in four parts: the context, what I did, what changed, and what I learned.
               </Typography>
             </Stack>
 
