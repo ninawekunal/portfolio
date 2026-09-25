@@ -2,20 +2,14 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
-import GitHubIcon from "@mui/icons-material/GitHub";
 import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
 import KeyboardArrowUpRoundedIcon from "@mui/icons-material/KeyboardArrowUpRounded";
-import LightbulbRoundedIcon from "@mui/icons-material/LightbulbRounded";
-import OpenInNewRoundedIcon from "@mui/icons-material/OpenInNewRounded";
 import {
   Box,
-  Button,
   ButtonBase,
   Chip,
   Container,
   Dialog,
-  DialogContent,
-  DialogTitle,
   IconButton,
   Paper,
   Stack,
@@ -24,42 +18,13 @@ import {
 } from "@mui/material";
 import { alpha, useTheme } from "@mui/material/styles";
 
+import { ProjectDetail } from "@/components/ProjectDetail";
+import { plainText } from "@/components/RichText";
 import { TechnologyPin } from "@/components/TechnologyPin";
 import { type PortfolioProject, projectFilters, projects } from "@/data/portfolio";
 
-const MAGIC_GRADIENT_START = "#ff3bb5";
-const MAGIC_GRADIENT_END = "#ff7b38";
-
 function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value));
-}
-
-function LessonsList({
-  project,
-  itemColor,
-}: {
-  project: PortfolioProject;
-  itemColor: string;
-}) {
-  return (
-    <Stack spacing={0.72}>
-      {project.lessonsLearned.map((item) => (
-        <Stack key={item} direction="row" spacing={0.75} alignItems="flex-start">
-          <LightbulbRoundedIcon
-            sx={{
-              fontSize: 16,
-              color: alpha("#f5be42", 0.95),
-              mt: "3px",
-              flexShrink: 0,
-            }}
-          />
-          <Typography variant="body2" sx={{ color: itemColor, lineHeight: 1.72 }}>
-            {item}
-          </Typography>
-        </Stack>
-      ))}
-    </Stack>
-  );
 }
 
 export function ProjectShowcase() {
@@ -89,12 +54,19 @@ export function ProjectShowcase() {
     filteredProjects[0] ??
     null;
 
-  const openLiveDemo = (project: PortfolioProject) => {
-    if (!project.liveUrl) {
-      return;
-    }
+  const selectedIndex = selectedProject
+    ? filteredProjects.findIndex((project) => project.id === selectedProject.id)
+    : -1;
 
-    window.open(project.liveUrl, "_blank", "noopener,noreferrer");
+  const stepProject = (delta: number) => {
+    const total = filteredProjects.length;
+
+    if (!total) return;
+
+    const next = filteredProjects[(((selectedIndex + delta) % total) + total) % total];
+    setSelectedProjectId(next.id);
+
+    if (mobileProjectDetail) setMobileProjectDetail(next);
   };
 
   const handleProjectCardClick = (project: PortfolioProject) => {
@@ -251,7 +223,7 @@ export function ProjectShowcase() {
                 </Box>
               </Typography>
               <Typography variant="body1" sx={{ color: alpha("#e4ecff", 0.84), lineHeight: 1.72 }}>
-                Side projects with the code public. Pick one on the left to see the stack, what I learned, and the repo.
+                Side projects with the code public. Pick one to see why I built it, what it does, what it taught me, and how it ships.
               </Typography>
             </Stack>
 
@@ -413,7 +385,7 @@ export function ProjectShowcase() {
                   sx={{
                     px: 1.2,
                     pb: 1.2,
-                    maxHeight: { xs: "min(52dvh, 420px)", md: 388 },
+                    maxHeight: { xs: "min(52dvh, 420px)", md: 600 },
                     overflowY: "auto",
                     overscrollBehaviorY: "contain",
                     scrollBehavior: "auto",
@@ -472,7 +444,7 @@ export function ProjectShowcase() {
                               </Stack>
 
                               <Typography variant="body2" sx={{ lineHeight: 1.62, color: alpha("#e4ecff", 0.82) }}>
-                                {project.headline}
+                                {plainText(project.headline)}
                               </Typography>
 
                               <Stack direction="row" flexWrap="wrap" gap={0.55}>
@@ -503,64 +475,22 @@ export function ProjectShowcase() {
               {selectedProject && !isMobile ? (
                 <Paper
                   sx={{
-                    position: "sticky",
+                    position: { lg: "sticky" },
                     top: "calc(var(--site-header-height, 96px) + 12px)",
+                    height: 660,
                     overflow: "hidden",
                     borderRadius: "28px",
                     border: `1px solid ${alpha("#ffffff", 0.18)}`,
                     bgcolor: alpha("#0f1321", 0.94),
                   }}
                 >
-                  <Stack spacing={1.3} sx={{ p: 1.6, borderBottom: `1px solid ${alpha("#ffffff", 0.12)}` }}>
-                    <Typography variant="overline" sx={{ letterSpacing: "0.12em", color: alpha("#fff6d8", 0.9) }}>
-                      Project Details
-                    </Typography>
-                    <Typography variant="h6" component="h3" sx={{ mt: 0.2, color: alpha("#ffffff", 0.97) }}>
-                      {selectedProject.title}
-                    </Typography>
-                    <Typography variant="body2" sx={{ color: alpha("#dce8ff", 0.84), lineHeight: 1.66 }}>
-                      {selectedProject.summary}
-                    </Typography>
-                    <Typography variant="caption" sx={{ color: alpha("#dce8ff", 0.74), lineHeight: 1.55 }}>
-                      {selectedProject.demoInteractionHint ??
-                        "Interact with this demo to inspect the primary workflow and state transitions."}
-                    </Typography>
-                    <Stack direction="row" flexWrap="wrap" gap={0.7}>
-                      {selectedProject.stack.map((item) => (
-                        <TechnologyPin key={`${selectedProject.id}-${item}-detail`} label={item} />
-                      ))}
-                    </Stack>
-                    <Box>
-                      <Typography variant="subtitle2" component="h4" sx={{ mb: 0.45, color: alpha("#ffffff", 0.93) }}>
-                        What I learned
-                      </Typography>
-                      <LessonsList project={selectedProject} itemColor={alpha("#e4ecff", 0.84)} />
-                    </Box>
-                    <Stack direction={{ xs: "column", sm: "row" }} spacing={1.05}>
-                      <Button
-                        href={selectedProject.repoUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        variant="contained"
-                        startIcon={<GitHubIcon />}
-                        sx={{
-                          backgroundImage: `linear-gradient(90deg, ${MAGIC_GRADIENT_START} 0%, ${MAGIC_GRADIENT_END} 100%)`,
-                        }}
-                      >
-                        View repository
-                      </Button>
-                      <Button
-                        variant="outlined"
-                        color="inherit"
-                        startIcon={<OpenInNewRoundedIcon />}
-                        disabled={!selectedProject.liveUrl}
-                        onClick={() => openLiveDemo(selectedProject)}
-                        sx={{ borderColor: alpha("#ffffff", 0.34), color: alpha("#ffffff", 0.9) }}
-                      >
-                        Open live demo
-                      </Button>
-                    </Stack>
-                  </Stack>
+                  <ProjectDetail
+                    project={selectedProject}
+                    tone="dark"
+                    position={{ index: selectedIndex, total: filteredProjects.length }}
+                    onPrev={() => stepProject(-1)}
+                    onNext={() => stepProject(1)}
+                  />
                 </Paper>
               ) : null}
             </Box>
@@ -571,80 +501,25 @@ export function ProjectShowcase() {
       <Dialog
         open={Boolean(mobileProjectDetail && isMobile)}
         onClose={() => setMobileProjectDetail(null)}
-        fullScreen={isMobile}
-        maxWidth="sm"
-        fullWidth
+        fullScreen
+        slotProps={{ paper: { sx: { bgcolor: "#0f1321", border: "none" } } }}
       >
-        <DialogTitle
-          sx={{
-            display: "flex",
-            alignItems: "flex-start",
-            justifyContent: "space-between",
-            gap: 1,
-            pr: 1,
-          }}
+        <IconButton
+          aria-label="Close project details"
+          onClick={() => setMobileProjectDetail(null)}
+          sx={{ position: "absolute", top: 10, right: 10, zIndex: 3, color: alpha("#ffffff", 0.9) }}
         >
-          <Box sx={{ minWidth: 0 }}>
-            <Typography variant="h6" sx={{ lineHeight: 1.24 }}>
-              {mobileProjectDetail?.title}
-            </Typography>
-            <Typography variant="caption" sx={{ color: "text.secondary", display: "block", mt: 0.32 }}>
-              {mobileProjectDetail?.kicker}
-            </Typography>
-          </Box>
-          <IconButton aria-label="Close project details" onClick={() => setMobileProjectDetail(null)}>
-            <CloseRoundedIcon />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent sx={{ pt: 0.4 }}>
-          {mobileProjectDetail ? (
-            <Stack spacing={1.2}>
-              <Typography variant="body2" sx={{ color: "text.secondary", lineHeight: 1.68 }}>
-                {mobileProjectDetail.summary}
-              </Typography>
-              <Typography variant="caption" sx={{ color: "text.secondary", lineHeight: 1.55 }}>
-                {mobileProjectDetail.demoInteractionHint ??
-                  "Interact with this demo to inspect the primary workflow and state transitions."}
-              </Typography>
-              <Stack direction="row" flexWrap="wrap" gap={0.7}>
-                {mobileProjectDetail.stack.map((item) => (
-                  <TechnologyPin key={`${mobileProjectDetail.id}-${item}-mobile-detail`} label={item} />
-                ))}
-              </Stack>
-              <Box>
-                <Typography variant="subtitle2" sx={{ mb: 0.45 }}>
-                  What I learned
-                </Typography>
-                <LessonsList project={mobileProjectDetail} itemColor="text.primary" />
-              </Box>
-              <Stack spacing={0.9}>
-                <Button
-                  href={mobileProjectDetail.repoUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  variant="contained"
-                  startIcon={<GitHubIcon />}
-                  sx={{
-                    backgroundImage: `linear-gradient(90deg, ${MAGIC_GRADIENT_START} 0%, ${MAGIC_GRADIENT_END} 100%)`,
-                  }}
-                >
-                  View repository
-                </Button>
-                <Button
-                  variant="outlined"
-                  startIcon={<OpenInNewRoundedIcon />}
-                  disabled={!mobileProjectDetail.liveUrl}
-                  onClick={() => {
-                    openLiveDemo(mobileProjectDetail);
-                    setMobileProjectDetail(null);
-                  }}
-                >
-                  Open live demo
-                </Button>
-              </Stack>
-            </Stack>
-          ) : null}
-        </DialogContent>
+          <CloseRoundedIcon />
+        </IconButton>
+        {mobileProjectDetail ? (
+          <ProjectDetail
+            project={mobileProjectDetail}
+            tone="dark"
+            position={{ index: selectedIndex, total: filteredProjects.length }}
+            onPrev={() => stepProject(-1)}
+            onNext={() => stepProject(1)}
+          />
+        ) : null}
       </Dialog>
     </Box>
   );

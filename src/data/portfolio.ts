@@ -1,23 +1,24 @@
+/**
+ * One side project, told the way a reader scans it: why it exists, what it does,
+ * what it taught me, how it was built, and how it ships.
+ * Copy may mark jargon as `[[glossary-key]]` or `[[glossary-key|label]]`; see `data/glossary.ts`.
+ */
 export type PortfolioProject = {
   id: string;
   title: string;
   kicker: string;
+  /** One plain sentence: what the project is. */
   headline: string;
-  summary: string;
-  role: string;
-  githubSlug: string;
   repoUrl: string;
   liveUrl?: string;
-  demoInteractionHint?: string;
-  posterSrc: string;
-  posterAlt: string;
   tags: string[];
   stack: string[];
-  highlights: string[];
-  architecture: string[];
-  valueSignals: string[];
-  evidence: string[];
-  lessonsLearned: string[];
+  motivation: string;
+  capabilities: string[];
+  lessons: string[];
+  build: string[];
+  /** How it goes live. Omitted for projects that only run locally. */
+  deploy?: string;
 };
 
 export type CareerEntry = {
@@ -561,21 +562,54 @@ export const projectFilters = [
 
 export const projects: PortfolioProject[] = [
   {
+    id: "learning-doc-builder",
+    title: "Learning Doc Builder",
+    kicker: "Claude skill + reading app",
+    headline: "Turns any topic into one short, interactive study page with a quiz at the end.",
+    repoUrl: "https://github.com/ninawekunal/learning-doc-builder",
+    liveUrl: "https://ninawekunal.github.io/learning-doc-builder/",
+    tags: ["AI", "Frontend"],
+    stack: [
+      "React",
+      "TypeScript",
+      "Vite",
+      "Tailwind CSS",
+      "Radix UI",
+      "React Router",
+      "Shiki",
+      "marked",
+      "GitHub Actions",
+      "GitHub Pages",
+    ],
+    motivation:
+      "Long technical docs lose me halfway through. I wanted explainers built for a short attention span, where every choice about structure comes from research on how people actually remember things, not from taste. And I wanted an AI to write them in that format for me, about anything, including our own codebase.",
+    capabilities: [
+      "A [[claude-code|Claude]] skill that researches a topic before writing, reading the real files when the topic is a codebase, then writes the doc as plain markdown.",
+      "A reading app that renders every doc the same way, so changing how all of them look is one stylesheet, not forty files.",
+      "A graded quiz of real-world scenario questions, one at a time, with an explanation for every answer and a score at the end. It is built on [[active-recall]].",
+      "Dark mode, three reading widths, and a 'bionic reading' toggle that bolds the start of every word, all remembered per browser.",
+      "On a phone, the table of contents folds into one sticky bar that shows which section you are in.",
+    ],
+    lessons: [
+      "A beautiful page around wrong facts is worse than no page, so the skill researches before it writes a single heading.",
+      "Keeping the content as plain markdown and every visual decision in the app is what lets forty docs change their look at once.",
+      "An automated check on every doc's quiz catches what a human reviewer skims past.",
+    ],
+    build: [
+      "Designed the doc format first: a short header, small sections, callout boxes for the key idea and the common trap, and one quiz block at the end.",
+      "Built the reading app with React, Vite and Tailwind, with syntax-highlighted code and collapsible deep dives.",
+      "Packaged the writing process as a skill anyone can copy into their own AI setup.",
+      "Wrote a content checker that runs on every change and blocks a doc with a broken quiz or a missing section.",
+    ],
+    deploy:
+      "Every push runs the checks, builds the site, and publishes it to [[github-pages]] with GitHub Actions.",
+  },
+  {
     id: "paws-email-notifications",
     title: "PAWS Email Notifications",
-    kicker: "Monorepo full-stack system",
-    headline: "Admin console + scraper + outbox-driven email notifications.",
-    summary:
-      "An end-to-end notification system for a shelter adoption site: an admin dashboard to manage subscribers and rules, a Hapi API, a Postgres system of record, and a scheduled runner that scrapes adoption listings and fans out email alerts. The design leans on pragmatic, low-cost queue semantics via a Postgres outbox model to keep the system operable before introducing dedicated infrastructure.",
-    role:
-      "Designed the monorepo boundaries (client/server/contracts), defined typed Zod contracts, and implemented the scaffold for scraping, rule execution, and notification delivery with strong operational visibility.",
-    githubSlug: "ninawekunal/paws-email-notifications",
+    kicker: "Full-stack notification system",
+    headline: "Emails people when an animal they would want to adopt appears on the PAWS shelter site.",
     repoUrl: "https://github.com/ninawekunal/paws-email-notifications",
-    demoInteractionHint:
-      "Run the client and server workspace locally, then use the admin dashboard to sync animals, manage subscribers, and validate rules-driven notification behavior.",
-    posterSrc: "/projects/paws-email-notifications.svg",
-    posterAlt:
-      "PAWS Email Notifications project poster showing an admin panel, a scraper flow, and an outbox queue feeding email delivery.",
     tags: ["Full Stack", "Scalable Systems"],
     stack: [
       "React",
@@ -588,51 +622,33 @@ export const projects: PortfolioProject[] = [
       "Drizzle",
       "TanStack Query",
       "Cheerio",
-      "undici",
     ],
-    highlights: [
-      "Monorepo with shared typed contracts to keep client and API aligned.",
-      "Postgres-backed outbox pattern for queue semantics without extra infrastructure.",
-      "Admin control surface for scraper and notification rules (designed for small non-profits).",
+    motivation:
+      "A shelter's adoption listings change quickly, and anyone waiting for the right animal has to keep checking the site by hand. I wanted the site to tell people instead, and to run cheaply enough for a small non-profit.",
+    capabilities: [
+      "An admin dashboard to manage subscribers and the rules for who hears about which animals.",
+      "A 'Sync animals' button that checks the shelter's listings and pulls in the details of anything new.",
+      "Email alerts queued with the [[outbox-pattern]], so an alert is never lost if a step fails halfway.",
+      "Startup checks that refuse to run if the database or a setting is missing, plus a log of every request.",
     ],
-    architecture: [
-      "React + Vite admin client consumes a typed API surface backed by Zod validation.",
-      "Hapi server reads/writes the system-of-record tables in Postgres via Drizzle ORM.",
-      "A scheduled runner claims due rules, scrapes listings, writes events, and triggers delivery fan-out.",
+    lessons: [
+      "A simple database table can do the job of a message queue while traffic is low and the budget is tight.",
+      "Shared rules between the admin site and the server stop the two from quietly disagreeing about data.",
+      "Scrapers need fallbacks: the shelter's site blocks automated requests, so the scraper can route through a proxy.",
     ],
-    valueSignals: [
-      "Shows practical system design: start simple, keep ops easy, then scale when needed.",
-      "Strong boundary discipline via contracts package and runtime env validation.",
-      "Focuses on reliability and observability for a workflow that can’t silently fail.",
-    ],
-    evidence: [
-      "Shared `packages/contracts` with Zod schemas and types for API parsing.",
-      "Documented system design covering security, scaling, and scheduling strategy.",
-      "Operational logging and health endpoints designed into the server from the start.",
-    ],
-    lessonsLearned: [
-      "Queue semantics can start as a relational outbox when traffic is low and budgets are tight.",
-      "Typed contracts reduce drift between admin UI expectations and server behavior.",
-      "Scrapers need flexible fallbacks (proxies, retries, and rule controls) to survive real-world constraints.",
+    build: [
+      "Set up a [[monorepo]] with the admin site, the server, and a shared package of [[zod]] rules both sides trust.",
+      "Modelled animals, events and subscribers in Postgres through Drizzle, with generated database migrations.",
+      "Wrote the system design down first, covering security, scaling and scheduling, before building the runner.",
     ],
   },
   {
     id: "cat-whisperer",
     title: "Cat Whisperer",
-    kicker: "Privacy-first browser ML",
-    headline: "Decode cat vocalizations with in-browser audio intelligence.",
-    summary:
-      "A React web app that records or accepts uploaded audio of cat meows and purrs, runs audio analysis locally in the browser, and executes YAMNet via MediaPipe Audio Tasks for on-device classification. It also supports a lightweight, per-cat teaching profile so the app can learn intent labels (like food, attention, or door) from examples you provide.",
-    role:
-      "Built the recording + upload workflows, local audio preprocessing pipeline, on-device model integration, and the teaching profile that adapts to user-labeled examples.",
-    githubSlug: "ninawekunal/cat_whisperer",
+    kicker: "Private, in-browser AI",
+    headline: "Listens to your cat's meows and learns what they mean, without the audio ever leaving your browser.",
     repoUrl: "https://github.com/ninawekunal/cat_whisperer",
     liveUrl: "https://ninawekunal.github.io/cat_whisperer",
-    demoInteractionHint:
-      "Record a short clip (or upload audio), review the model decoding, then label a few clips to teach your own cat’s intent profile.",
-    posterSrc: "/projects/cat-whisperer.svg",
-    posterAlt:
-      "Cat Whisperer project poster showing an audio waveform, a local model chip, and intent labels for cat vocalizations.",
     tags: ["AI", "Frontend", "Data / ML"],
     stack: [
       "React",
@@ -642,254 +658,169 @@ export const projects: PortfolioProject[] = [
       "MediaRecorder API",
       "MediaPipe Audio Tasks",
       "YAMNet",
-      "localStorage",
       "GitHub Pages",
     ],
-    highlights: [
-      "On-device audio classification with privacy-first defaults (no upload required).",
-      "Local noise reduction and validation using Web Audio analysis utilities.",
-      "Teach-and-adapt workflow via a per-cat intent profile stored locally.",
+    motivation:
+      "A playful question with a real technical one underneath: can a web page listen to audio and learn something personal, with nothing leaving the device and no server to pay for?",
+    capabilities: [
+      "Record up to 8 seconds from the microphone, or upload a clip.",
+      "Checks the clip really sounds like a cat, and cleans up background noise, all inside the browser.",
+      "Recognises the sound with [[yamnet]], using [[on-device-ml]].",
+      "Label a few clips as food, attention or door, and it starts learning your own cat's patterns.",
     ],
-    architecture: [
-      "Capture audio via MediaRecorder or file upload, then normalize and filter in-browser.",
-      "Run YAMNet locally for general audio decoding and gate results with cat-vocalization heuristics.",
-      "Persist labeled examples and intent weights in localStorage for lightweight personalization.",
+    lessons: [
+      "AI in the browser feels trustworthy when the screen is honest about its limits and how sure it is.",
+      "A tiny loop where the user teaches the app can beat one-size-fits-all labels for something this personal.",
+      "Audio has to be cleaned and levelled carefully, or the same meow gets different answers on different devices.",
     ],
-    valueSignals: [
-      "Demonstrates applied ML UX without server complexity or privacy tradeoffs.",
-      "Shows comfort with real-time media pipelines and browser constraints.",
-      "Pairs “cool model” capability with a teachable workflow that improves over time.",
+    build: [
+      "Captured audio with the browser's built-in recorder, then filtered and levelled it with the Web Audio API.",
+      "Loaded Google's YAMNet through MediaPipe so it runs locally, and filtered its answers with cat-specific checks.",
+      "Stored each cat's labelled examples in the browser, so the profile survives a refresh without a server.",
     ],
-    evidence: [
-      "Mic + upload support with clear constraints (duration, size, supported formats).",
-      "Noise reduction pipeline (filtering + compression) executed locally before inference.",
-      "GitHub Pages deployment configuration with base-path handling for static hosting.",
-    ],
-    lessonsLearned: [
-      "On-device ML works best when the UI makes constraints and confidence legible.",
-      "Small, teachable user loops can outperform one-size-fits-all labels for personal contexts.",
-      "Audio pipelines need careful normalization to make model outputs stable across devices.",
-    ],
+    deploy: "A GitHub Actions workflow builds it and publishes it to [[github-pages]] on every push.",
   },
   {
     id: "pdf-highlighter",
-    title: "Invoice PDF Field Highlighter",
-    kicker: "Document intelligence UI",
-    headline: "Extracted fields mapped directly onto the PDF surface.",
-    summary:
-      "A React demo that loads invoice PDFs, extracts structured fields, and highlights the exact field location inside the document when a user selects it. This is strong evidence of applied AI-style document workflows paired with clear interface design.",
-    role:
-      "Built the extraction flow, coordinate mapping logic, and the split-screen UI for document review and verification.",
-    githubSlug: "ninawekunal/pdf-highlighter",
+    title: "Invoice PDF Highlighter",
+    kicker: "Document review tool",
+    headline: "Pulls the key fields out of an invoice PDF and highlights exactly where each one sits on the page.",
     repoUrl: "https://github.com/ninawekunal/pdf-highlighter",
     liveUrl: "https://ninawekunal.github.io/pdf-highlighter/",
-    demoInteractionHint:
-      "Choose an invoice sample and click extracted fields to jump to the exact highlighted location in the PDF.",
-    posterSrc: "/projects/pdf-highlighter.svg",
-    posterAlt: "PDF Highlighter project poster showing a document with highlighted fields and a matching side panel.",
     tags: ["AI", "Frontend", "Data / ML"],
     stack: ["React", "TypeScript", "Vite", "Material UI", "react-pdf", "pdf.js"],
-    highlights: [
-      "Field extraction paired with screen-space highlight overlays.",
-      "Reusable MUI components for cards, dialogs, buttons, and layout.",
-      "GitHub Pages-ready static deployment workflow.",
+    motivation:
+      "A small, public version of a problem I work on every day: a person checking what software read off an invoice. Seeing the value lit up on the PDF is what makes that check fast, and what makes people trust it.",
+    capabilities: [
+      "Switch between 10 sample invoices, or upload your own one-page PDF.",
+      "Pulls out 10 key fields, such as invoice number, due date and total.",
+      "Click a field and its exact spot on the PDF lights up.",
+      "Download the invoice you are looking at.",
     ],
-    architecture: [
-      "A single orchestration container coordinates PDF state, extraction, and highlight selection.",
-      "Utility modules handle text parsing, normalization, and coordinate translation.",
-      "The UI separates invoice selection, PDF view, and extracted field review into focused surfaces.",
+    lessons: [
+      "People trust extracted data when they can see exactly where it came from on the page.",
+      "Two ways of finding a value, with a fallback, survive far more invoice layouts than one clever rule.",
+      "When the software is not sure, the design should make checking by hand quick, not hide the doubt.",
     ],
-    valueSignals: [
-      "Demonstrates document-heavy product design that still feels lightweight.",
-      "Shows understanding of human-in-the-loop verification workflows.",
-      "Proves the ability to turn opaque extraction logic into inspectable user experiences.",
+    build: [
+      "Rendered PDFs with react-pdf, which is built on [[pdf-js]].",
+      "Read the text on each page and found values in two passes: known labels first, then a general 'Label: Value' fallback.",
+      "Converted each value's position from PDF coordinates to screen coordinates, so the highlight lands exactly on it.",
     ],
-    evidence: [
-      "Two-pass field extraction strategy and generic fallback parsing.",
-      "PDF coordinate mapping from document space to screen overlay space.",
-      "Static deployment pipeline with GitHub Actions and base-path handling.",
-    ],
-    lessonsLearned: [
-      "Document intelligence UX becomes trustworthy when extraction output is visibly anchored to source coordinates.",
-      "Layered parsing and fallback strategies reduce fragility across invoice formats.",
-      "Human-in-the-loop review flows are essential when field extraction confidence is not perfect.",
-    ],
+    deploy: "GitHub Actions builds it into a [[static-site]] and publishes it to [[github-pages]].",
   },
   {
     id: "image-gender-detector",
     title: "ImageGenderDetector",
-    kicker: "Computer vision foundation project",
-    headline: "Classical ML pipeline for face detection and gender classification.",
-    summary:
-      "A computer vision project that detects faces and classifies gender using OpenCV and classical machine learning methods. It rounds out the portfolio by showing depth beyond web stacks and comfort with the underlying mechanics of ML systems.",
-    role:
-      "Built the image-processing pipeline, feature extraction workflow, model training setup, and Flask-based interface.",
-    githubSlug: "ninawekunal/ImageGenderDetector",
+    kicker: "Classic machine learning, end to end",
+    headline: "Finds faces in a photo and predicts gender with a model trained from scratch.",
     repoUrl: "https://github.com/ninawekunal/ImageGenderDetector",
     liveUrl: "https://ninawekunal.github.io/ImageGenderDetector/faceapp.html",
-    demoInteractionHint:
-      "Upload or select a face image, run detection, then inspect the bounding box and predicted class output.",
-    posterSrc: "/projects/image-gender-detector.svg",
-    posterAlt: "ImageGenderDetector project poster showing a detected face, model signals, and classifier output.",
     tags: ["AI", "Data / ML"],
     stack: ["Python", "Flask", "OpenCV", "scikit-learn", "NumPy", "Pandas"],
-    highlights: [
-      "Face detection via Haar Cascade classification.",
-      "PCA and SVM-based gender classification workflow.",
-      "Model evaluation through confusion matrix, ROC, and AUC metrics.",
+    motivation:
+      "I wanted to build a whole machine learning pipeline by hand, from raw photos to a trained model to something a person could click on, so that no library hid the steps from me.",
+    capabilities: [
+      "Finds each face in an uploaded photo with a [[haar-cascade]].",
+      "Classifies each face using [[pca-svm]], trained on a labelled photo set.",
+      "Reports how good the model is with standard accuracy measures, not just a single score.",
     ],
-    architecture: [
-      "Image preprocessing converts uploads to grayscale before face detection and cropping.",
-      "Eigen-image style dimensionality reduction feeds a trained classifier.",
-      "A lightweight Flask interface exposes the model through a browser workflow.",
+    lessons: [
+      "Classic machine learning still works well when every preparation step is explicit and measured.",
+      "How well the face is found and cropped matters more to the result than the model itself.",
+      "Accuracy numbers are not enough: the photos were mostly of Hollywood celebrities, and the page should say so.",
     ],
-    valueSignals: [
-      "Shows technical range beyond frontend and backend web delivery.",
-      "Supports the AI-native positioning with direct ML implementation experience.",
-      "Adds credibility around data pipelines, feature engineering, and model evaluation.",
+    build: [
+      "Converted photos to grayscale and cropped each detected face.",
+      "Tuned the model with a grid search to find its best settings.",
+      "Wrapped it in a small Flask web app so anyone can try it.",
     ],
-    evidence: [
-      "Use of PCA, SVM, and Grid Search in the training workflow.",
-      "Browser-based demo backed by Python and OpenCV.",
-      "Transparent acknowledgement of dataset bias and model limitations.",
-    ],
-    lessonsLearned: [
-      "Classical ML pipelines still deliver practical value when feature preparation is explicit and well evaluated.",
-      "Preprocessing quality (detection, cropping, normalization) heavily influences downstream classifier performance.",
-      "Model metrics are not enough without communicating dataset bias and reliability boundaries to users.",
-    ],
+    deploy: "The demo page is published on [[github-pages]].",
   },
   {
     id: "agent-queues",
     title: "Agent Queues",
-    kicker: "Async workflow orchestration demo",
-    headline: "Queue-backed workbench for agentic refund operations.",
-    summary:
-      "A Next.js and custom Node server demo that turns Redis lists and QStash delivery into a visible operator workflow. It is a good example of building AI-adjacent systems with operational clarity instead of black-box behavior.",
-    role:
-      "Built the end-to-end queue model, strict API contracts, and UI panels that expose processing, success, and failure states.",
-    githubSlug: "ninawekunal/agent-queues",
+    kicker: "Background work, made visible",
+    headline: "A live board showing AI-style refund jobs moving from waiting to done, or failed.",
     repoUrl: "https://github.com/ninawekunal/agent-queues",
     liveUrl: "https://agent-queues.vercel.app",
-    demoInteractionHint:
-      "Create a sample refund request, then watch queue, processing, success, and failure lanes update in real time.",
-    posterSrc: "/projects/agent-queues.svg",
-    posterAlt: "Agent Queues project poster showing a queue flowing into processing and outcome buckets.",
     tags: ["AI", "Full Stack", "Scalable Systems"],
     stack: ["Next.js", "TypeScript", "Node.js", "Upstash Redis", "QStash", "Zod"],
-    highlights: [
-      "Shared typed API envelope for every endpoint.",
-      "Build and startup validation for Redis and QStash connectivity.",
-      "Queue, stream, success, and failure states surfaced directly in the UI.",
+    motivation:
+      "AI agents do slow work in the background, and the people supervising them need to see what is waiting, what is running, and what broke. I wanted to build that view on a real [[queue]], not a mock.",
+    capabilities: [
+      "Create sample refund requests and watch them move through waiting, processing, done and failed.",
+      "A Redis list holds the waiting work, and QStash hands jobs to the worker.",
+      "Every endpoint checks what comes in and what goes out with [[zod]], in one shared response shape.",
+      "Refuses to start, or even build, if it cannot reach Redis or QStash.",
     ],
-    architecture: [
-      "Custom Node server alongside the Next.js App Router.",
-      "Redis lists power queue semantics while the UI models lifecycle state separately.",
-      "Endpoints validate both inputs and outputs to keep contracts explicit.",
+    lessons: [
+      "Processing work in batches smooths out bursts and protects whatever sits downstream.",
+      "Splitting live updates by agent lets each screen listen only to what it shows.",
+      "A publish-and-subscribe setup suits a dashboard where state changes every second.",
     ],
-    valueSignals: [
-      "Shows readiness for background jobs, async processing, and operations-facing tools.",
-      "Demonstrates engineering maturity through observability and failure-path thinking.",
-      "Connects AI-native workflow patterns to real product UX instead of just API demos.",
+    build: [
+      "Ran a custom Node server alongside the Next.js app.",
+      "Added one route at a time, each with an input and an output schema, following a written rule every new endpoint must meet.",
     ],
-    evidence: [
-      "Refund queue routes, process routes, and Upstash setup endpoints.",
-      "Shared contract validation helpers and API response envelope.",
-      "Dedicated panels for queue stream, success bucket, and failure bucket.",
-    ],
-    lessonsLearned: [
-      "Batch-style queue processing smooths burst traffic and protects downstream services under load.",
-      "Redis stream events partitioned by agent ID let the client subscribe to only the updates it needs.",
-      "A publish/subscribe flow is practical for real-time operator dashboards where state changes rapidly.",
-    ],
+    deploy: "Hosted on Vercel, with Upstash running Redis and QStash.",
   },
   {
     id: "agent-portal",
     title: "AgentPortal",
-    kicker: "Agent operations portal",
-    headline: "Operational portal focused on agent workflows and queue state visibility.",
-    summary:
-      "A full-stack portal project oriented around agent-facing workflows, routing, and high-signal operational state. It emphasizes practical interfaces for day-to-day execution over static dashboards.",
-    role:
-      "Owned interface orchestration, workflow state handling, and service integration surfaces for agent operations.",
-    githubSlug: "ninawekunal/AgentPortal",
+    kicker: "Invoice approval portal",
+    headline: "Review, upload and approve invoices, with what you can do decided by your role.",
     repoUrl: "https://github.com/ninawekunal/AgentPortal",
     liveUrl: "https://agent-portal-production-590e.up.railway.app/login",
-    demoInteractionHint:
-      "Navigate core portal flows and inspect how task state, agent actions, and workflow transitions are represented.",
-    posterSrc: "/projects/agent-portal.svg",
-    posterAlt: "AgentPortal poster showing agent cards, state lanes, and workflow controls.",
     tags: ["Full Stack", "Scalable Systems", "Frontend"],
-    stack: ["Next.js", "TypeScript", "Node.js", "React", "Postgres"],
-    highlights: [
-      "Agent-centric task surfaces designed for operational clarity.",
-      "Explicit state transitions across assignment and completion stages.",
-      "Typed contracts and predictable UI behavior for workflow-heavy views.",
+    stack: ["React", "TypeScript", "Material UI", "Hapi", "Supabase", "Postgres", "GraphQL", "Jest"],
+    motivation:
+      "A practice run at the kind of product I build at work: an operations portal where people with different roles review invoices, upload documents and approve in bulk.",
+    capabilities: [
+      "Sign in with a one-time code by email; your role comes from a signed [[jwt]].",
+      "A grid of invoice cards with filters, more loading as you scroll, and approve-many-at-once.",
+      "An invoice view with the PDF, the extracted data, and approve or pay actions.",
+      "Supervisors and admins can upload documents to be read; uploads are cleaned, size-checked and rate-limited.",
+      "Both REST and [[graphql]] APIs.",
     ],
-    architecture: [
-      "Frontend state modeled around agent workflow stages and task ownership.",
-      "Backend endpoints expose structured status and action contracts.",
-      "Project structure favors maintainability for feature iteration on operations tooling.",
+    lessons: [
+      "Operations screens work best when every state change is explicit and one click away.",
+      "Clear 'who owns this' cues and an obvious next action matter more than a pretty dashboard.",
+      "Typed status values stop a fast-changing workflow screen from breaking quietly.",
     ],
-    valueSignals: [
-      "Shows execution in operations-facing product design, not just consumer UI.",
-      "Demonstrates full-stack ownership on workflow and status-heavy surfaces.",
-      "Strengthens portfolio evidence for scalable internal tooling.",
+    build: [
+      "A React and Material UI site talking to a Hapi server, split into separate sign-in and invoice services.",
+      "Supabase for sign-in and file storage, behind a storage layer that could switch to Amazon S3.",
+      "Scripts to generate sample invoices and fill the database, and automated tests with Jest.",
     ],
-    evidence: [
-      "Portal flow components and stateful task interfaces.",
-      "Service and API integration points for workflow updates.",
-      "End-to-end handling of interaction, status updates, and UI feedback.",
-    ],
-    lessonsLearned: [
-      "Operations portals are most effective when state transitions are explicit and low-friction.",
-      "Agent workflows benefit from clear ownership cues and predictable next actions.",
-      "Typed status contracts reduce regressions in high-change workflow UIs.",
-    ],
+    deploy: "Deployed on Railway.",
   },
   {
     id: "smarttrip",
     title: "SmartTrip",
-    kicker: "Map-led travel planner",
-    headline: "Route-aware itinerary planning with layered architecture.",
-    summary:
-      "A trip planner where users create trips, reorder stops, compute walking routes, and export the final journey to Google Maps. The project highlights disciplined MVP scoping and clean separation between client, server, and shared layers.",
-    role:
-      "Designed a layered full-stack architecture around trip management, routing, API documentation, and persistent travel data.",
-    githubSlug: "ninawekunal/SmartTrip",
+    kicker: "Walking trip planner",
+    headline: "Put your stops in order, see the walking time, and send the route to Google Maps.",
     repoUrl: "https://github.com/ninawekunal/SmartTrip",
-    demoInteractionHint:
-      "Create a trip, add and reorder stops, then compute routes and export the journey to Google Maps.",
-    posterSrc: "/projects/smarttrip.svg",
-    posterAlt: "SmartTrip project poster showing route nodes connected across a map-like grid.",
     tags: ["Full Stack", "Frontend"],
     stack: ["Next.js", "TypeScript", "Hapi", "Supabase", "Postgres", "Mapbox"],
-    highlights: [
-      "Explicit client, server, and shared code boundaries.",
-      "Swagger and OpenAPI-backed route documentation.",
-      "Trip, stop, and route lifecycle handled through both REST and GraphQL.",
+    motivation:
+      "Planning a day on foot in a new city means juggling a list of places and a map. I wanted one small tool to order the stops, show the walking time, and hand the route to Google Maps.",
+    capabilities: [
+      "Create a trip and add stops.",
+      "Reorder the stops and see the walking distance and time for that exact order.",
+      "Export the route to Google Maps in one click.",
     ],
-    architecture: [
-      "Next.js fronts the UI while Hapi owns API routes and downstream integrations.",
-      "Supabase Postgres stores trips, ordered stops, and route metadata.",
-      "Mapbox computes travel information and Google Maps handles export.",
+    lessons: [
+      "Getting the data model for trips and stops right early makes every later feature easier.",
+      "Keeping the pages, the server and the shared code apart stops a page change from breaking the server.",
+      "Doing the core job well first beats adding AI trip ideas on day one; that stays out until routing is solid.",
     ],
-    valueSignals: [
-      "Signals comfort with service decomposition and data modeling.",
-      "Shows product judgment by keeping AI generation out of the MVP until the core routing flow is solid.",
-      "Balances interface polish with backend structure and documentation.",
+    build: [
+      "Next.js for the pages and a separate Hapi server for the API, joined so the browser sees one site.",
+      "Supabase Postgres stores trips, ordered stops and routes.",
+      "Mapbox works out the walking route, and a Google Maps link carries it out.",
     ],
-    evidence: [
-      "Layered folders for controllers, data-sources, plugins, and stores.",
-      "Migration-backed schema for trips, stops, and routes.",
-      "Health checks and API docs surfaced as first-class product features.",
-    ],
-    lessonsLearned: [
-      "Strong domain models for trips and stops make route orchestration easier to evolve safely.",
-      "Separating UI, API, and shared contracts keeps frontend changes from destabilizing backend logic.",
-      "MVP discipline matters: nailing core routing and export first creates a stronger base for AI features later.",
-    ],
-  }
+  },
 ];
 
 export const footerNotes = [
