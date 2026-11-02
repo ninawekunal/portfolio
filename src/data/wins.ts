@@ -39,7 +39,7 @@ export type HeadlineStat = {
 };
 
 export const winsHeading = {
-  eyebrow: "Founding engineer at OpenCFO · Apr 2026 to now",
+  eyebrow: "Founding engineer at OpenCFO · Apr to Oct 2026",
   title:
     "Product engineer. I ship the whole thing, and I build it for the person on the other side of the screen.",
   body: "OpenCFO is an AI-native accounts payable and receivable platform. I joined as the first full-stack hire and owned the web app while the company went from 0 to 10 customers. Before that I spent four years owning partner identity at Expedia for about 100K partners. I like ambiguous problems, short feedback loops, and knowing who the user is before I open the editor.",
