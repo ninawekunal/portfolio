@@ -6,6 +6,7 @@ import AutoAwesomeRoundedIcon from "@mui/icons-material/AutoAwesomeRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import ExpandMoreRoundedIcon from "@mui/icons-material/ExpandMoreRounded";
 import LockRoundedIcon from "@mui/icons-material/LockRounded";
+import MenuBookRoundedIcon from "@mui/icons-material/MenuBookRounded";
 import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
 import PlaceRoundedIcon from "@mui/icons-material/PlaceRounded";
 import SmsRoundedIcon from "@mui/icons-material/SmsRounded";
@@ -18,6 +19,7 @@ import TimelineItem, { timelineItemClasses } from "@mui/lab/TimelineItem";
 import TimelineSeparator from "@mui/lab/TimelineSeparator";
 import {
   Box,
+  Button,
   ButtonBase,
   Chip,
   Collapse,
@@ -33,6 +35,7 @@ import {
 } from "@mui/material";
 import { alpha, useTheme } from "@mui/material/styles";
 
+import { RoleStoriesDialog } from "@/components/RoleStoriesDialog";
 import { SectionHeading } from "@/components/SectionHeading";
 import { TechnologyPin } from "@/components/TechnologyPin";
 import {
@@ -41,6 +44,7 @@ import {
   type ExperienceProject,
   type ExperienceSkill,
 } from "@/data/portfolio";
+import { roleStories } from "@/data/roleStories";
 import { withBasePath } from "@/lib/assetPath";
 import { numericSx } from "@/lib/typography";
 
@@ -342,7 +346,10 @@ export function ExperienceSection() {
     project: ExperienceProject;
   } | null>(null);
 
+  const [storiesOpen, setStoriesOpen] = useState(false);
+
   const activeEntry = experienceTimeline[activeIndex] ?? experienceTimeline[0];
+  const activeStories = roleStories[activeEntry.company] ?? [];
   const activeCompanyExpandedSkill = expandedSkillsByCompany[activeEntry.company] ?? null;
 
   const selectRole = (index: number) => {
@@ -458,6 +465,39 @@ export function ExperienceSection() {
                     </Stack>
                   </Stack>
 
+                  <Stack spacing={0.9}>
+                    <Typography variant="subtitle1" component="h4">
+                      What I did
+                    </Typography>
+                    <Box component="ul" sx={{ m: 0, pl: 2.2 }}>
+                      {activeEntry.highlights.map((bullet) => (
+                        <Typography
+                          key={`${activeEntry.company}-${bullet.label}`}
+                          component="li"
+                          variant="body2"
+                          sx={{ lineHeight: 1.65, mb: 0.55 }}
+                        >
+                          <Box component="strong" sx={{ fontWeight: 700 }}>
+                            {bullet.label}:
+                          </Box>{" "}
+                          {bullet.text}
+                        </Typography>
+                      ))}
+                    </Box>
+                    {activeStories.length ? (
+                      <Box>
+                        <Button
+                          variant="outlined"
+                          size="small"
+                          endIcon={<MenuBookRoundedIcon />}
+                          onClick={() => setStoriesOpen(true)}
+                        >
+                          Read {activeStories.length} longer stories
+                        </Button>
+                      </Box>
+                    ) : null}
+                  </Stack>
+
                   {activeEntry.projects?.length ? (
                     <Stack spacing={0.9}>
                       <Typography variant="subtitle1" component="h4">
@@ -522,6 +562,14 @@ export function ExperienceSection() {
           </Stack>
         </Paper>
       </Container>
+
+      <RoleStoriesDialog
+        key={activeEntry.company}
+        company={activeEntry.company}
+        stories={activeStories}
+        open={storiesOpen}
+        onClose={() => setStoriesOpen(false)}
+      />
 
       <Dialog
         open={Boolean(projectDialog)}

@@ -27,10 +27,16 @@ export type CareerEntry = {
   role: string;
   period: string;
   summary: string;
-  highlights: string[];
+  /** Resume bullets: a short label, then one plain sentence with its number. */
+  highlights: RoleBullet[];
   stack: string[];
   skillsApplied?: ExperienceSkill[];
   projects?: ExperienceProject[];
+};
+
+export type RoleBullet = {
+  label: string;
+  text: string;
 };
 
 export type ExperienceSkill = {
@@ -134,14 +140,30 @@ export const experienceTimeline: CareerEntry[] = [
     company: "OpenCFO",
     location: "Seattle, WA",
     role: "Founding Full Stack Engineer",
-    period: "April 2026 - Present",
+    period: "April 2026 - October 2026",
     summary:
-      "First full-stack hire on an AI-native accounts payable and receivable platform. I own the web app end to end and sit in the customer calls that shape it.",
+      "First full-stack hire on an AI-native accounts payable and receivable platform. I owned the web app end to end and sat in the customer calls that shaped it.",
     highlights: [
-      "Owned the entire web app (React Router v7 SSR, React 19, TypeScript) while the company went from 0 to 10 customers: 287 merged PRs, 136 routes, 87 BFF endpoints, 0 to 3,200 tests in 21 weeks.",
-      "Moved a localStorage-JWT SPA to SSR with a Backend-for-Frontend in one week: httpOnly cookie auth, loader-enforced RBAC, per-request nonce CSP, immutable-SHA ECS deploys.",
-      "Worked directly with a customer's finance and engineering teams to ship invoice / PO / goods-receipt matching against a demo pulled forward by three days.",
-      "Built the team's Claude Code system: 26 skills, 3 review subagents, 9 hooks, machine-checked design manifests. Peak week: 40 PRs merged.",
+      {
+        label: "Web app ownership",
+        text: "Owned the web app of an AI-native AP and AR platform from 0 to 10 customers: 287 merged PRs, 136 routes and a test suite grown from 0 to 3,200 tests.",
+      },
+      {
+        label: "AI document review",
+        text: "Built the UI for AI-extracted invoices, POs and receipts: 10 extracted fields highlighted on the source PDF, background processing for uploads, and an exception-first view for quick review.",
+      },
+      {
+        label: "AI email agent",
+        text: "Built an agent that classifies vendor emails, reads attachments, routes invoices into bill capture and drafts replies for review. It runs on durable SQS jobs with execution leases, evals and model-cost tracking.",
+      },
+      {
+        label: "BFF layer",
+        text: "Proposed a BFF (Backend for Frontend) layer for our React Router v7 app and built it in one week. It now serves 87 endpoints that join data from several APIs.",
+      },
+      {
+        label: "Three-way match",
+        text: "Built an auto-match API that joins line items in web workers, from 1,087ms to 738ms. DOM virtualization and Chrome profiling keep the match screen fast at ~16K line items.",
+      },
     ],
     stack: [
       "React 19",
@@ -275,9 +297,26 @@ export const experienceTimeline: CareerEntry[] = [
     summary:
       "Owned partner identity workflows (login, MFA, password and email reset, account disable) for about 100K partners across four portals, from the React screens to the OAuth and OIDC contracts behind them.",
     highlights: [
-      "Unified fragmented B2B identity flows across partner and traveler systems using React, TypeScript, Node.js (Hapi), and Java/OIDC services for 100k+ partners with roughly 90% feature adoption.",
-      "Led the Update Email initiative: found that 4 to 5% of global users shared traveler and partner accounts at risk of lockout, then designed the async API fixes and a Change Data Capture pipeline with downstream brand teams.",
-      "Implemented step-up MFA with ACR policies, shipped auth changes through data-driven feature-flag rollouts, and owned L3 incidents with Splunk, Datadog, and PagerDuty.",
+      {
+        label: "Update Email",
+        text: "Led the project over 2 quarters: built it in TypeScript, React and MobX, wired the downstream team to the APIs, and reached 85% adoption across ~100K partners through 4 Expedia Group partner portals.",
+      },
+      {
+        label: "Identity sync",
+        text: "Deployed a Change Data Capture pipeline with the downstream team to fix legacy-portal sync and lockouts; with identity sync it resolved ~45% of email lockout support tickets.",
+      },
+      {
+        label: "Backend services",
+        text: "Built Kotlin and Java services with GraphQL and REST APIs, plus gRPC APIs on a Zanzibar-style permission model with contract tests for downstream teams.",
+      },
+      {
+        label: "On-call",
+        text: "Carried L3 on-call across time zones for ~6 P1 services and was SME for 4 more; request tracing, SRE alerts and RCAs cut support requests ~20%.",
+      },
+      {
+        label: "Deployments",
+        text: "Shipped through Spinnaker to an internal Kubernetes cluster with Istio sidecars; feature flags and progressive rollout cut deployment incidents ~25%.",
+      },
     ],
     stack: ["React", "TypeScript", "Node.js", "Hapi", "GraphQL", "OIDC", "Kubernetes", "Istio", "Splunk"],
     skillsApplied: [
@@ -364,13 +403,19 @@ export const experienceTimeline: CareerEntry[] = [
   {
     company: "Global Traffic Technologies",
     location: "Minneapolis, MN",
-    role: "Full Stack Engineer",
+    role: "Software Development Engineer",
     period: "June 2021 - April 2022",
     summary:
       "Built backend APIs and async workflows for user-facing traffic products with a strong focus on cloud reliability and responsiveness.",
     highlights: [
-      "Built and deployed scalable backend APIs and batch workflows using AWS Lambda, ECS, and API Gateway.",
-      "Reduced latency and operational cost through CloudFormation automation, a DynamoDB to ElastiCache shift, and asynchronous logging with Kinesis Firehose, S3, and CloudWatch.",
+      {
+        label: "Connected Vehicle Platform",
+        text: "Built AWS Lambda and API Gateway services, ElastiCache caching and CloudFormation stacks.",
+      },
+      {
+        label: "Latency and cost",
+        text: "Moved latency-sensitive reads from DynamoDB to ElastiCache, and made logging asynchronous with Kinesis Firehose, S3 and CloudWatch.",
+      },
     ],
     stack: ["AWS Lambda", "ECS", "API Gateway", "CloudFormation", "ElastiCache", "Kinesis", "S3"],
     skillsApplied: [
@@ -423,8 +468,10 @@ export const experienceTimeline: CareerEntry[] = [
     summary:
       "Built and deployed an end-to-end e-commerce website with inventory management and traditional web-stack tooling.",
     highlights: [
-      "Used PHP, MySQL, Bootstrap, JavaScript, and Apache to launch the experience.",
-      "Supported 500+ products and improved online reach for the business.",
+      {
+        label: "E-commerce launch",
+        text: "Built and launched an e-commerce site with PHP, MySQL, Bootstrap, JavaScript and Apache, with inventory for 500+ products.",
+      },
     ],
     stack: ["PHP", "MySQL", "Bootstrap", "JavaScript", "Apache"],
     skillsApplied: [
