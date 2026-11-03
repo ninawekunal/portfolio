@@ -11,6 +11,9 @@ export type PortfolioProject = {
   headline: string;
   repoUrl: string;
   liveUrl?: string;
+  /** Who the project is for, used by the industry filter. */
+  industries: string[];
+  /** Skill areas, used by the skill filter. */
   tags: string[];
   stack: string[];
   motivation: string;
@@ -461,6 +464,25 @@ export const experienceTimeline: CareerEntry[] = [
     ],
   },
   {
+    company: "SkinLens",
+    location: "New York, NY",
+    role: "Machine Learning Intern",
+    period: "January 2021 - May 2021",
+    summary:
+      "Built the data pipeline and the model for a tool that spots skin diseases in photos.",
+    highlights: [
+      {
+        label: "Image pipeline",
+        text: "Built an ETL pipeline with Pandas and OpenCV on about 10,000 images, and mapped skin-lesion coordinates to COCO JSON for Detectron2.",
+      },
+      {
+        label: "Classifier",
+        text: "Trained a multi-class CNN with semantic segmentation in PyTorch that classifies 8 skin diseases at 95% accuracy.",
+      },
+    ],
+    stack: ["Python", "PyTorch", "Detectron2", "OpenCV", "Pandas"],
+  },
+  {
     company: "Moaedat Ltd.",
     location: "Mumbai, India",
     role: "Web Developer",
@@ -598,14 +620,6 @@ export const certifications: CertificationEntry[] = [
   },
 ];
 
-export const projectFilters = [
-  "All",
-  "AI",
-  "Full Stack",
-  "Scalable Systems",
-  "Frontend",
-  "Data / ML",
-];
 
 export const projects: PortfolioProject[] = [
   {
@@ -615,6 +629,7 @@ export const projects: PortfolioProject[] = [
     headline: "Turns any topic into one short, interactive study page with a quiz at the end.",
     repoUrl: "https://github.com/ninawekunal/learning-doc-builder",
     liveUrl: "https://ninawekunal.github.io/learning-doc-builder/",
+    industries: ["Education"],
     tags: ["AI", "Frontend"],
     stack: [
       "React",
@@ -652,11 +667,42 @@ export const projects: PortfolioProject[] = [
       "Every push runs the checks, builds the site, and publishes it to [[github-pages]] with GitHub Actions.",
   },
   {
+    id: "pdf-highlighter",
+    title: "Invoice PDF Highlighter",
+    kicker: "Document review tool",
+    headline: "Pulls the key fields out of an invoice PDF and highlights exactly where each one sits on the page.",
+    repoUrl: "https://github.com/ninawekunal/pdf-highlighter",
+    liveUrl: "https://ninawekunal.github.io/pdf-highlighter/",
+    industries: ["Fintech"],
+    tags: ["AI", "Frontend", "Data / ML"],
+    stack: ["React", "TypeScript", "Vite", "Material UI", "react-pdf", "pdf.js"],
+    motivation:
+      "A small, public version of a problem I work on every day: a person checking what software read off an invoice. Seeing the value lit up on the PDF is what makes that check fast, and what makes people trust it.",
+    capabilities: [
+      "Switch between 10 sample invoices, or upload your own one-page PDF.",
+      "Pulls out 10 key fields, such as invoice number, due date and total.",
+      "Click a field and its exact spot on the PDF lights up.",
+      "Download the invoice you are looking at.",
+    ],
+    lessons: [
+      "People trust extracted data when they can see exactly where it came from on the page.",
+      "Two ways of finding a value, with a fallback, survive far more invoice layouts than one clever rule.",
+      "When the software is not sure, the design should make checking by hand quick, not hide the doubt.",
+    ],
+    build: [
+      "Rendered PDFs with react-pdf, which is built on [[pdf-js]].",
+      "Read the text on each page and found values in two passes: known labels first, then a general 'Label: Value' fallback.",
+      "Converted each value's position from PDF coordinates to screen coordinates, so the highlight lands exactly on it.",
+    ],
+    deploy: "GitHub Actions builds it into a [[static-site]] and publishes it to [[github-pages]].",
+  },
+  {
     id: "paws-email-notifications",
     title: "PAWS Email Notifications",
     kicker: "Full-stack notification system",
     headline: "Emails people when an animal they would want to adopt appears on the PAWS shelter site.",
     repoUrl: "https://github.com/ninawekunal/paws-email-notifications",
+    industries: ["Nonprofit"],
     tags: ["Full Stack", "Scalable Systems"],
     stack: [
       "React",
@@ -690,12 +736,72 @@ export const projects: PortfolioProject[] = [
     ],
   },
   {
+    id: "accent-detector",
+    title: "Accent Detector",
+    kicker: "Speech classification",
+    headline: "Listens to someone read a short passage and guesses which of four English accents they have.",
+    repoUrl: "https://github.com/ninawekunal/AccentDetector",
+    industries: ["Education"],
+    tags: ["AI", "Data / ML"],
+    stack: ["Python", "Librosa", "scikit-learn", "TensorFlow", "Keras", "NumPy", "Pandas"],
+    motivation:
+      "As an Indian student in the US, I wanted to know how my accent came across and how to improve it. I could not find a tool that told me, so I started building one.",
+    capabilities: [
+      "Turns each recording into 13 MFCC features, a numeric fingerprint of the sound of a voice.",
+      "Sorts a speaker into one of four accents: American, British, Chinese or Indian.",
+      "Compares four classic models and two neural networks side by side on the same data.",
+    ],
+    lessons: [
+      "The data was the hard part: 373 American samples against 65 British, so a model could score well by always guessing American.",
+      "Copying samples to balance the classes before the train and test split lets copies land on both sides, so the best score is likely higher than it would be on new voices.",
+      "On a small dataset, a support vector machine beat both neural networks by a wide margin.",
+    ],
+    build: [
+      "Used about 640 recordings from the Speech Accent Archive, with every speaker reading the same paragraph.",
+      "Converted each file to WAV, trimmed or padded it to 30 seconds, and extracted MFCCs with Librosa.",
+      "Balanced the classes with SMOTE, undersampling, and oversampling with added noise, and measured each one.",
+      "Trained SVM, random forest, KNN and logistic regression models, plus an RNN and a CNN in Keras.",
+    ],
+  },
+  {
+    id: "agent-portal",
+    title: "AgentPortal",
+    kicker: "Invoice approval portal",
+    headline: "Review, upload and approve invoices, with what you can do decided by your role.",
+    repoUrl: "https://github.com/ninawekunal/AgentPortal",
+    liveUrl: "https://agent-portal-production-590e.up.railway.app/login",
+    industries: ["Fintech"],
+    tags: ["Full Stack", "Scalable Systems", "Frontend"],
+    stack: ["React", "TypeScript", "Material UI", "Hapi", "Supabase", "Postgres", "GraphQL", "Jest"],
+    motivation:
+      "A practice run at the kind of product I build at work: an operations portal where people with different roles review invoices, upload documents and approve in bulk.",
+    capabilities: [
+      "Sign in with a one-time code by email; your role comes from a signed [[jwt]].",
+      "A grid of invoice cards with filters, more loading as you scroll, and approve-many-at-once.",
+      "An invoice view with the PDF, the extracted data, and approve or pay actions.",
+      "Supervisors and admins can upload documents to be read; uploads are cleaned, size-checked and rate-limited.",
+      "Both REST and [[graphql]] APIs.",
+    ],
+    lessons: [
+      "Operations screens work best when every state change is explicit and one click away.",
+      "Clear 'who owns this' cues and an obvious next action matter more than a pretty dashboard.",
+      "Typed status values stop a fast-changing workflow screen from breaking quietly.",
+    ],
+    build: [
+      "A React and Material UI site talking to a Hapi server, split into separate sign-in and invoice services.",
+      "Supabase for sign-in and file storage, behind a storage layer that could switch to Amazon S3.",
+      "Scripts to generate sample invoices and fill the database, and automated tests with Jest.",
+    ],
+    deploy: "Deployed on Railway.",
+  },
+  {
     id: "cat-whisperer",
     title: "Cat Whisperer",
     kicker: "Private, in-browser AI",
     headline: "Listens to your cat's meows and learns what they mean, without the audio ever leaving your browser.",
     repoUrl: "https://github.com/ninawekunal/cat_whisperer",
     liveUrl: "https://ninawekunal.github.io/cat_whisperer",
+    industries: ["Consumer"],
     tags: ["AI", "Frontend", "Data / ML"],
     stack: [
       "React",
@@ -728,41 +834,13 @@ export const projects: PortfolioProject[] = [
     deploy: "A GitHub Actions workflow builds it and publishes it to [[github-pages]] on every push.",
   },
   {
-    id: "pdf-highlighter",
-    title: "Invoice PDF Highlighter",
-    kicker: "Document review tool",
-    headline: "Pulls the key fields out of an invoice PDF and highlights exactly where each one sits on the page.",
-    repoUrl: "https://github.com/ninawekunal/pdf-highlighter",
-    liveUrl: "https://ninawekunal.github.io/pdf-highlighter/",
-    tags: ["AI", "Frontend", "Data / ML"],
-    stack: ["React", "TypeScript", "Vite", "Material UI", "react-pdf", "pdf.js"],
-    motivation:
-      "A small, public version of a problem I work on every day: a person checking what software read off an invoice. Seeing the value lit up on the PDF is what makes that check fast, and what makes people trust it.",
-    capabilities: [
-      "Switch between 10 sample invoices, or upload your own one-page PDF.",
-      "Pulls out 10 key fields, such as invoice number, due date and total.",
-      "Click a field and its exact spot on the PDF lights up.",
-      "Download the invoice you are looking at.",
-    ],
-    lessons: [
-      "People trust extracted data when they can see exactly where it came from on the page.",
-      "Two ways of finding a value, with a fallback, survive far more invoice layouts than one clever rule.",
-      "When the software is not sure, the design should make checking by hand quick, not hide the doubt.",
-    ],
-    build: [
-      "Rendered PDFs with react-pdf, which is built on [[pdf-js]].",
-      "Read the text on each page and found values in two passes: known labels first, then a general 'Label: Value' fallback.",
-      "Converted each value's position from PDF coordinates to screen coordinates, so the highlight lands exactly on it.",
-    ],
-    deploy: "GitHub Actions builds it into a [[static-site]] and publishes it to [[github-pages]].",
-  },
-  {
     id: "image-gender-detector",
     title: "ImageGenderDetector",
     kicker: "Classic machine learning, end to end",
     headline: "Finds faces in a photo and predicts gender with a model trained from scratch.",
     repoUrl: "https://github.com/ninawekunal/ImageGenderDetector",
     liveUrl: "https://ninawekunal.github.io/ImageGenderDetector/faceapp.html",
+    industries: ["Research"],
     tags: ["AI", "Data / ML"],
     stack: ["Python", "Flask", "OpenCV", "scikit-learn", "NumPy", "Pandas"],
     motivation:
@@ -791,6 +869,7 @@ export const projects: PortfolioProject[] = [
     headline: "A live board showing AI-style refund jobs moving from waiting to done, or failed.",
     repoUrl: "https://github.com/ninawekunal/agent-queues",
     liveUrl: "https://agent-queues.vercel.app",
+    industries: ["Developer tools"],
     tags: ["AI", "Full Stack", "Scalable Systems"],
     stack: ["Next.js", "TypeScript", "Node.js", "Upstash Redis", "QStash", "Zod"],
     motivation:
@@ -813,41 +892,12 @@ export const projects: PortfolioProject[] = [
     deploy: "Hosted on Vercel, with Upstash running Redis and QStash.",
   },
   {
-    id: "agent-portal",
-    title: "AgentPortal",
-    kicker: "Invoice approval portal",
-    headline: "Review, upload and approve invoices, with what you can do decided by your role.",
-    repoUrl: "https://github.com/ninawekunal/AgentPortal",
-    liveUrl: "https://agent-portal-production-590e.up.railway.app/login",
-    tags: ["Full Stack", "Scalable Systems", "Frontend"],
-    stack: ["React", "TypeScript", "Material UI", "Hapi", "Supabase", "Postgres", "GraphQL", "Jest"],
-    motivation:
-      "A practice run at the kind of product I build at work: an operations portal where people with different roles review invoices, upload documents and approve in bulk.",
-    capabilities: [
-      "Sign in with a one-time code by email; your role comes from a signed [[jwt]].",
-      "A grid of invoice cards with filters, more loading as you scroll, and approve-many-at-once.",
-      "An invoice view with the PDF, the extracted data, and approve or pay actions.",
-      "Supervisors and admins can upload documents to be read; uploads are cleaned, size-checked and rate-limited.",
-      "Both REST and [[graphql]] APIs.",
-    ],
-    lessons: [
-      "Operations screens work best when every state change is explicit and one click away.",
-      "Clear 'who owns this' cues and an obvious next action matter more than a pretty dashboard.",
-      "Typed status values stop a fast-changing workflow screen from breaking quietly.",
-    ],
-    build: [
-      "A React and Material UI site talking to a Hapi server, split into separate sign-in and invoice services.",
-      "Supabase for sign-in and file storage, behind a storage layer that could switch to Amazon S3.",
-      "Scripts to generate sample invoices and fill the database, and automated tests with Jest.",
-    ],
-    deploy: "Deployed on Railway.",
-  },
-  {
     id: "smarttrip",
     title: "SmartTrip",
     kicker: "Walking trip planner",
     headline: "Put your stops in order, see the walking time, and send the route to Google Maps.",
     repoUrl: "https://github.com/ninawekunal/SmartTrip",
+    industries: ["Travel"],
     tags: ["Full Stack", "Frontend"],
     stack: ["Next.js", "TypeScript", "Hapi", "Supabase", "Postgres", "Mapbox"],
     motivation:
@@ -869,6 +919,10 @@ export const projects: PortfolioProject[] = [
     ],
   },
 ];
+
+/** Filter options, in the order a reader is likely to look for them. */
+export const projectIndustries = Array.from(new Set(projects.flatMap((project) => project.industries)));
+export const projectSkills = Array.from(new Set(projects.flatMap((project) => project.tags)));
 
 export const footerNotes = [
   "Built with Next.js and Material UI, exported statically to GitHub Pages.",

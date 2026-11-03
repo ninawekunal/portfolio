@@ -201,7 +201,7 @@ function ExperienceProjectCard({
         }}
       >
         <Stack spacing={0.5} sx={{ minWidth: 0 }}>
-          <Typography variant="subtitle2" component="h5" sx={{ lineHeight: 1.28 }}>
+          <Typography variant="subtitle2" component="h5" sx={{ lineHeight: 1.28, fontWeight: 700 }}>
             {project.name}
           </Typography>
           <Typography variant="caption" sx={{ color: "primary.dark", lineHeight: 1.5 }}>
