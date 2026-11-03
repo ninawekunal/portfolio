@@ -40,17 +40,19 @@ export type HeadlineStat = {
 
 export const winsHeading = {
   eyebrow: "Founding engineer at OpenCFO · Apr to Oct 2026",
-  title:
-    "Product engineer. I ship the whole thing, and I build it for the person on the other side of the screen.",
-  body: "OpenCFO is an AI-native accounts payable and receivable platform. I joined as the first full-stack hire and owned the web app while the company went from 0 to 10 customers. Before that I spent four years owning partner identity at Expedia for about 100K partners. I like ambiguous problems, short feedback loops, and knowing who the user is before I open the editor.",
+  title: "Product engineer who ships the whole thing.",
+  subtitle: "I build it for the person on the other side of the screen.",
+  body: [
+    "OpenCFO is an AI-native accounts payable and receivable platform. I joined as the first full-stack hire and owned the web app while the company went from 0 to 10 customers.",
+    "Before that I spent four years owning partner identity at Expedia for about 100K partners.",
+    "I like ambiguous problems, short feedback loops, and knowing who the user is before I open the editor.",
+  ],
   habits: [
     "Start from the user's day, not the ticket",
     "Measure, then fix",
     "Cut scope out loud",
     "Write the ask down so the other team can ship it",
   ],
-  footnote:
-    "OpenCFO numbers come from git, GitHub, or a doc I wrote at the time. Expedia numbers are from my own records. The customer count is my own tally. Words with a dotted yellow underline explain themselves when you click them.",
 };
 
 export const headlineStats: HeadlineStat[] = [

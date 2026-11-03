@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState, type KeyboardEvent, type RefObject } from "react";
 import BoltRoundedIcon from "@mui/icons-material/BoltRounded";
 import BuildRoundedIcon from "@mui/icons-material/BuildRounded";
 import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
@@ -10,11 +10,14 @@ import KeyboardArrowRightRoundedIcon from "@mui/icons-material/KeyboardArrowRigh
 import ShieldRoundedIcon from "@mui/icons-material/ShieldRounded";
 import {
   Box,
+  ButtonBase,
   Chip,
   Container,
   IconButton,
+  MenuItem,
   Paper,
   Stack,
+  TextField,
   Typography,
 } from "@mui/material";
 import { alpha } from "@mui/material/styles";
@@ -41,23 +44,102 @@ const themeMeta: Record<WinTheme, { label: string; color: string; Icon: typeof B
 
 // Same fixed height on the rail and the panel, at every breakpoint, so neither
 // container grows to match the other's content.
-const RAIL_HEIGHT = { xs: 280, sm: 320, md: 660 };
+const RAIL_HEIGHT = { xs: 380, sm: 400, md: 660 };
 const PANEL_HEIGHT = { xs: 560, sm: 600, md: 660 };
+
+function RailItem({
+  win,
+  isActive,
+  activeRef,
+  onSelect,
+}: {
+  win: Win;
+  isActive: boolean;
+  activeRef: RefObject<HTMLButtonElement | null>;
+  onSelect: (id: string) => void;
+}) {
+  const meta = themeMeta[win.theme];
+  return (
+    <ButtonBase
+      ref={isActive ? activeRef : undefined}
+      role="option"
+      aria-selected={isActive}
+      onClick={() => onSelect(win.id)}
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "flex-start",
+        gap: 1,
+        width: "100%",
+        textAlign: "left",
+        border: "1px solid",
+        borderColor: isActive ? alpha(meta.color, 0.4) : "transparent",
+        bgcolor: isActive ? alpha(meta.color, 0.1) : "transparent",
+        borderRadius: "12px",
+        px: 1.1,
+        py: 0.9,
+        "&:hover": { bgcolor: isActive ? alpha(meta.color, 0.12) : alpha("#132433", 0.05) },
+      }}
+    >
+      <Box sx={{ width: 8, height: 8, borderRadius: "50%", bgcolor: meta.color, flexShrink: 0 }} />
+      <Box sx={{ minWidth: 0, flex: 1 }}>
+        <Typography
+          sx={{
+            fontSize: "0.84rem",
+            fontWeight: isActive ? 700 : 600,
+            lineHeight: 1.3,
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
+        >
+          {win.title}
+        </Typography>
+        <Typography variant="caption" sx={{ color: "text.secondary" }}>
+          {meta.label}
+        </Typography>
+      </Box>
+      <Typography
+        sx={{
+          ...numericSx,
+          fontSize: "0.74rem",
+          color: meta.color,
+          flexShrink: 0,
+          whiteSpace: "nowrap",
+        }}
+      >
+        {win.metric}
+      </Typography>
+    </ButtonBase>
+  );
+}
 
 function WinsRail({
   items,
   activeId,
   onSelect,
+  filter,
+  onFilterChange,
 }: {
   items: Win[];
   activeId: string | null;
   onSelect: (id: string) => void;
+  filter: WinThemeFilter["id"];
+  onFilterChange: (filter: WinThemeFilter["id"]) => void;
 }) {
   const activeRef = useRef<HTMLButtonElement | null>(null);
 
   useEffect(() => {
     activeRef.current?.scrollIntoView({ block: "nearest" });
   }, [activeId]);
+
+  // "Everything" reads as one long list, so it gets a small heading per theme.
+  const groups: { theme: WinTheme | null; items: Win[] }[] =
+    filter === "all"
+      ? (Object.keys(themeMeta) as WinTheme[])
+          .map((theme) => ({ theme, items: items.filter((win) => win.theme === theme) }))
+          .filter((group) => group.items.length > 0)
+      : [{ theme: null, items }];
 
   return (
     <Paper
@@ -68,74 +150,70 @@ function WinsRail({
         borderRadius: "20px",
         bgcolor: alpha("#ffffff", 0.78),
         borderColor: alpha("#132433", 0.1),
-        overflowY: "auto",
-        p: 0.8,
+        display: "flex",
+        flexDirection: "column",
+        overflow: "hidden",
       }}
     >
-      <Stack spacing={0.3} role="listbox" aria-label="Wins">
-        {items.map((win) => {
-          const meta = themeMeta[win.theme];
-          const isActive = win.id === activeId;
-          return (
-            <Box
-              key={win.id}
-              component="button"
-              type="button"
-              ref={isActive ? activeRef : undefined}
-              role="option"
-              aria-selected={isActive}
-              onClick={() => onSelect(win.id)}
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                gap: 1,
-                width: "100%",
-                textAlign: "left",
-                border: "1px solid",
-                borderColor: isActive ? alpha(meta.color, 0.4) : "transparent",
-                bgcolor: isActive ? alpha(meta.color, 0.1) : "transparent",
-                borderRadius: "12px",
-                px: 1.1,
-                py: 0.9,
-                cursor: "pointer",
-                font: "inherit",
-                color: "inherit",
-                "&:hover": { bgcolor: isActive ? alpha(meta.color, 0.12) : alpha("#132433", 0.05) },
-              }}
-            >
-              <Box sx={{ width: 8, height: 8, borderRadius: "50%", bgcolor: meta.color, flexShrink: 0 }} />
-              <Box sx={{ minWidth: 0, flex: 1 }}>
+      <Stack
+        spacing={1.2}
+        sx={{ px: 1.6, pt: 1.4, pb: 1.2, borderBottom: `1px solid ${alpha("#132433", 0.08)}`, flexShrink: 0 }}
+      >
+        <Stack direction="row" alignItems="baseline" justifyContent="space-between">
+          <Typography variant="subtitle1" component="h3" sx={{ fontWeight: 700 }}>
+            Ship list
+          </Typography>
+          <Typography variant="caption" sx={{ ...numericSx, color: "text.secondary" }}>
+            {items.length} {items.length === 1 ? "story" : "stories"}
+          </Typography>
+        </Stack>
+        <TextField
+          select
+          size="small"
+          label="Showing"
+          value={filter}
+          onChange={(event) => onFilterChange(event.target.value as WinThemeFilter["id"])}
+        >
+          {winThemeFilters.map((option) => (
+            <MenuItem key={option.id} value={option.id}>
+              {option.label} · {option.id === "all" ? wins.length : wins.filter((win) => win.theme === option.id).length}
+            </MenuItem>
+          ))}
+        </TextField>
+      </Stack>
+      <Box sx={{ flex: 1, overflowY: "auto", p: 0.8 }}>
+        <Stack spacing={0.3} role="listbox" aria-label="Wins">
+          {groups.map((group) => (
+            <Fragment key={group.theme ?? "selected"}>
+              {group.theme ? (
                 <Typography
+                  variant="caption"
                   sx={{
-                    fontSize: "0.84rem",
-                    fontWeight: isActive ? 700 : 600,
-                    lineHeight: 1.3,
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
+                    px: 1.1,
+                    pt: 1,
+                    pb: 0.2,
+                    fontWeight: 700,
+                    letterSpacing: "0.04em",
+                    textTransform: "uppercase",
+                    color: themeMeta[group.theme].color,
                   }}
                 >
-                  {win.title}
+                  {themeMeta[group.theme].label}
                 </Typography>
-                <Typography variant="caption" sx={{ color: "text.secondary" }}>
-                  {meta.label}
-                </Typography>
-              </Box>
-              <Typography
-                sx={{
-                  ...numericSx,
-                  fontSize: "0.74rem",
-                  color: meta.color,
-                  flexShrink: 0,
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {win.metric}
-              </Typography>
-            </Box>
-          );
-        })}
-      </Stack>
+              ) : null}
+              {group.items.map((win) => (
+                <RailItem
+                  key={win.id}
+                  win={win}
+                  isActive={win.id === activeId}
+                  activeRef={activeRef}
+                  onSelect={onSelect}
+                />
+              ))}
+            </Fragment>
+          ))}
+        </Stack>
+      </Box>
     </Paper>
   );
 }
@@ -285,7 +363,7 @@ function WinPanel({
 }
 
 export function WinsSection() {
-  const [activeFilter, setActiveFilter] = useState<WinThemeFilter["id"]>("all");
+  const [activeFilter, setActiveFilter] = useState<WinThemeFilter["id"]>("trust");
   const [activeIndex, setActiveIndex] = useState(0);
 
   const filteredWins = useMemo(
@@ -343,13 +421,25 @@ export function WinsSection() {
                   fontSize: { xs: "2rem", sm: "2.5rem", md: "3.1rem" },
                   lineHeight: 1.06,
                   maxWidth: 860,
+                  textWrap: "balance",
                 }}
               >
                 {winsHeading.title}
               </Typography>
-              <Typography variant="body1" sx={{ maxWidth: 760, lineHeight: 1.75, color: "text.secondary" }}>
-                {winsHeading.body}
+              <Typography
+                variant="h5"
+                component="p"
+                sx={{ fontSize: { xs: "1.15rem", md: "1.4rem" }, lineHeight: 1.4, fontWeight: 500, maxWidth: 760 }}
+              >
+                {winsHeading.subtitle}
               </Typography>
+              <Stack spacing={1} sx={{ maxWidth: 760 }}>
+                {winsHeading.body.map((paragraph) => (
+                  <Typography key={paragraph} variant="body1" sx={{ lineHeight: 1.75, color: "text.secondary" }}>
+                    {paragraph}
+                  </Typography>
+                ))}
+              </Stack>
               <Stack direction="row" flexWrap="wrap" useFlexGap gap={0.8}>
                 {winsHeading.habits.map((habit) => (
                   <Chip
@@ -427,33 +517,6 @@ export function WinsSection() {
                 Each story in four parts: the context, what I did, what changed, and what I learned.
               </Typography>
             </Stack>
-
-            <Stack direction="row" gap={0.8} flexWrap="wrap" role="group" aria-label="Filter wins by theme">
-              {winThemeFilters.map((filter) => {
-                const isActive = activeFilter === filter.id;
-                const count = filter.id === "all" ? wins.length : wins.filter((win) => win.theme === filter.id).length;
-
-                return (
-                  <Chip
-                    key={filter.id}
-                    label={`${filter.label} · ${count}`}
-                    clickable
-                    onClick={() => {
-                      setActiveFilter(filter.id);
-                      setActiveIndex(0);
-                    }}
-                    variant={isActive ? "filled" : "outlined"}
-                    aria-pressed={isActive}
-                    sx={{
-                      bgcolor: isActive ? "#132433" : alpha("#ffffff", 0.7),
-                      color: isActive ? "#fffaf2" : "text.primary",
-                      borderColor: alpha("#132433", 0.2),
-                      "&:hover": { bgcolor: isActive ? "#132433" : alpha("#132433", 0.08) },
-                    }}
-                  />
-                );
-              })}
-            </Stack>
           </Stack>
 
           <Box
@@ -465,18 +528,23 @@ export function WinsSection() {
               alignItems: "start",
             }}
           >
-            <WinsRail items={filteredWins} activeId={activeWin?.id ?? null} onSelect={(id) => {
-              const index = filteredWins.findIndex((win) => win.id === id);
-              if (index >= 0) setActiveIndex(index);
-            }} />
+            <WinsRail
+              items={filteredWins}
+              activeId={activeWin?.id ?? null}
+              onSelect={(id) => {
+                const index = filteredWins.findIndex((win) => win.id === id);
+                if (index >= 0) setActiveIndex(index);
+              }}
+              filter={activeFilter}
+              onFilterChange={(filter) => {
+                setActiveFilter(filter);
+                setActiveIndex(0);
+              }}
+            />
             {activeWin ? (
               <WinPanel win={activeWin} index={activeIndex} total={filteredWins.length} onPrev={goPrev} onNext={goNext} />
             ) : null}
           </Box>
-
-          <Typography variant="caption" sx={{ color: "text.secondary" }}>
-            {winsHeading.footnote}
-          </Typography>
         </Stack>
       </Container>
     </Box>
