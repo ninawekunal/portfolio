@@ -1,18 +1,22 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 import NextLink from "next/link";
-import { Box, Button, Card, CardActionArea, CardMedia, Container, Divider, Stack, Typography } from "@mui/material";
+import { Box, Button, Container, Divider, Stack, Typography } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteNav } from "@/components/SiteNav";
-import { withBasePath } from "@/lib/assetPath";
 
 const INK = "#132433";
 
 /** Nav, a centered column for the page, then any full-width sections, then the footer. */
 export function PageShell({ children, after }: { children?: ReactNode; after?: ReactNode }) {
+  // Opening a page from a card lower down should start at its title, not mid-page.
+  useEffect(() => {
+    if (!window.location.hash) window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+  }, []);
+
   return (
     <>
       <SiteNav />
@@ -109,74 +113,6 @@ export function TileGrid({ children }: { children: ReactNode }) {
     >
       {children}
     </Box>
-  );
-}
-
-/**
- * A picture with a caption under it. Without an image, the tile shows the name
- * as a wordmark on a solid color, so a project with no screenshot still has a face.
- */
-export function Tile({
-  href,
-  title,
-  caption,
-  imageSrc,
-  color,
-  wordmark,
-}: {
-  href: string;
-  title: string;
-  caption: string;
-  imageSrc?: string;
-  color: string;
-  wordmark?: string;
-}) {
-  return (
-    <Card elevation={0} sx={{ bgcolor: "transparent", border: "none", borderRadius: 0 }}>
-      <CardActionArea component={NextLink} href={href} sx={{ borderRadius: "6px", "&:hover .tile-media": { transform: "scale(1.03)" } }}>
-        <Box sx={{ aspectRatio: "16 / 10", overflow: "hidden", borderRadius: "6px", bgcolor: color }}>
-          {imageSrc ? (
-            <CardMedia
-              className="tile-media"
-              component="img"
-              src={withBasePath(imageSrc)}
-              alt=""
-              loading="lazy"
-              sx={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top", transition: "transform 240ms ease" }}
-            />
-          ) : (
-            <Stack
-              className="tile-media"
-              alignItems="center"
-              justifyContent="center"
-              sx={{ height: "100%", px: 2, transition: "transform 240ms ease" }}
-            >
-              <Typography
-                sx={{
-                  color: "#ffffff",
-                  fontFamily: "var(--font-display)",
-                  fontWeight: 700,
-                  fontSize: { xs: "1.6rem", md: "1.8rem" },
-                  lineHeight: 1.1,
-                  textAlign: "center",
-                }}
-              >
-                {wordmark ?? title}
-              </Typography>
-            </Stack>
-          )}
-        </Box>
-        <Typography
-          component="h3"
-          sx={{ mt: 1.2, fontSize: "0.86rem", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: INK }}
-        >
-          {title}
-        </Typography>
-        <Typography variant="caption" sx={{ color: alpha(INK, 0.62), display: "block", lineHeight: 1.5 }}>
-          {caption}
-        </Typography>
-      </CardActionArea>
-    </Card>
   );
 }
 

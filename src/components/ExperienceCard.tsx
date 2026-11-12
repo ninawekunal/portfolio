@@ -2,7 +2,14 @@
 
 import { FlipCard } from "@/components/FlipCard";
 import { resolveBrandIcon } from "@/components/TechnologyPin";
-import { certificationsSourceUrl, type CareerEntry, type CertificationEntry, type EducationEntry } from "@/data/portfolio";
+import {
+  certificationsSourceUrl,
+  type CareerEntry,
+  type CertificationEntry,
+  type EducationEntry,
+  type PortfolioProject,
+} from "@/data/portfolio";
+import { plainText } from "@/lib/plainText";
 import type { Publication } from "@/data/writing";
 
 const MAX_TECH_ICONS = 5;
@@ -12,6 +19,14 @@ function monogramOf(name: string) {
     .split(/\s+/)
     .map((word) => word.charAt(0).toUpperCase())
     .join("");
+}
+
+/** "April 2026 - October 2026" -> "Apr 2026 - Oct 2026". */
+function shortPeriod(period: string) {
+  return period
+    .split(/\s+-\s+/)
+    .map((part) => part.replace(/^([A-Za-z]{3})[A-Za-z]*\s+/, "$1 "))
+    .join(" - ");
 }
 
 const AWS_ICON = "/brand-icons/aws.svg";
@@ -43,19 +58,18 @@ export function ExperienceCard({ entry }: { entry: CareerEntry }) {
 
   return (
     <FlipCard
-      href={`/experience/${entry.slug}/`}
       color={entry.brandColor}
       accent={entry.accentColor}
       logoSrc={entry.logoSrc}
       logoNote={entry.logoNote}
       title={entry.company}
       subtitle={entry.role}
-      meta={entry.period}
+      cornerMeta={shortPeriod(entry.period)}
       icons={icons}
       backLabel={`${entry.company} · highlights`}
       backLines={entry.cardHighlights}
-      cta="Read the full story"
-      height={{ xs: 240, md: 236 }}
+      actions={[{ label: "Read the full story", href: `/experience/${entry.slug}/` }]}
+      height={{ xs: 236, md: 226 }}
     />
   );
 }
@@ -80,8 +94,6 @@ export function EducationCard({ entry }: { entry: EducationEntry }) {
 export function BlogCard({ post }: { post: Publication }) {
   return (
     <FlipCard
-      href={post.url}
-      external
       color="#0a4741"
       accent="#7fd1c7"
       badge={post.outlet.charAt(0)}
@@ -92,8 +104,29 @@ export function BlogCard({ post }: { post: Publication }) {
       preview={post.summary}
       backLabel="If you only read three lines"
       backLines={post.takeaways}
-      cta="Read the full story"
+      actions={[{ label: "Read the full story", href: post.url, external: true }]}
       height={{ xs: 330, md: 320 }}
+    />
+  );
+}
+
+/** A project card: screenshot and name up front; the one-line pitch, demo and code links on the back. */
+export function ProjectCard({ project }: { project: PortfolioProject }) {
+  return (
+    <FlipCard
+      color="#132433"
+      accent="#f0b07b"
+      media={{ src: project.imageSrc, alt: `${project.title} screenshot` }}
+      title={project.title}
+      subtitle={project.kicker}
+      backLabel="TL;DR"
+      backLines={[plainText(project.headline)]}
+      actions={[
+        ...(project.liveUrl ? [{ label: "Live demo", href: project.liveUrl, external: true }] : []),
+        { label: "Full story", href: `/projects/${project.id}/` },
+        { label: `${project.title} on GitHub`, href: project.repoUrl, external: true, icon: "github" as const },
+      ]}
+      height={{ xs: 290, md: 290 }}
     />
   );
 }
@@ -102,8 +135,6 @@ export function BlogCard({ post }: { post: Publication }) {
 export function CertificationCard({ entry }: { entry: CertificationEntry }) {
   return (
     <FlipCard
-      href={entry.credentialUrl ?? certificationsSourceUrl}
-      external
       color="#285873"
       logoSrc={entry.logoSrc}
       badge={monogramOf(entry.issuer)}
@@ -112,7 +143,7 @@ export function CertificationCard({ entry }: { entry: CertificationEntry }) {
       meta={entry.issueDate ?? ""}
       backLabel="Credential"
       backLines={[`Issued by ${entry.issuer}${entry.issueDate ? ` in ${entry.issueDate}` : ""}`, ...(entry.credentialId ? [`ID ${entry.credentialId}`] : [])]}
-      cta="View on LinkedIn"
+      actions={[{ label: "View on LinkedIn", href: entry.credentialUrl ?? certificationsSourceUrl, external: true }]}
       height={{ xs: 200, md: 200 }}
     />
   );

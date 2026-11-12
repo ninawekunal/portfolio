@@ -3,22 +3,9 @@
 import { useState } from "react";
 import NextLink from "next/link";
 import { usePathname } from "next/navigation";
-import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
-import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
+import ExpandMoreRoundedIcon from "@mui/icons-material/ExpandMoreRounded";
 import OpenInNewRoundedIcon from "@mui/icons-material/OpenInNewRounded";
-import {
-  AppBar,
-  Button,
-  Container,
-  Drawer,
-  IconButton,
-  List,
-  ListItemButton,
-  ListItemText,
-  Stack,
-  Toolbar,
-  Typography,
-} from "@mui/material";
+import { AppBar, Button, Container, Menu, MenuItem, Stack, Toolbar } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 
 import { OpenToWorkAvatar } from "@/components/OpenToWorkAvatar";
@@ -43,10 +30,11 @@ function isActive(pathname: string, href: string) {
   return href === "/" ? path === "/" : path.startsWith(href);
 }
 
-/** One bar on every page: name on the left, five plain links on the right. */
+/** One bar on every page: name on the left, plain links on the right, or a page picker on phones. */
 export function SiteNav() {
   const pathname = usePathname() ?? "/";
-  const [open, setOpen] = useState(false);
+  const [menuAnchor, setMenuAnchor] = useState<HTMLElement | null>(null);
+  const currentLabel = navItems.find((item) => !item.external && isActive(pathname, item.href))?.label ?? "Menu";
 
   const linkProps = (item: NavItem) =>
     item.external
@@ -69,7 +57,7 @@ export function SiteNav() {
               color: INK,
               fontWeight: 700,
               letterSpacing: "0.14em",
-              fontSize: "0.9rem",
+              fontSize: { xs: "0.78rem", md: "0.9rem" },
               px: 0,
               minWidth: 0,
               "& .MuiButton-startIcon": { mr: 1.2, ml: 0 },
@@ -103,35 +91,52 @@ export function SiteNav() {
             })}
           </Stack>
 
-          <IconButton aria-label="Open menu" onClick={() => setOpen(true)} sx={{ display: { md: "none" }, color: INK }}>
-            <MenuRoundedIcon />
-          </IconButton>
+          <Button
+            id="page-menu-button"
+            aria-controls={menuAnchor ? "page-menu" : undefined}
+            aria-haspopup="true"
+            aria-expanded={menuAnchor ? "true" : undefined}
+            onClick={(event) => setMenuAnchor(event.currentTarget)}
+            endIcon={<ExpandMoreRoundedIcon />}
+            sx={{
+              display: { md: "none" },
+              color: INK,
+              fontSize: "0.76rem",
+              fontWeight: 700,
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+              border: `1px solid ${alpha(INK, 0.18)}`,
+              borderRadius: "999px",
+              px: 1.4,
+            }}
+          >
+            {currentLabel}
+          </Button>
         </Toolbar>
       </Container>
 
-      <Drawer anchor="right" open={open} onClose={() => setOpen(false)} slotProps={{ paper: { sx: { width: 260 } } }}>
-        <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ px: 2, py: 1 }}>
-          <Typography variant="overline" sx={{ fontWeight: 700 }}>
-            Menu
-          </Typography>
-          <IconButton aria-label="Close menu" onClick={() => setOpen(false)}>
-            <CloseRoundedIcon />
-          </IconButton>
-        </Stack>
-        <List component="nav" aria-label="Main">
-          {navItems.map((item) => (
-            <ListItemButton
-              key={item.label}
-              {...linkProps(item)}
-              selected={!item.external && isActive(pathname, item.href)}
-              onClick={() => setOpen(false)}
-            >
-              <ListItemText primary={item.label} slotProps={{ primary: { sx: { fontWeight: 600 } } }} />
-              {item.external ? <OpenInNewRoundedIcon sx={{ fontSize: 18, color: alpha(INK, 0.6) }} aria-label="opens in a new tab" /> : null}
-            </ListItemButton>
-          ))}
-        </List>
-      </Drawer>
+      <Menu
+        id="page-menu"
+        anchorEl={menuAnchor}
+        open={Boolean(menuAnchor)}
+        onClose={() => setMenuAnchor(null)}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        transformOrigin={{ vertical: "top", horizontal: "right" }}
+        slotProps={{ list: { "aria-labelledby": "page-menu-button" }, paper: { sx: { minWidth: 200, mt: 0.6 } } }}
+      >
+        {navItems.map((item) => (
+          <MenuItem
+            key={item.label}
+            {...linkProps(item)}
+            selected={!item.external && isActive(pathname, item.href)}
+            onClick={() => setMenuAnchor(null)}
+            sx={{ fontWeight: 600, justifyContent: "space-between", gap: 2 }}
+          >
+            {item.label}
+            {item.external ? <OpenInNewRoundedIcon sx={{ fontSize: 18, color: alpha(INK, 0.6) }} aria-label="opens in a new tab" /> : null}
+          </MenuItem>
+        ))}
+      </Menu>
     </AppBar>
   );
 }
