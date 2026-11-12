@@ -21,6 +21,23 @@ export const writingHeading = {
 
 export const publications: Publication[] = [
   {
+    id: "revocable-fast-logins",
+    title: "Fast Logins You Can Still Revoke: Sessions, JWTs, and Refresh Tokens Explained",
+    outlet: "Medium",
+    category: "Security",
+    date: "Nov 12, 2026",
+    readingTime: "8 min read",
+    url: "https://medium.com/@ninawekunal/fast-logins-you-can-still-revoke-sessions-jwts-and-refresh-tokens-explained-ed7c9a58a81d",
+    summary:
+      "A two-step login that skips the database on almost every request and still lets you log a user out of every device: check the password once and keep a session row, then let a short-lived signed token prove who you are.",
+    takeaways: [
+      "The database decides who you are at login and refresh; every other request is a signature check.",
+      "Keep access tokens to 15 minutes, and rotate an HttpOnly refresh token on every use.",
+      "Bump one token_version number to log out every device, with an optional Redis denylist for right now.",
+    ],
+    tags: ["Authentication", "JWT", "Refresh tokens", "Redis", "Web security"],
+  },
+  {
     id: "bff-before-graphql",
     title: "We Added a BFF Layer Before Reaching for GraphQL. Here Is What Happened.",
     outlet: "Medium",
