@@ -942,5 +942,4 @@ export const projectSkills = Array.from(new Set(projects.flatMap((project) => pr
 
 export const footerNotes = [
   "Built with Next.js and Material UI, exported statically to GitHub Pages.",
-  "Every number on this page comes from git, GitHub, or a doc written at the time. The customer count is my own tally.",
 ];
