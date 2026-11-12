@@ -70,8 +70,8 @@ export function EducationCard({ entry }: { entry: EducationEntry }) {
       subtitle={entry.degree}
       meta={`${entry.date} · ${entry.location}`}
       backLabel="What I studied"
-      backLines={[entry.details]}
-      height={{ xs: 190, md: 190 }}
+      backLines={entry.coursework}
+      height={{ xs: 214, md: 214 }}
     />
   );
 }

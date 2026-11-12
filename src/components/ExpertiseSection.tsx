@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Box, Chip, Paper, Stack, Tab, Tabs, Typography } from "@mui/material";
+import ExpandMoreRoundedIcon from "@mui/icons-material/ExpandMoreRounded";
+import { Accordion, AccordionDetails, AccordionSummary, Box, Chip, Stack, Tab, Tabs, Typography } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 
 import { RichText } from "@/components/RichText";
@@ -58,14 +59,13 @@ const areas = expertiseAreas.map((area) => ({
   resolved: area.stories.map(resolveStory).filter((story): story is Story => story !== null),
 }));
 
-/** Work grouped by area: pick an area, pick a story, read it as context, action, result and learning. */
+/** Work grouped by area: each story is a one-line TL;DR that opens to its context, action and learning. */
 export function ExpertiseSection() {
   const [areaIndex, setAreaIndex] = useState(0);
-  const [storyIndex, setStoryIndex] = useState(0);
+  const [expanded, setExpanded] = useState<string | null>(areas[0]?.resolved[0]?.key ?? null);
 
   const area = areas[areaIndex];
-  const story = area?.resolved[storyIndex] ?? area?.resolved[0];
-  if (!area || !story) return null;
+  if (!area) return null;
 
   return (
     <Box component="section" sx={{ mt: { xs: 5, md: 7 } }}>
@@ -76,7 +76,7 @@ export function ExpertiseSection() {
         value={areaIndex}
         onChange={(_event, value: number) => {
           setAreaIndex(value);
-          setStoryIndex(0);
+          setExpanded(areas[value]?.resolved[0]?.key ?? null);
         }}
         variant="scrollable"
         scrollButtons="auto"
@@ -93,76 +93,71 @@ export function ExpertiseSection() {
         {area.summary}
       </Typography>
 
-      <Stack direction="row" flexWrap="wrap" useFlexGap gap={0.8} sx={{ mt: 1.6 }} role="group" aria-label="Stories">
-        {area.resolved.map((item, index) => {
-          const active = index === storyIndex;
-          return (
-            <Chip
-              key={item.key}
-              label={item.title}
-              clickable
-              onClick={() => setStoryIndex(index)}
-              aria-pressed={active}
-              variant={active ? "filled" : "outlined"}
-              sx={{
-                maxWidth: "100%",
-                bgcolor: active ? INK : alpha("#ffffff", 0.7),
-                color: active ? "#fffaf2" : "text.primary",
-                borderColor: alpha(INK, 0.2),
-                "&:hover": { bgcolor: active ? INK : alpha(INK, 0.08) },
-              }}
-            />
-          );
-        })}
-      </Stack>
-
-      <Paper
-        component="article"
-        sx={{ mt: 2, p: { xs: 1.8, md: 2.4 }, borderRadius: "16px", bgcolor: alpha("#ffffff", 0.86), borderColor: alpha(INK, 0.1) }}
-      >
-        <Stack direction="row" alignItems="flex-start" justifyContent="space-between" spacing={1} flexWrap="wrap" useFlexGap>
-          <Typography variant="h6" component="h3" sx={{ fontWeight: 700, lineHeight: 1.3 }}>
-            {story.title}
-          </Typography>
-          <Chip size="small" label={story.company} sx={{ bgcolor: alpha(INK, 0.06) }} />
-        </Stack>
-        <Box
-          sx={{
-            mt: 1.6,
-            display: "grid",
-            gap: 1.1,
-            gridTemplateColumns: { xs: "1fr", md: "repeat(2, minmax(0, 1fr))" },
-            alignItems: "start",
-          }}
-        >
-          <CarlCard kind="context">
-            <Typography variant="body2" sx={{ lineHeight: 1.65 }}>
-              <RichText text={story.context} />
-            </Typography>
-          </CarlCard>
-          <CarlCard kind="action">
-            <Box component="ul" sx={{ m: 0, pl: 2.2, display: "grid", gap: 0.5 }}>
-              {story.action.map((step) => (
-                <Typography key={step} component="li" variant="body2" sx={{ lineHeight: 1.6 }}>
-                  <RichText text={step} />
+      <Stack spacing={1.2} sx={{ mt: 2 }}>
+        {area.resolved.map((item) => (
+          <Accordion
+            key={item.key}
+            expanded={expanded === item.key}
+            onChange={(_event, open) => setExpanded(open ? item.key : null)}
+            disableGutters
+            elevation={0}
+            sx={{
+              borderRadius: "14px !important",
+              border: `1px solid ${alpha(INK, 0.12)}`,
+              bgcolor: alpha("#ffffff", 0.86),
+              "&::before": { display: "none" },
+              overflow: "hidden",
+            }}
+          >
+            <AccordionSummary
+              expandIcon={<ExpandMoreRoundedIcon />}
+              aria-controls={`${item.key}-content`}
+              id={`${item.key}-header`}
+              sx={{ px: { xs: 1.8, md: 2.2 }, py: 0.6, "& .MuiAccordionSummary-content": { my: 1.2 } }}
+            >
+              <Box sx={{ minWidth: 0 }}>
+                <Stack direction="row" alignItems="center" spacing={1} flexWrap="wrap" useFlexGap>
+                  <Typography component="h3" sx={{ fontWeight: 700, fontSize: { xs: "1rem", md: "1.08rem" }, lineHeight: 1.35 }}>
+                    {item.title}
+                  </Typography>
+                  <Chip size="small" label={item.company} sx={{ bgcolor: alpha(INK, 0.06) }} />
+                </Stack>
+                <Typography variant="body2" sx={{ mt: 0.6, color: alpha(INK, 0.72), lineHeight: 1.55 }}>
+                  <Box component="strong" sx={{ color: "#2e7d4f", fontWeight: 700 }}>
+                    TL;DR{" "}
+                  </Box>
+                  <RichText text={item.result} />
                 </Typography>
-              ))}
-            </Box>
-          </CarlCard>
-          <CarlCard kind="result">
-            <Typography variant="body2" sx={{ lineHeight: 1.65 }}>
-              <RichText text={story.result} />
-            </Typography>
-          </CarlCard>
-          {story.learning ? (
-            <CarlCard kind="learning">
-              <Typography variant="body2" sx={{ lineHeight: 1.65 }}>
-                <RichText text={story.learning} />
-              </Typography>
-            </CarlCard>
-          ) : null}
-        </Box>
-      </Paper>
+              </Box>
+            </AccordionSummary>
+            <AccordionDetails sx={{ px: { xs: 1.8, md: 2.2 }, pt: 0, pb: 2.2 }}>
+              <Stack spacing={1.1}>
+                <CarlCard kind="context">
+                  <Typography variant="body2" sx={{ lineHeight: 1.65 }}>
+                    <RichText text={item.context} />
+                  </Typography>
+                </CarlCard>
+                <CarlCard kind="action">
+                  <Box component="ul" sx={{ m: 0, pl: 2.2, display: "grid", gap: 0.5 }}>
+                    {item.action.map((step) => (
+                      <Typography key={step} component="li" variant="body2" sx={{ lineHeight: 1.6 }}>
+                        <RichText text={step} />
+                      </Typography>
+                    ))}
+                  </Box>
+                </CarlCard>
+                {item.learning ? (
+                  <CarlCard kind="learning">
+                    <Typography variant="body2" sx={{ lineHeight: 1.65 }}>
+                      <RichText text={item.learning} />
+                    </Typography>
+                  </CarlCard>
+                ) : null}
+              </Stack>
+            </AccordionDetails>
+          </Accordion>
+        ))}
+      </Stack>
     </Box>
   );
 }

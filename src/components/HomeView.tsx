@@ -3,9 +3,10 @@
 import EmailRoundedIcon from "@mui/icons-material/EmailRounded";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
-import { Avatar, Box, IconButton, Stack, Typography } from "@mui/material";
+import { Box, IconButton, Stack, Typography } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 
+import { OpenToWorkAvatar } from "@/components/OpenToWorkAvatar";
 import { BlogCard, CertificationCard, EducationCard, ExperienceCard } from "@/components/ExperienceCard";
 import { DarkButton, PageShell, Tile, TileGrid, TileSection } from "@/components/SiteTiles";
 import { certifications, certificationsSourceUrl, education, experienceTimeline, profile, projects } from "@/data/portfolio";
@@ -30,11 +31,7 @@ export function HomeView() {
           </Box>
           , a product engineer who ships the whole thing, for the person on the other side of the screen.
         </Typography>
-        <Avatar
-          src={withBasePath("/profile_picture.jpeg")}
-          alt={profile.name}
-          sx={{ width: { xs: 180, md: 220 }, height: { xs: 180, md: 220 } }}
-        />
+        <OpenToWorkAvatar size={{ xs: 220, md: 270 }} photoSrc="/profile_picture.jpeg" alt={profile.name} />
         <Typography variant="body2" sx={{ color: alpha(INK, 0.66), maxWidth: 560 }}>
           Founding full-stack engineer at OpenCFO, an AI-native accounts payable platform, after four years on
           partner identity at Expedia. {profile.location}.

@@ -2,6 +2,8 @@ export type Publication = {
   id: string;
   title: string;
   outlet: string;
+  /** Shown as the pill on the post's card. */
+  category: string;
   date: string;
   readingTime: string;
   url: string;
@@ -22,6 +24,7 @@ export const publications: Publication[] = [
     id: "bff-before-graphql",
     title: "We Added a BFF Layer Before Reaching for GraphQL. Here Is What Happened.",
     outlet: "Medium",
+    category: "Engineering",
     date: "Sep 15, 2026",
     readingTime: "4 min read",
     url: "https://medium.com/@ninawekunal/we-added-a-bff-layer-before-reaching-for-graphql-here-is-what-happened-93da4bb676dd",
@@ -38,6 +41,7 @@ export const publications: Publication[] = [
     id: "react-concepts-part-1",
     title: "Modern React Front-end Concepts for Beginners, Part 1",
     outlet: "Medium",
+    category: "Front end",
     date: "Mar 15, 2026",
     readingTime: "6 min read",
     url: "https://medium.com/@ninawekunal/modern-react-front-end-concepts-for-beginners-part-1-c70a65b615da",

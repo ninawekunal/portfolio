@@ -83,7 +83,8 @@ export type EducationEntry = {
   location: string;
   degree: string;
   date: string;
-  details: string;
+  /** Main subjects, one short phrase each. */
+  coursework: string[];
   logoSrc?: string;
   schoolColor?: string;
 };
@@ -595,8 +596,13 @@ export const education: EducationEntry[] = [
     date: "May 2021",
     logoSrc: "/education/nyu-logo-stacked.svg",
     schoolColor: "#57068c",
-    details:
-      "Coursework in data structures and algorithms, cloud computing, distributed systems, internet protocols, machine learning, and deep learning.",
+    coursework: [
+      "Data structures and algorithms",
+      "Cloud computing",
+      "Distributed systems",
+      "Machine learning and deep learning",
+      "Statistical analysis",
+    ],
   },
   {
     school: "University of Mumbai",
@@ -605,7 +611,7 @@ export const education: EducationEntry[] = [
     date: "July 2019",
     logoSrc: "/education/university-of-mumbai-logo.svg",
     schoolColor: "#101010",
-    details: "Strong computing foundation spanning software engineering and computer science fundamentals.",
+    coursework: ["C++", "Core Java", "Database management", "Android development", "Web fundamentals"],
   },
 ];
 

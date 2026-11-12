@@ -12,7 +12,7 @@ import { withBasePath } from "@/lib/assetPath";
 export function SiteFooter() {
   return (
     <Box sx={{ pt: { xs: 2.2, md: 3 }, pb: { xs: 6, md: 8 } }}>
-      <Container maxWidth="xl">
+      <Container maxWidth="lg">
         <Paper
           sx={{
             p: { xs: 3, md: 4 },
