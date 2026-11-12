@@ -17,7 +17,7 @@ const personJsonLd = {
     "@type": "BlogPosting",
     headline: post.title,
     url: post.url,
-    datePublished: "2026-09-11",
+    datePublished: new Date(`${post.date} UTC`).toISOString().slice(0, 10),
     author: { "@type": "Person", name: profile.name },
   })),
 };

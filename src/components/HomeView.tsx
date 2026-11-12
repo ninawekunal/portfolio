@@ -6,9 +6,10 @@ import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import { Avatar, Box, IconButton, Stack, Typography } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 
-import { CertificationCard, EducationCard, ExperienceCard } from "@/components/ExperienceCard";
+import { BlogCard, CertificationCard, EducationCard, ExperienceCard } from "@/components/ExperienceCard";
 import { DarkButton, PageShell, Tile, TileGrid, TileSection } from "@/components/SiteTiles";
 import { certifications, certificationsSourceUrl, education, experienceTimeline, profile, projects } from "@/data/portfolio";
+import { publications } from "@/data/writing";
 import { withBasePath } from "@/lib/assetPath";
 
 const INK = "#132433";
@@ -73,6 +74,14 @@ export function HomeView() {
               imageSrc={project.imageSrc}
               color={INK}
             />
+          ))}
+        </TileGrid>
+      </TileSection>
+
+      <TileSection title="Blog" moreHref="/blog/" moreLabel="All posts">
+        <TileGrid>
+          {publications.slice(0, HOME_TILES).map((post) => (
+            <BlogCard key={post.id} post={post} />
           ))}
         </TileGrid>
       </TileSection>

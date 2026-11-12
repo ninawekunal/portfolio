@@ -3,6 +3,7 @@
 import { FlipCard } from "@/components/FlipCard";
 import { resolveBrandIcon } from "@/components/TechnologyPin";
 import { certificationsSourceUrl, type CareerEntry, type CertificationEntry, type EducationEntry } from "@/data/portfolio";
+import type { Publication } from "@/data/writing";
 
 const MAX_TECH_ICONS = 5;
 
@@ -13,14 +14,32 @@ function monogramOf(name: string) {
     .join("");
 }
 
+const AWS_ICON = "/brand-icons/aws.svg";
+
+/**
+ * One icon per logo. React and React Router share a logo, and every AWS service
+ * icon looks alike at this size, so AWS services fold into one AWS icon whose
+ * tooltip names them.
+ */
+function techIcons(stack: string[]) {
+  const icons: { label: string; src: string }[] = [];
+  for (const label of stack) {
+    const resolved = resolveBrandIcon(label);
+    if (!resolved) continue;
+    const src = resolved.includes("aws") ? AWS_ICON : resolved;
+    const existing = icons.find((icon) => icon.src === src);
+    if (existing) {
+      if (src === AWS_ICON) existing.label = `${existing.label}, ${label.replace(/^AWS\s+/, "")}`;
+      continue;
+    }
+    icons.push({ label: src === AWS_ICON ? `AWS: ${label.replace(/^AWS\s+/, "")}` : label, src });
+  }
+  return icons.slice(0, MAX_TECH_ICONS);
+}
+
 /** A company card: logo, name, title and dates up front; highlights on the back. */
 export function ExperienceCard({ entry }: { entry: CareerEntry }) {
-  const icons = entry.stack
-    .map((label) => ({ label, src: resolveBrandIcon(label) }))
-    .filter((icon): icon is { label: string; src: string } => Boolean(icon.src))
-    // React and React Router share one logo; show each logo once.
-    .filter((icon, index, all) => all.findIndex((other) => other.src === icon.src) === index)
-    .slice(0, MAX_TECH_ICONS);
+  const icons = techIcons(entry.stack);
 
   return (
     <FlipCard
@@ -53,6 +72,28 @@ export function EducationCard({ entry }: { entry: EducationEntry }) {
       backLabel="What I studied"
       backLines={[entry.details]}
       height={{ xs: 190, md: 190 }}
+    />
+  );
+}
+
+/** A post card: title and date up front; the three takeaways on the back. */
+export function BlogCard({ post }: { post: Publication }) {
+  return (
+    <FlipCard
+      href={post.url}
+      external
+      color="#0a4741"
+      accent="#7fd1c7"
+      badge={post.outlet.charAt(0)}
+      title={post.title}
+      subtitle={post.outlet}
+      meta={`${post.date} · ${post.readingTime}`}
+      titleLines={3}
+      preview={post.summary}
+      backLabel="If you only read three lines"
+      backLines={post.takeaways}
+      cta="Read the full story"
+      height={{ xs: 330, md: 320 }}
     />
   );
 }

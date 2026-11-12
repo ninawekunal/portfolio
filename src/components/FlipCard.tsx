@@ -48,6 +48,9 @@ export type FlipCardProps = {
   subtitle: string;
   meta: string;
   icons?: { label: string; src: string }[];
+  /** A short excerpt at the foot of the front, clamped to three lines. */
+  preview?: string;
+  titleLines?: number;
   backLabel: string;
   backLines: string[];
   cta?: string;
@@ -71,6 +74,8 @@ export function FlipCard({
   subtitle,
   meta,
   icons = [],
+  preview,
+  titleLines = 2,
   backLabel,
   backLines,
   cta,
@@ -165,7 +170,7 @@ export function FlipCard({
                   lineHeight: 1.2,
                   color: INK,
                   display: "-webkit-box",
-                  WebkitLineClamp: 2,
+                  WebkitLineClamp: titleLines,
                   WebkitBoxOrient: "vertical",
                   overflow: "hidden",
                 }}
@@ -177,6 +182,22 @@ export function FlipCard({
                 {meta}
               </Typography>
             </Box>
+            {preview ? (
+              <Typography
+                variant="body2"
+                sx={{
+                  mt: "auto",
+                  color: alpha(INK, 0.72),
+                  lineHeight: 1.5,
+                  display: "-webkit-box",
+                  WebkitLineClamp: 3,
+                  WebkitBoxOrient: "vertical",
+                  overflow: "hidden",
+                }}
+              >
+                {preview}
+              </Typography>
+            ) : null}
             {icons.length ? (
               <Stack direction="row" spacing={1} alignItems="center" sx={{ mt: "auto" }} aria-label="Main technologies">
                 {icons.map((icon) => (
