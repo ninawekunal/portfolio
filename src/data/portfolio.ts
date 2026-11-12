@@ -786,7 +786,6 @@ export const projects: PortfolioProject[] = [
     kicker: "Invoice approval portal",
     headline: "Review, upload and approve invoices, with what you can do decided by your role.",
     repoUrl: "https://github.com/ninawekunal/AgentPortal",
-    liveUrl: "https://agent-portal-production-590e.up.railway.app/login",
     industries: ["Fintech"],
     tags: ["Full Stack", "Scalable Systems", "Frontend"],
     stack: ["React", "TypeScript", "Material UI", "Hapi", "Supabase", "Postgres", "GraphQL", "Jest"],
