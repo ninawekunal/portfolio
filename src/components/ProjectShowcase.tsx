@@ -4,12 +4,15 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import ExpandLessRoundedIcon from "@mui/icons-material/ExpandLessRounded";
+import ExpandMoreRoundedIcon from "@mui/icons-material/ExpandMoreRounded";
 import OpenInNewRoundedIcon from "@mui/icons-material/OpenInNewRounded";
 import {
   Box,
   Button,
   ButtonBase,
   Chip,
+  Collapse,
   Container,
   Dialog,
   IconButton,
@@ -170,6 +173,47 @@ function ProjectCard({ project, onOpen }: { project: PortfolioProject; onOpen: (
   );
 }
 
+function ArchiveRow({ project, onOpen }: { project: PortfolioProject; onOpen: () => void }) {
+  return (
+    <Stack
+      direction="row"
+      alignItems="center"
+      spacing={1}
+      sx={{ borderBottom: `1px solid ${alpha(INK, 0.08)}`, "&:last-of-type": { borderBottom: "none" } }}
+    >
+      <ButtonBase
+        onClick={onOpen}
+        aria-label={`Open details for ${project.title}`}
+        sx={{ flex: 1, minWidth: 0, display: "block", textAlign: "left", px: 1.2, py: 1, borderRadius: "10px" }}
+      >
+        <Stack direction={{ xs: "column", sm: "row" }} spacing={{ xs: 0.2, sm: 1.2 }} alignItems={{ sm: "baseline" }}>
+          <Typography variant="subtitle2" component="h4" sx={{ fontWeight: 700, flexShrink: 0 }}>
+            {project.title}
+          </Typography>
+          <Typography
+            variant="body2"
+            sx={{ color: "text.secondary", minWidth: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}
+          >
+            {plainText(project.headline)}
+          </Typography>
+        </Stack>
+      </ButtonBase>
+      {project.liveUrl ? (
+        <Button
+          size="small"
+          href={project.liveUrl}
+          target="_blank"
+          rel="noreferrer"
+          endIcon={<OpenInNewRoundedIcon sx={{ fontSize: 16 }} />}
+          sx={{ color: "primary.dark", fontWeight: 700, flexShrink: 0 }}
+        >
+          Live demo
+        </Button>
+      ) : null}
+    </Stack>
+  );
+}
+
 export function ProjectShowcase() {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
@@ -179,6 +223,7 @@ export function ProjectShowcase() {
   const [skills, setSkills] = useState<string[]>([]);
   const [openId, setOpenId] = useState<string | null>(null);
   const [paused, setPaused] = useState(false);
+  const [archiveOpen, setArchiveOpen] = useState(false);
   const trackRef = useRef<HTMLDivElement | null>(null);
 
   const filtered = useMemo(
@@ -186,7 +231,13 @@ export function ProjectShowcase() {
     [industries, skills],
   );
 
-  const drifts = !prefersReducedMotion && filtered.length >= MIN_CARDS_TO_DRIFT;
+  const featured = filtered.filter((project) => project.featured);
+  const archived = filtered.filter((project) => !project.featured);
+  const hasFilters = industries.length > 0 || skills.length > 0;
+  // A filter may only match archived projects, so filtering always shows the archive.
+  const showArchive = archiveOpen || hasFilters;
+
+  const drifts = !prefersReducedMotion && featured.length >= MIN_CARDS_TO_DRIFT;
   const openIndex = filtered.findIndex((project) => project.id === openId);
   const openProject = openIndex >= 0 ? filtered[openIndex] : null;
 
@@ -228,8 +279,6 @@ export function ProjectShowcase() {
     setOpenId(filtered[(((openIndex + delta) % total) + total) % total].id);
   };
 
-  const hasFilters = industries.length > 0 || skills.length > 0;
-
   return (
     <Box component="section" id="projects" sx={{ py: { xs: 4, md: 5 }, scrollMarginTop: 100 }}>
       <Container maxWidth="xl">
@@ -257,7 +306,7 @@ export function ProjectShowcase() {
 
           <Stack direction="row" alignItems="center" justifyContent="space-between">
             <Typography variant="body2" sx={{ color: "text.secondary" }}>
-              {filtered.length} of {projects.length} projects
+              {featured.length} featured · {archived.length} in the archive
               {hasFilters ? (
                 <Button
                   size="small"
@@ -291,7 +340,7 @@ export function ProjectShowcase() {
             </Stack>
           </Stack>
 
-          {filtered.length ? (
+          {featured.length ? (
             <Box
               ref={trackRef}
               aria-label="Projects"
@@ -313,22 +362,52 @@ export function ProjectShowcase() {
                   : undefined,
               }}
             >
-              {filtered.map((project) => (
+              {featured.map((project) => (
                 <ProjectCard key={project.id} project={project} onOpen={() => setOpenId(project.id)} />
               ))}
               {drifts ? (
                 <Box aria-hidden inert sx={{ display: "flex", gap: `${CARD_GAP}px` }}>
-                  {filtered.map((project) => (
+                  {featured.map((project) => (
                     <ProjectCard key={`${project.id}-loop`} project={project} onOpen={() => setOpenId(project.id)} />
                   ))}
                 </Box>
               ) : null}
             </Box>
           ) : (
-            <Typography variant="body2" sx={{ color: "text.secondary", py: 3 }}>
-              No project matches both filters. Clear one to see more.
+            <Typography variant="body2" sx={{ color: "text.secondary", py: 2 }}>
+              {archived.length
+                ? "No featured project matches. The archive below has the ones that do."
+                : "No project matches both filters. Clear one to see more."}
             </Typography>
           )}
+
+          {archived.length ? (
+            <Stack spacing={0.8}>
+              {hasFilters ? (
+                <Typography variant="subtitle1" component="h3" sx={{ fontWeight: 700 }}>
+                  From the archive
+                </Typography>
+              ) : (
+                <Button
+                  onClick={() => setArchiveOpen((open) => !open)}
+                  aria-expanded={archiveOpen}
+                  endIcon={archiveOpen ? <ExpandLessRoundedIcon /> : <ExpandMoreRoundedIcon />}
+                  sx={{ alignSelf: "flex-start", color: "text.primary", fontWeight: 700 }}
+                >
+                  {archiveOpen ? "Hide the archive" : `View the archive · ${archived.length} more`}
+                </Button>
+              )}
+              <Collapse in={showArchive} unmountOnExit>
+                <Paper
+                  sx={{ borderRadius: "16px", bgcolor: alpha("#ffffff", 0.7), borderColor: alpha(INK, 0.1), p: 0.6 }}
+                >
+                  {archived.map((project) => (
+                    <ArchiveRow key={project.id} project={project} onOpen={() => setOpenId(project.id)} />
+                  ))}
+                </Paper>
+              </Collapse>
+            </Stack>
+          ) : null}
         </Stack>
       </Container>
 

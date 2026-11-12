@@ -11,6 +11,8 @@ export type PortfolioProject = {
   headline: string;
   repoUrl: string;
   liveUrl?: string;
+  /** Top-shelf projects show in the marquee; the rest wait in the archive. */
+  featured?: boolean;
   /** Who the project is for, used by the industry filter. */
   industries: string[];
   /** Skill areas, used by the skill filter. */
@@ -624,6 +626,7 @@ export const certifications: CertificationEntry[] = [
 export const projects: PortfolioProject[] = [
   {
     id: "learning-doc-builder",
+    featured: true,
     title: "Learning Doc Builder",
     kicker: "Claude skill + reading app",
     headline: "Turns any topic into one short, interactive study page with a quiz at the end.",
@@ -668,6 +671,7 @@ export const projects: PortfolioProject[] = [
   },
   {
     id: "pdf-highlighter",
+    featured: true,
     title: "Invoice PDF Highlighter",
     kicker: "Document review tool",
     headline: "Pulls the key fields out of an invoice PDF and highlights exactly where each one sits on the page.",
@@ -698,6 +702,7 @@ export const projects: PortfolioProject[] = [
   },
   {
     id: "paws-email-notifications",
+    featured: true,
     title: "PAWS Email Notifications",
     kicker: "Full-stack notification system",
     headline: "Emails people when an animal they would want to adopt appears on the PAWS shelter site.",
@@ -737,6 +742,7 @@ export const projects: PortfolioProject[] = [
   },
   {
     id: "accent-detector",
+    featured: true,
     title: "Accent Detector",
     kicker: "Speech classification",
     headline: "Listens to someone read a short passage and guesses which of four English accents they have.",
@@ -765,6 +771,7 @@ export const projects: PortfolioProject[] = [
   },
   {
     id: "agent-portal",
+    featured: true,
     title: "AgentPortal",
     kicker: "Invoice approval portal",
     headline: "Review, upload and approve invoices, with what you can do decided by your role.",
