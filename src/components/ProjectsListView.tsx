@@ -7,7 +7,8 @@ import { Box, Button, ButtonBase, Chip, Paper, Stack, Typography } from "@mui/ma
 import { alpha } from "@mui/material/styles";
 
 import { plainText } from "@/components/RichText";
-import { PageShell, Tile, TileGrid, TileSection } from "@/components/SiteTiles";
+import { ProjectCard } from "@/components/ExperienceCard";
+import { PageShell, TileGrid, TileSection } from "@/components/SiteTiles";
 import { type PortfolioProject, projectIndustries, projects, projectSkills } from "@/data/portfolio";
 
 const INK = "#132433";
@@ -157,14 +158,7 @@ export function ProjectsListView() {
         {featured.length ? (
           <TileGrid>
             {featured.map((project) => (
-              <Tile
-                key={project.id}
-                href={`/projects/${project.id}/`}
-                title={project.title}
-                caption={project.kicker}
-                imageSrc={project.imageSrc}
-                color={INK}
-              />
+              <ProjectCard key={project.id} project={project} />
             ))}
           </TileGrid>
         ) : (

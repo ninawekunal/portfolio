@@ -6,8 +6,8 @@ import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import { Avatar, Box, IconButton, Stack, Typography } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 
-import { BlogCard, CertificationCard, EducationCard, ExperienceCard } from "@/components/ExperienceCard";
-import { DarkButton, PageShell, Tile, TileGrid, TileSection } from "@/components/SiteTiles";
+import { BlogCard, CertificationCard, EducationCard, ExperienceCard, ProjectCard } from "@/components/ExperienceCard";
+import { DarkButton, PageShell, TileGrid, TileSection } from "@/components/SiteTiles";
 import { certifications, certificationsSourceUrl, education, experienceTimeline, profile, projects } from "@/data/portfolio";
 import { publications } from "@/data/writing";
 import { withBasePath } from "@/lib/assetPath";
@@ -66,14 +66,7 @@ export function HomeView() {
       <TileSection title="Projects" eyebrow="Featured" moreHref="/projects/" moreLabel="All projects">
         <TileGrid>
           {featured.map((project) => (
-            <Tile
-              key={project.id}
-              href={`/projects/${project.id}/`}
-              title={project.title}
-              caption={project.kicker}
-              imageSrc={project.imageSrc}
-              color={INK}
-            />
+            <ProjectCard key={project.id} project={project} />
           ))}
         </TileGrid>
       </TileSection>
