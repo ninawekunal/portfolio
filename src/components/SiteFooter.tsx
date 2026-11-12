@@ -12,7 +12,7 @@ import { withBasePath } from "@/lib/assetPath";
 export function SiteFooter() {
   return (
     <Box sx={{ pt: { xs: 2.2, md: 3 }, pb: { xs: 6, md: 8 } }}>
-      <Container maxWidth="xl">
+      <Container maxWidth="lg">
         <Paper
           sx={{
             p: { xs: 3, md: 4 },
@@ -36,7 +36,7 @@ export function SiteFooter() {
               </Typography>
               <Typography variant="body1" sx={{ maxWidth: 760, opacity: 0.82, lineHeight: 1.8 }}>
                 I am in Seattle and open to New York or San Francisco. The fastest way to see
-                how I work is the Wins section at the top. The fastest way to reach me is email.
+                how I work is the OpenCFO page. The fastest way to reach me is email.
               </Typography>
 
               <Stack direction="row" spacing={1.3} flexWrap="wrap" useFlexGap>

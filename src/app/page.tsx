@@ -1,27 +1,6 @@
-import dynamic from "next/dynamic";
-import { Box } from "@mui/material";
-
-import { SiteFooter } from "@/components/SiteFooter";
-import { TopBar } from "@/components/TopBar";
-import { WhatIOfferSection } from "@/components/WhatIOfferSection";
-import { WinsSection } from "@/components/WinsSection";
-import { WritingSection } from "@/components/WritingSection";
+import { HomeView } from "@/components/HomeView";
 import { profile } from "@/data/portfolio";
 import { publications } from "@/data/writing";
-
-// Below-the-fold interactive sections ship as their own chunks so the
-// first screen hydrates before their code arrives.
-const ExperienceSection = dynamic(() =>
-  import("@/components/ExperienceSection").then((module) => module.ExperienceSection),
-);
-const ProjectShowcase = dynamic(() =>
-  import("@/components/ProjectShowcase").then((module) => module.ProjectShowcase),
-);
-const EducationCertificationSection = dynamic(() =>
-  import("@/components/EducationCertificationSection").then(
-    (module) => module.EducationCertificationSection,
-  ),
-);
 
 const personJsonLd = {
   "@context": "https://schema.org",
@@ -38,7 +17,7 @@ const personJsonLd = {
     "@type": "BlogPosting",
     headline: post.title,
     url: post.url,
-    datePublished: "2026-09-11",
+    datePublished: new Date(`${post.date} UTC`).toISOString().slice(0, 10),
     author: { "@type": "Person", name: profile.name },
   })),
 };
@@ -50,16 +29,7 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
       />
-      <TopBar />
-      <Box component="main">
-        <WinsSection />
-        <WhatIOfferSection />
-        <ExperienceSection />
-        <ProjectShowcase />
-        <WritingSection />
-        <EducationCertificationSection />
-        <SiteFooter />
-      </Box>
+      <HomeView />
     </>
   );
 }

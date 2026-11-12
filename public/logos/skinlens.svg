@@ -1,0 +1,9 @@
+<svg viewBox="0 0 600 120" height="120" width="600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Encode+Sans+Expanded&amp;display=swap');
+    </style>
+  </defs>
+  <rect fill="#0f1f4d" height="120" width="600"></rect>
+  <text letter-spacing="8" text-anchor="middle" fill="#ffffff" font-weight="400" font-size="56" font-family="'Encode Sans Expanded', sans-serif" y="72" x="300">SKINLENS</text>
+</svg>
