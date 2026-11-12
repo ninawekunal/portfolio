@@ -12,6 +12,8 @@ import { withBasePath } from "@/lib/assetPath";
 
 const INK = "#132433";
 
+const FLIP_MS = 520;
+
 const faceSx = {
   position: "absolute",
   inset: 0,
@@ -20,6 +22,19 @@ const faceSx = {
   WebkitBackfaceVisibility: "hidden",
   overflow: "hidden",
 } as const;
+
+/**
+ * Safari ignores backface-visibility on positioned layers inside a face, so the
+ * front's text shows through mirrored. Hiding the off-side face outright at the
+ * halfway point, when the card is edge-on, works in every browser.
+ */
+function faceVisibility(shown: boolean) {
+  return {
+    visibility: shown ? "visible" : "hidden",
+    transition: `visibility 0s linear ${FLIP_MS / 2}ms`,
+    "@media (prefers-reduced-motion: reduce)": { transition: "none" },
+  } as const;
+}
 
 // Content sits above the full-face toggle button; only its links take clicks.
 const contentSx = {
@@ -157,7 +172,7 @@ export function FlipCard({
           position: "relative",
           height: "100%",
           transformStyle: "preserve-3d",
-          transition: "transform 520ms cubic-bezier(0.2, 0.7, 0.2, 1)",
+          transition: `transform ${FLIP_MS}ms cubic-bezier(0.2, 0.7, 0.2, 1)`,
           transform: flipped ? "rotateY(180deg)" : "none",
           "@media (prefers-reduced-motion: reduce)": { transition: "none" },
         }}
@@ -167,6 +182,7 @@ export function FlipCard({
           aria-hidden={flipped}
           sx={{
             ...faceSx,
+            ...faceVisibility(!flipped),
             bgcolor: alpha(color, 0.07),
             border: `1px solid ${alpha(color, 0.22)}`,
             borderTop: `5px solid ${color}`,
@@ -294,7 +310,7 @@ export function FlipCard({
           </Box>
         </Box>
 
-        <Box inert={!flipped} aria-hidden={!flipped} sx={{ ...faceSx, bgcolor: color, color: "#ffffff", transform: "rotateY(180deg)" }}>
+        <Box inert={!flipped} aria-hidden={!flipped} sx={{ ...faceSx, ...faceVisibility(flipped), bgcolor: color, color: "#ffffff", transform: "rotateY(180deg)" }}>
           <ButtonBase
             onClick={handleToggle}
             aria-expanded={flipped}
