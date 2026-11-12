@@ -11,6 +11,8 @@ export type PortfolioProject = {
   headline: string;
   repoUrl: string;
   liveUrl?: string;
+  /** Screenshot or poster for the project's tile, under /public. */
+  imageSrc?: string;
   /** Top-shelf projects show in the marquee; the rest wait in the archive. */
   featured?: boolean;
   /** Who the project is for, used by the industry filter. */
@@ -27,7 +29,11 @@ export type PortfolioProject = {
 };
 
 export type CareerEntry = {
+  /** URL segment for the company page, e.g. /experience/opencfo. */
+  slug: string;
   company: string;
+  /** Background of the company's tile; the name sits on it as a wordmark. */
+  brandColor: string;
   location: string;
   role: string;
   period: string;
@@ -131,18 +137,11 @@ export const profile = {
   ],
 };
 
-export const navigationItems = [
-  { label: "Wins", href: "#wins" },
-  { label: "Skillset", href: "#what-i-offer" },
-  { label: "Experience", href: "#experience" },
-  { label: "Projects", href: "#projects" },
-  { label: "Writing", href: "#writing" },
-  { label: "Education", href: "#education-certifications" },
-];
-
 export const experienceTimeline: CareerEntry[] = [
   {
+    slug: "opencfo",
     company: "OpenCFO",
+    brandColor: "#1f3a2e",
     location: "Seattle, WA",
     role: "Founding Full Stack Engineer",
     period: "April 2026 - October 2026",
@@ -295,7 +294,9 @@ export const experienceTimeline: CareerEntry[] = [
     ],
   },
   {
+    slug: "expedia-group",
     company: "Expedia Group",
+    brandColor: "#1a2b49",
     location: "Seattle, WA",
     role: "Software Engineer II",
     period: "May 2022 - April 2026",
@@ -406,7 +407,9 @@ export const experienceTimeline: CareerEntry[] = [
     ],
   },
   {
+    slug: "global-traffic-technologies",
     company: "Global Traffic Technologies",
+    brandColor: "#0b5394",
     location: "Minneapolis, MN",
     role: "Software Development Engineer",
     period: "June 2021 - April 2022",
@@ -466,7 +469,9 @@ export const experienceTimeline: CareerEntry[] = [
     ],
   },
   {
+    slug: "skinlens",
     company: "SkinLens",
+    brandColor: "#7a3e5c",
     location: "New York, NY",
     role: "Machine Learning Intern",
     period: "January 2021 - May 2021",
@@ -485,7 +490,9 @@ export const experienceTimeline: CareerEntry[] = [
     stack: ["Python", "PyTorch", "Detectron2", "OpenCV", "Pandas"],
   },
   {
+    slug: "moaedat",
     company: "Moaedat Ltd.",
+    brandColor: "#6b4a1f",
     location: "Mumbai, India",
     role: "Web Developer",
     period: "August 2018 - October 2018",
@@ -627,6 +634,7 @@ export const projects: PortfolioProject[] = [
   {
     id: "learning-doc-builder",
     featured: true,
+    imageSrc: "/projects/learning-doc-builder.jpg",
     title: "Learning Doc Builder",
     kicker: "Claude skill + reading app",
     headline: "Turns any topic into one short, interactive study page with a quiz at the end.",
@@ -672,6 +680,7 @@ export const projects: PortfolioProject[] = [
   {
     id: "pdf-highlighter",
     featured: true,
+    imageSrc: "/projects/pdf-highlighter.jpg",
     title: "Invoice PDF Highlighter",
     kicker: "Document review tool",
     headline: "Pulls the key fields out of an invoice PDF and highlights exactly where each one sits on the page.",
@@ -772,6 +781,7 @@ export const projects: PortfolioProject[] = [
   {
     id: "agent-portal",
     featured: true,
+    imageSrc: "/projects/agent-portal.svg",
     title: "AgentPortal",
     kicker: "Invoice approval portal",
     headline: "Review, upload and approve invoices, with what you can do decided by your role.",

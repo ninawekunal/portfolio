@@ -3,7 +3,6 @@
 import { Fragment, useEffect, useMemo, useRef, useState, type KeyboardEvent, type RefObject } from "react";
 import BoltRoundedIcon from "@mui/icons-material/BoltRounded";
 import BuildRoundedIcon from "@mui/icons-material/BuildRounded";
-import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
 import GroupsRoundedIcon from "@mui/icons-material/GroupsRounded";
 import KeyboardArrowLeftRoundedIcon from "@mui/icons-material/KeyboardArrowLeftRounded";
 import KeyboardArrowRightRoundedIcon from "@mui/icons-material/KeyboardArrowRightRounded";
@@ -11,8 +10,6 @@ import ShieldRoundedIcon from "@mui/icons-material/ShieldRounded";
 import {
   Box,
   ButtonBase,
-  Chip,
-  Container,
   IconButton,
   MenuItem,
   Paper,
@@ -24,8 +21,6 @@ import { alpha } from "@mui/material/styles";
 
 import {
   headlineStats,
-  wins,
-  winsHeading,
   winThemeFilters,
   type Win,
   type WinTheme,
@@ -115,12 +110,14 @@ function RailItem({
 }
 
 function WinsRail({
+  all,
   items,
   activeId,
   onSelect,
   filter,
   onFilterChange,
 }: {
+  all: Win[];
   items: Win[];
   activeId: string | null;
   onSelect: (id: string) => void;
@@ -174,11 +171,17 @@ function WinsRail({
           value={filter}
           onChange={(event) => onFilterChange(event.target.value as WinThemeFilter["id"])}
         >
-          {winThemeFilters.map((option) => (
-            <MenuItem key={option.id} value={option.id}>
-              {option.label} · {option.id === "all" ? wins.length : wins.filter((win) => win.theme === option.id).length}
-            </MenuItem>
-          ))}
+          {winThemeFilters
+            .map((option) => ({
+              ...option,
+              count: option.id === "all" ? all.length : all.filter((win) => win.theme === option.id).length,
+            }))
+            .filter((option) => option.count > 0)
+            .map((option) => (
+              <MenuItem key={option.id} value={option.id}>
+                {option.label} · {option.count}
+              </MenuItem>
+            ))}
         </TextField>
       </Stack>
       <Box sx={{ flex: 1, overflowY: "auto", p: 0.8 }}>
@@ -362,13 +365,52 @@ function WinPanel({
   );
 }
 
-export function WinsSection() {
-  const [activeFilter, setActiveFilter] = useState<WinThemeFilter["id"]>("trust");
+/** The stats band from the old hero, for the OpenCFO page. */
+export function HeadlineStats() {
+  return (
+    <Paper sx={{ p: { xs: 1.6, md: 2 }, borderRadius: "16px", bgcolor: alpha("#132433", 0.96), color: "#f8fbff" }}>
+      <Typography variant="overline" sx={{ letterSpacing: "0.16em", opacity: 0.7 }}>
+        21 weeks at OpenCFO
+      </Typography>
+      <Box
+        component="dl"
+        sx={{
+          m: 0,
+          mt: 1,
+          display: "grid",
+          gap: 1.2,
+          gridTemplateColumns: { xs: "repeat(2, minmax(0, 1fr))", sm: "repeat(3, minmax(0, 1fr))" },
+        }}
+      >
+        {headlineStats.map((stat) => (
+          <Box key={stat.label}>
+            <Typography component="dt" sx={{ ...numericSx, fontSize: { xs: "1.4rem", md: "1.6rem" }, lineHeight: 1, color: "#f0b07b" }}>
+              {stat.value}
+            </Typography>
+            <Typography component="dd" variant="subtitle2" sx={{ m: 0, mt: 0.4, lineHeight: 1.2 }}>
+              {stat.label}
+            </Typography>
+            <Typography component="dd" variant="caption" sx={{ m: 0, opacity: 0.7, lineHeight: 1.4, display: "block" }}>
+              {stat.detail}
+            </Typography>
+          </Box>
+        ))}
+      </Box>
+    </Paper>
+  );
+}
+
+/** The ship list and the story panel for one company's wins. */
+export function WinsBrowser({ items }: { items: Win[] }) {
+  // Opening on one theme keeps a long list from feeling like a wall; a short list shows everything.
+  const initialFilter: WinThemeFilter["id"] =
+    items.length > 6 && items.some((win) => win.theme === "trust") ? "trust" : "all";
+  const [activeFilter, setActiveFilter] = useState<WinThemeFilter["id"]>(initialFilter);
   const [activeIndex, setActiveIndex] = useState(0);
 
   const filteredWins = useMemo(
-    () => (activeFilter === "all" ? wins : wins.filter((win) => win.theme === activeFilter)),
-    [activeFilter],
+    () => (activeFilter === "all" ? items : items.filter((win) => win.theme === activeFilter)),
+    [activeFilter, items],
   );
 
   const activeWin = filteredWins[activeIndex] ?? filteredWins[0] ?? null;
@@ -391,162 +433,32 @@ export function WinsSection() {
   };
 
   return (
-    <Box component="section" id="wins" sx={{ pt: { xs: 3, md: 5 }, pb: { xs: 3, md: 4 }, scrollMarginTop: 100 }}>
-      <Container maxWidth="xl">
-        <Stack spacing={{ xs: 2.4, md: 3.2 }}>
-          <Box
-            sx={{
-              display: "grid",
-              gap: { xs: 2, lg: 3 },
-              gridTemplateColumns: { xs: "1fr", lg: "minmax(0, 1.25fr) minmax(300px, 0.75fr)" },
-              alignItems: "start",
-            }}
-          >
-            <Stack spacing={1.6}>
-              <Typography
-                variant="overline"
-                sx={{
-                  letterSpacing: { xs: "0.1em", md: "0.18em" },
-                  fontSize: { xs: "0.7rem", md: "0.75rem" },
-                  lineHeight: 1.5,
-                  fontWeight: 600,
-                  color: "secondary.dark",
-                }}
-              >
-                {winsHeading.eyebrow}
-              </Typography>
-              <Typography
-                variant="h1"
-                sx={{
-                  fontSize: { xs: "2rem", sm: "2.5rem", md: "3.1rem" },
-                  lineHeight: 1.06,
-                  maxWidth: 860,
-                  textWrap: "balance",
-                }}
-              >
-                {winsHeading.title}
-              </Typography>
-              <Typography
-                variant="h5"
-                component="p"
-                sx={{ fontSize: { xs: "1.15rem", md: "1.4rem" }, lineHeight: 1.4, fontWeight: 500, maxWidth: 760 }}
-              >
-                {winsHeading.subtitle}
-              </Typography>
-              <Stack spacing={1} sx={{ maxWidth: 760 }}>
-                {winsHeading.body.map((paragraph) => (
-                  <Typography key={paragraph} variant="body1" sx={{ lineHeight: 1.75, color: "text.secondary" }}>
-                    {paragraph}
-                  </Typography>
-                ))}
-              </Stack>
-              <Stack direction="row" flexWrap="wrap" useFlexGap gap={0.8}>
-                {winsHeading.habits.map((habit) => (
-                  <Chip
-                    key={habit}
-                    icon={<CheckRoundedIcon sx={{ fontSize: 16 }} />}
-                    label={habit}
-                    sx={{
-                      bgcolor: alpha("#0f6b62", 0.08),
-                      color: "secondary.dark",
-                      border: `1px solid ${alpha("#0f6b62", 0.22)}`,
-                      "& .MuiChip-icon": { color: "secondary.dark" },
-                    }}
-                  />
-                ))}
-              </Stack>
-            </Stack>
-
-            <Paper
-              sx={{
-                p: { xs: 1.6, md: 2 },
-                borderRadius: "24px",
-                bgcolor: alpha("#132433", 0.96),
-                color: "#f8fbff",
-              }}
-            >
-              <Typography variant="overline" sx={{ letterSpacing: "0.16em", opacity: 0.7 }}>
-                21 weeks at OpenCFO
-              </Typography>
-              <Box
-                component="dl"
-                sx={{
-                  m: 0,
-                  mt: 1,
-                  display: "grid",
-                  gap: 1.2,
-                  gridTemplateColumns: { xs: "repeat(2, minmax(0, 1fr))", sm: "repeat(3, minmax(0, 1fr))", lg: "repeat(2, minmax(0, 1fr))" },
-                }}
-              >
-                {headlineStats.map((stat) => (
-                  <Box key={stat.label}>
-                    <Typography
-                      component="dt"
-                      sx={{
-                        ...numericSx,
-                        fontSize: { xs: "1.4rem", md: "1.6rem" },
-                        lineHeight: 1,
-                        color: "#f0b07b",
-                      }}
-                    >
-                      {stat.value}
-                    </Typography>
-                    <Typography component="dd" variant="subtitle2" sx={{ m: 0, mt: 0.4, lineHeight: 1.2 }}>
-                      {stat.label}
-                    </Typography>
-                    <Typography component="dd" variant="caption" sx={{ m: 0, opacity: 0.7, lineHeight: 1.4, display: "block" }}>
-                      {stat.detail}
-                    </Typography>
-                  </Box>
-                ))}
-              </Box>
-            </Paper>
-          </Box>
-
-          <Stack spacing={1.4}>
-            <Stack
-              direction={{ xs: "column", sm: "row" }}
-              alignItems={{ xs: "flex-start", sm: "center" }}
-              justifyContent="space-between"
-              spacing={1}
-            >
-              <Typography variant="h2" sx={{ fontSize: { xs: "1.5rem", md: "1.9rem" } }}>
-                What I shipped, one card each
-              </Typography>
-              <Typography variant="body2" sx={{ color: "text.secondary" }}>
-                Each story in four parts: the context, what I did, what changed, and what I learned.
-              </Typography>
-            </Stack>
-          </Stack>
-
-          <Box
-            onKeyDown={handleKeyDown}
-            sx={{
-              display: "grid",
-              gap: 1.4,
-              gridTemplateColumns: { xs: "1fr", md: "300px minmax(0, 1fr)" },
-              alignItems: "start",
-            }}
-          >
-            <WinsRail
-              items={filteredWins}
-              activeId={activeWin?.id ?? null}
-              onSelect={(id) => {
-                const index = filteredWins.findIndex((win) => win.id === id);
-                if (index >= 0) setActiveIndex(index);
-              }}
-              filter={activeFilter}
-              onFilterChange={(filter) => {
-                setActiveFilter(filter);
-                setActiveIndex(0);
-              }}
-            />
-            {activeWin ? (
-              <WinPanel win={activeWin} index={activeIndex} total={filteredWins.length} onPrev={goPrev} onNext={goNext} />
-            ) : null}
-          </Box>
-        </Stack>
-      </Container>
+    <Box
+      onKeyDown={handleKeyDown}
+      sx={{
+        display: "grid",
+        gap: 1.4,
+        gridTemplateColumns: { xs: "1fr", md: "300px minmax(0, 1fr)" },
+        alignItems: "start",
+      }}
+    >
+      <WinsRail
+        all={items}
+        items={filteredWins}
+        activeId={activeWin?.id ?? null}
+        onSelect={(id) => {
+          const index = filteredWins.findIndex((win) => win.id === id);
+          if (index >= 0) setActiveIndex(index);
+        }}
+        filter={activeFilter}
+        onFilterChange={(filter) => {
+          setActiveFilter(filter);
+          setActiveIndex(0);
+        }}
+      />
+      {activeWin ? (
+        <WinPanel win={activeWin} index={activeIndex} total={filteredWins.length} onPrev={goPrev} onNext={goNext} />
+      ) : null}
     </Box>
   );
 }
