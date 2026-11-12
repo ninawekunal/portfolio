@@ -2,7 +2,8 @@
 
 import { Typography } from "@mui/material";
 
-import { PageShell, Tile, TileGrid } from "@/components/SiteTiles";
+import { ExperienceCard } from "@/components/ExperienceCard";
+import { PageShell, TileGrid } from "@/components/SiteTiles";
 import { experienceTimeline } from "@/data/portfolio";
 
 export function ExperienceListView() {
@@ -13,13 +14,7 @@ export function ExperienceListView() {
       </Typography>
       <TileGrid>
         {experienceTimeline.map((entry) => (
-          <Tile
-            key={entry.slug}
-            href={`/experience/${entry.slug}/`}
-            title={entry.company}
-            caption={`${entry.role} · ${entry.period}`}
-            color={entry.brandColor}
-          />
+          <ExperienceCard key={entry.slug} entry={entry} />
         ))}
       </TileGrid>
     </PageShell>

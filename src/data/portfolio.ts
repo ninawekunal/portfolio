@@ -32,8 +32,12 @@ export type CareerEntry = {
   /** URL segment for the company page, e.g. /experience/opencfo. */
   slug: string;
   company: string;
-  /** Background of the company's tile; the name sits on it as a wordmark. */
+  /** Back of the company's card, and the wordmark color when there is no logo. */
   brandColor: string;
+  /** Official logo under /public; companies without one show their name as a wordmark. */
+  logoSrc?: string;
+  /** Two or three short lines shown when the card flips. */
+  cardHighlights: string[];
   location: string;
   role: string;
   period: string;
@@ -142,6 +146,12 @@ export const experienceTimeline: CareerEntry[] = [
     slug: "opencfo",
     company: "OpenCFO",
     brandColor: "#1f3a2e",
+    logoSrc: "/logos/opencfo.svg",
+    cardHighlights: [
+      "End-to-end, 0-to-1 ownership in fintech",
+      "Customer and product discovery",
+      "Web security, state management and access control for sensitive data",
+    ],
     location: "Seattle, WA",
     role: "Founding Full Stack Engineer",
     period: "April 2026 - October 2026",
@@ -297,6 +307,12 @@ export const experienceTimeline: CareerEntry[] = [
     slug: "expedia-group",
     company: "Expedia Group",
     brandColor: "#1a2b49",
+    logoSrc: "/logos/expedia-group.svg",
+    cardHighlights: [
+      "Greenfield features in large-scale distributed systems, shipped to 100K partners",
+      "MFA abuse prevention, risk analysis and user behavior signals",
+      "Identity and access management, root cause analysis, incident investigation and SRE",
+    ],
     location: "Seattle, WA",
     role: "Software Engineer II",
     period: "May 2022 - April 2026",
@@ -410,6 +426,10 @@ export const experienceTimeline: CareerEntry[] = [
     slug: "global-traffic-technologies",
     company: "Global Traffic Technologies",
     brandColor: "#0b5394",
+    cardHighlights: [
+      "APIs on AWS, and log analysis on Kinesis Firehose streams",
+      "Cloud infrastructure in CloudFormation, CI/CD, and metrics monitoring on critical paths for ambulances",
+    ],
     location: "Minneapolis, MN",
     role: "Software Development Engineer",
     period: "June 2021 - April 2022",
@@ -472,6 +492,11 @@ export const experienceTimeline: CareerEntry[] = [
     slug: "skinlens",
     company: "SkinLens",
     brandColor: "#7a3e5c",
+    logoSrc: "/logos/skinlens.svg",
+    cardHighlights: [
+      "Computer vision pipeline on about 10,000 skin images",
+      "PyTorch CNN that classifies 8 skin diseases at 95% accuracy",
+    ],
     location: "New York, NY",
     role: "Machine Learning Intern",
     period: "January 2021 - May 2021",
@@ -493,6 +518,10 @@ export const experienceTimeline: CareerEntry[] = [
     slug: "moaedat",
     company: "Moaedat Ltd.",
     brandColor: "#6b4a1f",
+    cardHighlights: [
+      "E-commerce site with 500+ products in PHP and MySQL",
+      "Led 2 developers and was the team's contact with the client",
+    ],
     location: "Mumbai, India",
     role: "Web Developer",
     period: "August 2018 - October 2018",

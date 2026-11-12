@@ -6,6 +6,7 @@ import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import { Avatar, Box, IconButton, Stack, Typography } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 
+import { ExperienceCard } from "@/components/ExperienceCard";
 import { DarkButton, PageShell, Tile, TileGrid, TileSection } from "@/components/SiteTiles";
 import { experienceTimeline, profile, projects } from "@/data/portfolio";
 import { withBasePath } from "@/lib/assetPath";
@@ -56,13 +57,7 @@ export function HomeView() {
       <TileSection title="Experience" moreHref="/experience/" moreLabel="All experience">
         <TileGrid>
           {experienceTimeline.slice(0, HOME_TILES).map((entry) => (
-            <Tile
-              key={entry.slug}
-              href={`/experience/${entry.slug}/`}
-              title={entry.company}
-              caption={`${entry.role} · ${entry.period}`}
-              color={entry.brandColor}
-            />
+            <ExperienceCard key={entry.slug} entry={entry} />
           ))}
         </TileGrid>
       </TileSection>
