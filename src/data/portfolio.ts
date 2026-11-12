@@ -34,8 +34,12 @@ export type CareerEntry = {
   company: string;
   /** Back of the company's card, and the wordmark color when there is no logo. */
   brandColor: string;
-  /** Official logo under /public; companies without one show their name as a wordmark. */
+  /** Official logo under /public; companies without one show their initials. */
   logoSrc?: string;
+  /** A short line beside the logo, e.g. when the company now trades under another name. */
+  logoNote?: string;
+  /** Bullet and label color on the back of the card, taken from the logo. */
+  accentColor?: string;
   /** Two or three short lines shown when the card flips. */
   cardHighlights: string[];
   location: string;
@@ -145,7 +149,8 @@ export const experienceTimeline: CareerEntry[] = [
   {
     slug: "opencfo",
     company: "OpenCFO",
-    brandColor: "#1f3a2e",
+    brandColor: "#04231a",
+    accentColor: "#fc821f",
     logoSrc: "/logos/opencfo.svg",
     cardHighlights: [
       "End-to-end, 0-to-1 ownership in fintech",
@@ -306,7 +311,8 @@ export const experienceTimeline: CareerEntry[] = [
   {
     slug: "expedia-group",
     company: "Expedia Group",
-    brandColor: "#1a2b49",
+    brandColor: "#3311c8",
+    accentColor: "#c9c2ff",
     logoSrc: "/logos/expedia-group.svg",
     cardHighlights: [
       "Greenfield features in large-scale distributed systems, shipped to 100K partners",
@@ -425,7 +431,9 @@ export const experienceTimeline: CareerEntry[] = [
   {
     slug: "global-traffic-technologies",
     company: "Global Traffic Technologies",
-    brandColor: "#0b5394",
+    brandColor: "#0b57c8",
+    logoSrc: "/logos/miovision.png",
+    logoNote: "Now part of Miovision",
     cardHighlights: [
       "APIs on AWS, and log analysis on Kinesis Firehose streams",
       "Cloud infrastructure in CloudFormation, CI/CD, and metrics monitoring on critical paths for ambulances",
@@ -491,7 +499,8 @@ export const experienceTimeline: CareerEntry[] = [
   {
     slug: "skinlens",
     company: "SkinLens",
-    brandColor: "#7a3e5c",
+    brandColor: "#0f1f4d",
+    accentColor: "#60b4ff",
     logoSrc: "/logos/skinlens.svg",
     cardHighlights: [
       "Computer vision pipeline on about 10,000 skin images",

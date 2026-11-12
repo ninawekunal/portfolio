@@ -50,7 +50,7 @@ function normalizeStackKey(label: string) {
   return label.toLowerCase().replace(/[^a-z0-9]/g, "");
 }
 
-function resolveBrandIcon(label: string) {
+export function resolveBrandIcon(label: string) {
   const normalized = normalizeStackKey(label);
 
   if (stackBrandIconMap[normalized]) {

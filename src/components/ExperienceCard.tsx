@@ -1,148 +1,78 @@
 "use client";
 
-import { useState, type MouseEvent } from "react";
-import NextLink from "next/link";
-import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
-import { Box, CardActionArea, CardMedia, Stack, Typography } from "@mui/material";
-import { alpha } from "@mui/material/styles";
+import { FlipCard } from "@/components/FlipCard";
+import { resolveBrandIcon } from "@/components/TechnologyPin";
+import { certificationsSourceUrl, type CareerEntry, type CertificationEntry, type EducationEntry } from "@/data/portfolio";
 
-import type { CareerEntry } from "@/data/portfolio";
-import { withBasePath } from "@/lib/assetPath";
+const MAX_TECH_ICONS = 5;
 
-const INK = "#132433";
-const CARD_HEIGHT = { xs: 248, md: 300 };
-
-const faceSx = {
-  position: "absolute",
-  inset: 0,
-  borderRadius: "10px",
-  backfaceVisibility: "hidden",
-  WebkitBackfaceVisibility: "hidden",
-  display: "flex",
-  flexDirection: "column",
-  p: { xs: 2.2, md: 2.6 },
-} as const;
-
-/** "Global Traffic Technologies" -> "GTT"; legal suffixes like "Ltd." are skipped. */
-function monogram(company: string) {
-  return company
+function monogramOf(name: string) {
+  return name
     .split(/\s+/)
-    .filter((word) => !/^(ltd|inc|llc)\.?$/i.test(word))
     .map((word) => word.charAt(0).toUpperCase())
     .join("");
 }
 
-/**
- * A company card that flips to its highlights. Desktop flips on hover or keyboard
- * focus and a click opens the page; a touch screen has no hover, so the first tap
- * flips and the second tap opens the page.
- */
+/** A company card: logo, name, title and dates up front; highlights on the back. */
 export function ExperienceCard({ entry }: { entry: CareerEntry }) {
-  const [flipped, setFlipped] = useState(false);
-  const href = `/experience/${entry.slug}/`;
-
-  const handleClick = (event: MouseEvent) => {
-    const touchOnly = window.matchMedia("(hover: none)").matches;
-    if (touchOnly && !flipped) {
-      event.preventDefault();
-      setFlipped(true);
-    }
-  };
+  const icons = entry.stack
+    .map((label) => ({ label, src: resolveBrandIcon(label) }))
+    .filter((icon): icon is { label: string; src: string } => Boolean(icon.src))
+    // React and React Router share one logo; show each logo once.
+    .filter((icon, index, all) => all.findIndex((other) => other.src === icon.src) === index)
+    .slice(0, MAX_TECH_ICONS);
 
   return (
-    <Box
-      onMouseLeave={() => setFlipped(false)}
-      onBlur={() => setFlipped(false)}
-      sx={{
-        perspective: "1200px",
-        height: CARD_HEIGHT,
-        "@media (hover: hover)": { "&:hover .flip-inner": { transform: "rotateY(180deg)" } },
-        "&:focus-within .flip-inner": { transform: "rotateY(180deg)" },
-      }}
-    >
-      <CardActionArea
-        component={NextLink}
-        href={href}
-        onClick={handleClick}
-        aria-label={`${entry.company}: ${entry.role}, ${entry.period}. ${entry.cardHighlights.join(". ")}`}
-        sx={{ height: "100%", borderRadius: "10px", "& .MuiCardActionArea-focusHighlight": { display: "none" } }}
-      >
-        <Box
-          className="flip-inner"
-          sx={{
-            position: "relative",
-            height: "100%",
-            transformStyle: "preserve-3d",
-            transition: "transform 520ms cubic-bezier(0.2, 0.7, 0.2, 1)",
-            transform: flipped ? "rotateY(180deg)" : "none",
-            "@media (prefers-reduced-motion: reduce)": { transition: "none" },
-          }}
-        >
-          <Box
-            sx={{
-              ...faceSx,
-              bgcolor: "#ffffff",
-              border: `1px solid ${alpha(INK, 0.1)}`,
-              borderBottom: `6px solid ${entry.brandColor}`,
-              boxShadow: `0 10px 30px -18px ${alpha(INK, 0.4)}`,
-            }}
-          >
-            <Box sx={{ height: 44, display: "flex", alignItems: "center" }}>
-              {entry.logoSrc ? (
-                <CardMedia
-                  component="img"
-                  src={withBasePath(entry.logoSrc)}
-                  alt=""
-                  sx={{ maxHeight: 36, maxWidth: "70%", width: "auto", objectFit: "contain" }}
-                />
-              ) : (
-                <Stack
-                  alignItems="center"
-                  justifyContent="center"
-                  sx={{ height: 40, minWidth: 40, px: 1, borderRadius: "8px", bgcolor: entry.brandColor }}
-                >
-                  <Typography sx={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: "1rem", color: "#ffffff", lineHeight: 1 }}>
-                    {monogram(entry.company)}
-                  </Typography>
-                </Stack>
-              )}
-            </Box>
-            <Box sx={{ mt: "auto" }}>
-              <Typography
-                component="h3"
-                sx={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: { xs: "1.35rem", md: "1.5rem" }, lineHeight: 1.2, color: INK }}
-              >
-                {entry.company}
-              </Typography>
-              <Typography sx={{ mt: 0.6, fontSize: "1rem", fontWeight: 600, color: alpha(INK, 0.82) }}>{entry.role}</Typography>
-              <Typography
-                sx={{ mt: 0.4, fontFamily: "var(--font-numeric)", fontSize: "0.78rem", fontWeight: 500, color: alpha(INK, 0.6) }}
-              >
-                {entry.period}
-              </Typography>
-            </Box>
-          </Box>
+    <FlipCard
+      href={`/experience/${entry.slug}/`}
+      color={entry.brandColor}
+      accent={entry.accentColor}
+      logoSrc={entry.logoSrc}
+      logoNote={entry.logoNote}
+      title={entry.company}
+      subtitle={entry.role}
+      meta={entry.period}
+      icons={icons}
+      backLabel={`${entry.company} · highlights`}
+      backLines={entry.cardHighlights}
+      cta="Read the full story"
+      height={{ xs: 240, md: 236 }}
+    />
+  );
+}
 
-          <Box sx={{ ...faceSx, bgcolor: entry.brandColor, color: "#ffffff", transform: "rotateY(180deg)" }}>
-            <Typography variant="overline" sx={{ fontWeight: 700, letterSpacing: "0.16em", opacity: 0.8, lineHeight: 1.6 }}>
-              {entry.company} · highlights
-            </Typography>
-            <Stack component="ul" spacing={1} sx={{ m: 0, mt: 1.2, pl: 2.2 }}>
-              {entry.cardHighlights.map((line) => (
-                <Typography key={line} component="li" sx={{ fontSize: "0.95rem", lineHeight: 1.45 }}>
-                  {line}
-                </Typography>
-              ))}
-            </Stack>
-            <Stack direction="row" alignItems="center" spacing={0.6} sx={{ mt: "auto" }}>
-              <Typography component="span" sx={{ fontWeight: 700, fontSize: "0.82rem" }}>
-                Read the full story
-              </Typography>
-              <ArrowForwardRoundedIcon sx={{ fontSize: 18 }} />
-            </Stack>
-          </Box>
-        </Box>
-      </CardActionArea>
-    </Box>
+/** A school card: degree and date up front; coursework on the back. */
+export function EducationCard({ entry }: { entry: EducationEntry }) {
+  return (
+    <FlipCard
+      color={entry.schoolColor ?? "#132433"}
+      logoSrc={entry.logoSrc}
+      title={entry.school}
+      subtitle={entry.degree}
+      meta={`${entry.date} · ${entry.location}`}
+      backLabel="What I studied"
+      backLines={[entry.details]}
+      height={{ xs: 190, md: 190 }}
+    />
+  );
+}
+
+/** A certificate card: name and issuer up front; the credential on the back. */
+export function CertificationCard({ entry }: { entry: CertificationEntry }) {
+  return (
+    <FlipCard
+      href={entry.credentialUrl ?? certificationsSourceUrl}
+      external
+      color="#285873"
+      logoSrc={entry.logoSrc}
+      badge={monogramOf(entry.issuer)}
+      title={entry.title}
+      subtitle={entry.issuer}
+      meta={entry.issueDate ?? ""}
+      backLabel="Credential"
+      backLines={[`Issued by ${entry.issuer}${entry.issueDate ? ` in ${entry.issueDate}` : ""}`, ...(entry.credentialId ? [`ID ${entry.credentialId}`] : [])]}
+      cta="View on LinkedIn"
+      height={{ xs: 200, md: 200 }}
+    />
   );
 }

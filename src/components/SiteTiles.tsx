@@ -12,14 +12,16 @@ import { withBasePath } from "@/lib/assetPath";
 const INK = "#132433";
 
 /** Nav, a centered column for the page, then any full-width sections, then the footer. */
-export function PageShell({ children, after }: { children: ReactNode; after?: ReactNode }) {
+export function PageShell({ children, after }: { children?: ReactNode; after?: ReactNode }) {
   return (
     <>
       <SiteNav />
       <Box component="main">
-        <Container maxWidth="lg" sx={{ py: { xs: 4, md: 6 } }}>
-          {children}
-        </Container>
+        {children ? (
+          <Container maxWidth="lg" sx={{ py: { xs: 4, md: 6 } }}>
+            {children}
+          </Container>
+        ) : null}
         {after}
         <SiteFooter />
       </Box>
@@ -34,12 +36,14 @@ export function TileSection({
   children,
   moreHref,
   moreLabel,
+  moreExternal,
 }: {
   title: string;
   eyebrow?: string;
   children: ReactNode;
   moreHref?: string;
   moreLabel?: string;
+  moreExternal?: boolean;
 }) {
   return (
     <Box component="section" sx={{ py: { xs: 3.5, md: 5 } }}>
@@ -58,7 +62,9 @@ export function TileSection({
       <Box sx={{ mt: eyebrow ? 1 : 2.5 }}>{children}</Box>
       {moreHref && moreLabel ? (
         <Stack alignItems="center" sx={{ mt: { xs: 3, md: 4 } }}>
-          <DarkButton href={moreHref}>{moreLabel}</DarkButton>
+          <DarkButton href={moreHref} external={moreExternal}>
+            {moreLabel}
+          </DarkButton>
         </Stack>
       ) : null}
     </Box>

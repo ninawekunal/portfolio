@@ -4,9 +4,9 @@ import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
 import { Avatar, Box, Chip, Stack, Typography } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 
-import { EducationCertificationSection } from "@/components/EducationCertificationSection";
+import { ExpertiseSection } from "@/components/ExpertiseSection";
 import { PageShell } from "@/components/SiteTiles";
-import { WritingSection } from "@/components/WritingSection";
+import { hobbies } from "@/data/expertise";
 import { profile } from "@/data/portfolio";
 import { winsHeading } from "@/data/wins";
 import { withBasePath } from "@/lib/assetPath";
@@ -15,14 +15,7 @@ const INK = "#132433";
 
 export function AboutView() {
   return (
-    <PageShell
-      after={
-        <>
-          <WritingSection />
-          <EducationCertificationSection />
-        </>
-      }
-    >
+    <PageShell>
       <Stack
         direction={{ xs: "column", md: "row" }}
         spacing={{ xs: 3, md: 5 }}
@@ -71,6 +64,23 @@ export function AboutView() {
           </Stack>
         </Box>
       </Stack>
+
+      <ExpertiseSection />
+
+      <Box component="section" sx={{ mt: { xs: 5, md: 7 } }}>
+        <Typography variant="h2" sx={{ fontSize: { xs: "1.6rem", md: "2rem" }, fontWeight: 600 }}>
+          Away from the keyboard
+        </Typography>
+        <Stack direction="row" flexWrap="wrap" useFlexGap gap={1} sx={{ mt: 1.6 }}>
+          {hobbies.map((hobby) => (
+            <Chip
+              key={hobby.label}
+              label={`${hobby.emoji}  ${hobby.label}`}
+              sx={{ fontSize: "0.95rem", height: 40, px: 0.6, bgcolor: alpha("#ffffff", 0.8), border: `1px solid ${alpha(INK, 0.12)}` }}
+            />
+          ))}
+        </Stack>
+      </Box>
     </PageShell>
   );
 }

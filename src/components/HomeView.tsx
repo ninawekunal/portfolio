@@ -6,9 +6,9 @@ import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import { Avatar, Box, IconButton, Stack, Typography } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 
-import { ExperienceCard } from "@/components/ExperienceCard";
+import { CertificationCard, EducationCard, ExperienceCard } from "@/components/ExperienceCard";
 import { DarkButton, PageShell, Tile, TileGrid, TileSection } from "@/components/SiteTiles";
-import { experienceTimeline, profile, projects } from "@/data/portfolio";
+import { certifications, certificationsSourceUrl, education, experienceTimeline, profile, projects } from "@/data/portfolio";
 import { withBasePath } from "@/lib/assetPath";
 
 const INK = "#132433";
@@ -76,6 +76,29 @@ export function HomeView() {
           ))}
         </TileGrid>
       </TileSection>
+
+      <TileSection title="Education">
+        <TileGrid>
+          {education.map((entry) => (
+            <EducationCard key={entry.school} entry={entry} />
+          ))}
+        </TileGrid>
+      </TileSection>
+
+      <TileSection
+        title="Certifications"
+        eyebrow="Most recent"
+        moreHref={certificationsSourceUrl}
+        moreLabel="All certifications"
+        moreExternal
+      >
+        <TileGrid>
+          {certifications.slice(0, HOME_TILES).map((entry) => (
+            <CertificationCard key={entry.title} entry={entry} />
+          ))}
+        </TileGrid>
+      </TileSection>
+
     </PageShell>
   );
 }
