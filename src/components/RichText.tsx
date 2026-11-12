@@ -12,19 +12,13 @@ import { ButtonBase, Link, Popover, Stack, Typography } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 
 import { glossary, isGlossaryKey, type GlossaryKey } from "@/data/glossary";
+import { GLOSSARY_MARKUP, plainText } from "@/lib/plainText";
 
-const MARKUP = /\[\[([a-z0-9-]+)(?:\|([^\]]+))?\]\]/g;
+const MARKUP = GLOSSARY_MARKUP;
 
 const UNDERLINE_COLOR = "#d9a21b";
 
-/** Copy with the `[[key|label]]` markup resolved to plain words, for places a popover cannot go. */
-export function plainText(text: string): string {
-  return text.replace(MARKUP, (_match, key: string, label?: string) => {
-    if (label) return label;
-
-    return isGlossaryKey(key) ? glossary[key].term : key;
-  });
-}
+export { plainText };
 
 function Jargon({
   termKey,

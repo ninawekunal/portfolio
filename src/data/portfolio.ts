@@ -11,6 +11,13 @@ export type PortfolioProject = {
   headline: string;
   repoUrl: string;
   liveUrl?: string;
+  /** Screenshot or poster for the project's tile, under /public. */
+  imageSrc?: string;
+  /** Top-shelf projects show in the marquee; the rest wait in the archive. */
+  featured?: boolean;
+  /** Who the project is for, used by the industry filter. */
+  industries: string[];
+  /** Skill areas, used by the skill filter. */
   tags: string[];
   stack: string[];
   motivation: string;
@@ -22,15 +29,33 @@ export type PortfolioProject = {
 };
 
 export type CareerEntry = {
+  /** URL segment for the company page, e.g. /experience/opencfo. */
+  slug: string;
   company: string;
+  /** Back of the company's card, and the wordmark color when there is no logo. */
+  brandColor: string;
+  /** Official logo under /public; companies without one show their initials. */
+  logoSrc?: string;
+  /** A short line beside the logo, e.g. when the company now trades under another name. */
+  logoNote?: string;
+  /** Bullet and label color on the back of the card, taken from the logo. */
+  accentColor?: string;
+  /** Two or three short lines shown when the card flips. */
+  cardHighlights: string[];
   location: string;
   role: string;
   period: string;
   summary: string;
-  highlights: string[];
+  /** Resume bullets: a short label, then one plain sentence with its number. */
+  highlights: RoleBullet[];
   stack: string[];
   skillsApplied?: ExperienceSkill[];
   projects?: ExperienceProject[];
+};
+
+export type RoleBullet = {
+  label: string;
+  text: string;
 };
 
 export type ExperienceSkill = {
@@ -58,7 +83,8 @@ export type EducationEntry = {
   location: string;
   degree: string;
   date: string;
-  details: string;
+  /** Main subjects, one short phrase each. */
+  coursework: string[];
   logoSrc?: string;
   schoolColor?: string;
 };
@@ -120,28 +146,44 @@ export const profile = {
   ],
 };
 
-export const navigationItems = [
-  { label: "Wins", href: "#wins" },
-  { label: "Skillset", href: "#what-i-offer" },
-  { label: "Experience", href: "#experience" },
-  { label: "Projects", href: "#projects" },
-  { label: "Writing", href: "#writing" },
-  { label: "Education", href: "#education-certifications" },
-];
-
 export const experienceTimeline: CareerEntry[] = [
   {
+    slug: "opencfo",
     company: "OpenCFO",
+    brandColor: "#04231a",
+    accentColor: "#fc821f",
+    logoSrc: "/logos/opencfo.svg",
+    cardHighlights: [
+      "End-to-end, 0-to-1 ownership in fintech",
+      "Customer and product discovery",
+      "Web security, state management and access control for sensitive data",
+    ],
     location: "Seattle, WA",
     role: "Founding Full Stack Engineer",
-    period: "April 2026 - Present",
+    period: "April 2026 - October 2026",
     summary:
-      "First full-stack hire on an AI-native accounts payable and receivable platform. I own the web app end to end and sit in the customer calls that shape it.",
+      "First full-stack hire on an AI-native accounts payable and receivable platform. I owned the web app end to end and sat in the customer calls that shaped it.",
     highlights: [
-      "Owned the entire web app (React Router v7 SSR, React 19, TypeScript) while the company went from 0 to 10 customers: 287 merged PRs, 136 routes, 87 BFF endpoints, 0 to 3,200 tests in 21 weeks.",
-      "Moved a localStorage-JWT SPA to SSR with a Backend-for-Frontend in one week: httpOnly cookie auth, loader-enforced RBAC, per-request nonce CSP, immutable-SHA ECS deploys.",
-      "Worked directly with a customer's finance and engineering teams to ship invoice / PO / goods-receipt matching against a demo pulled forward by three days.",
-      "Built the team's Claude Code system: 26 skills, 3 review subagents, 9 hooks, machine-checked design manifests. Peak week: 40 PRs merged.",
+      {
+        label: "Web app ownership",
+        text: "Owned the web app of an AI-native AP and AR platform from 0 to 10 customers: 287 merged PRs, 136 routes and a test suite grown from 0 to 3,200 tests.",
+      },
+      {
+        label: "AI document review",
+        text: "Built the UI for AI-extracted invoices, POs and receipts: 10 extracted fields highlighted on the source PDF, background processing for uploads, and an exception-first view for quick review.",
+      },
+      {
+        label: "AI email agent",
+        text: "Built an agent that classifies vendor emails, reads attachments, routes invoices into bill capture and drafts replies for review. It runs on durable SQS jobs with execution leases, evals and model-cost tracking.",
+      },
+      {
+        label: "BFF layer",
+        text: "Proposed a BFF (Backend for Frontend) layer for our React Router v7 app and built it in one week. It now serves 87 endpoints that join data from several APIs.",
+      },
+      {
+        label: "Three-way match",
+        text: "Built an auto-match API that joins line items in web workers, from 1,087ms to 738ms. DOM virtualization and Chrome profiling keep the match screen fast at ~16K line items.",
+      },
     ],
     stack: [
       "React 19",
@@ -268,16 +310,42 @@ export const experienceTimeline: CareerEntry[] = [
     ],
   },
   {
+    slug: "expedia-group",
     company: "Expedia Group",
+    brandColor: "#3311c8",
+    accentColor: "#c9c2ff",
+    logoSrc: "/logos/expedia-group.svg",
+    cardHighlights: [
+      "Greenfield features in large-scale distributed systems, shipped to 100K partners",
+      "MFA abuse prevention, risk analysis and user behavior signals",
+      "Identity and access management, root cause analysis, incident investigation and SRE",
+    ],
     location: "Seattle, WA",
     role: "Software Engineer II",
     period: "May 2022 - April 2026",
     summary:
       "Owned partner identity workflows (login, MFA, password and email reset, account disable) for about 100K partners across four portals, from the React screens to the OAuth and OIDC contracts behind them.",
     highlights: [
-      "Unified fragmented B2B identity flows across partner and traveler systems using React, TypeScript, Node.js (Hapi), and Java/OIDC services for 100k+ partners with roughly 90% feature adoption.",
-      "Led the Update Email initiative: found that 4 to 5% of global users shared traveler and partner accounts at risk of lockout, then designed the async API fixes and a Change Data Capture pipeline with downstream brand teams.",
-      "Implemented step-up MFA with ACR policies, shipped auth changes through data-driven feature-flag rollouts, and owned L3 incidents with Splunk, Datadog, and PagerDuty.",
+      {
+        label: "Update Email",
+        text: "Led the project over 2 quarters: built it in TypeScript, React and MobX, wired the downstream team to the APIs, and reached 85% adoption across ~100K partners through 4 Expedia Group partner portals.",
+      },
+      {
+        label: "Identity sync",
+        text: "Deployed a Change Data Capture pipeline with the downstream team to fix legacy-portal sync and lockouts; with identity sync it resolved ~45% of email lockout support tickets.",
+      },
+      {
+        label: "Backend services",
+        text: "Built Kotlin and Java services with GraphQL and REST APIs, plus gRPC APIs on a Zanzibar-style permission model with contract tests for downstream teams.",
+      },
+      {
+        label: "On-call",
+        text: "Carried L3 on-call across time zones for ~6 P1 services and was SME for 4 more; request tracing, SRE alerts and RCAs cut support requests ~20%.",
+      },
+      {
+        label: "Deployments",
+        text: "Shipped through Spinnaker to an internal Kubernetes cluster with Istio sidecars; feature flags and progressive rollout cut deployment incidents ~25%.",
+      },
     ],
     stack: ["React", "TypeScript", "Node.js", "Hapi", "GraphQL", "OIDC", "Kubernetes", "Istio", "Splunk"],
     skillsApplied: [
@@ -362,15 +430,29 @@ export const experienceTimeline: CareerEntry[] = [
     ],
   },
   {
+    slug: "global-traffic-technologies",
     company: "Global Traffic Technologies",
+    brandColor: "#0b57c8",
+    logoSrc: "/logos/miovision.png",
+    logoNote: "Now part of Miovision",
+    cardHighlights: [
+      "APIs on AWS, and log analysis on Kinesis Firehose streams",
+      "Cloud infrastructure in CloudFormation, CI/CD, and metrics monitoring on critical paths for ambulances",
+    ],
     location: "Minneapolis, MN",
-    role: "Full Stack Engineer",
+    role: "Software Development Engineer",
     period: "June 2021 - April 2022",
     summary:
       "Built backend APIs and async workflows for user-facing traffic products with a strong focus on cloud reliability and responsiveness.",
     highlights: [
-      "Built and deployed scalable backend APIs and batch workflows using AWS Lambda, ECS, and API Gateway.",
-      "Reduced latency and operational cost through CloudFormation automation, a DynamoDB to ElastiCache shift, and asynchronous logging with Kinesis Firehose, S3, and CloudWatch.",
+      {
+        label: "Connected Vehicle Platform",
+        text: "Built AWS Lambda and API Gateway services, ElastiCache caching and CloudFormation stacks.",
+      },
+      {
+        label: "Latency and cost",
+        text: "Moved latency-sensitive reads from DynamoDB to ElastiCache, and made logging asynchronous with Kinesis Firehose, S3 and CloudWatch.",
+      },
     ],
     stack: ["AWS Lambda", "ECS", "API Gateway", "CloudFormation", "ElastiCache", "Kinesis", "S3"],
     skillsApplied: [
@@ -416,15 +498,50 @@ export const experienceTimeline: CareerEntry[] = [
     ],
   },
   {
+    slug: "skinlens",
+    company: "SkinLens",
+    brandColor: "#0f1f4d",
+    accentColor: "#60b4ff",
+    logoSrc: "/logos/skinlens.svg",
+    cardHighlights: [
+      "Computer vision pipeline on about 10,000 skin images",
+      "PyTorch CNN that classifies 8 skin diseases at 95% accuracy",
+    ],
+    location: "New York, NY",
+    role: "Machine Learning Intern",
+    period: "January 2021 - May 2021",
+    summary:
+      "Built the data pipeline and the model for a tool that spots skin diseases in photos.",
+    highlights: [
+      {
+        label: "Image pipeline",
+        text: "Built an ETL pipeline with Pandas and OpenCV on about 10,000 images, and mapped skin-lesion coordinates to COCO JSON for Detectron2.",
+      },
+      {
+        label: "Classifier",
+        text: "Trained a multi-class CNN with semantic segmentation in PyTorch that classifies 8 skin diseases at 95% accuracy.",
+      },
+    ],
+    stack: ["Python", "PyTorch", "Detectron2", "OpenCV", "Pandas"],
+  },
+  {
+    slug: "moaedat",
     company: "Moaedat Ltd.",
+    brandColor: "#6b4a1f",
+    cardHighlights: [
+      "E-commerce site with 500+ products in PHP and MySQL",
+      "Led 2 developers and was the team's contact with the client",
+    ],
     location: "Mumbai, India",
     role: "Web Developer",
     period: "August 2018 - October 2018",
     summary:
       "Built and deployed an end-to-end e-commerce website with inventory management and traditional web-stack tooling.",
     highlights: [
-      "Used PHP, MySQL, Bootstrap, JavaScript, and Apache to launch the experience.",
-      "Supported 500+ products and improved online reach for the business.",
+      {
+        label: "E-commerce launch",
+        text: "Built and launched an e-commerce site with PHP, MySQL, Bootstrap, JavaScript and Apache, with inventory for 500+ products.",
+      },
     ],
     stack: ["PHP", "MySQL", "Bootstrap", "JavaScript", "Apache"],
     skillsApplied: [
@@ -479,8 +596,13 @@ export const education: EducationEntry[] = [
     date: "May 2021",
     logoSrc: "/education/nyu-logo-stacked.svg",
     schoolColor: "#57068c",
-    details:
-      "Coursework in data structures and algorithms, cloud computing, distributed systems, internet protocols, machine learning, and deep learning.",
+    coursework: [
+      "Data structures and algorithms",
+      "Cloud computing",
+      "Distributed systems",
+      "Machine learning and deep learning",
+      "Statistical analysis",
+    ],
   },
   {
     school: "University of Mumbai",
@@ -489,7 +611,7 @@ export const education: EducationEntry[] = [
     date: "July 2019",
     logoSrc: "/education/university-of-mumbai-logo.svg",
     schoolColor: "#101010",
-    details: "Strong computing foundation spanning software engineering and computer science fundamentals.",
+    coursework: ["C++", "Core Java", "Database management", "Android development", "Web fundamentals"],
   },
 ];
 
@@ -551,23 +673,18 @@ export const certifications: CertificationEntry[] = [
   },
 ];
 
-export const projectFilters = [
-  "All",
-  "AI",
-  "Full Stack",
-  "Scalable Systems",
-  "Frontend",
-  "Data / ML",
-];
 
 export const projects: PortfolioProject[] = [
   {
     id: "learning-doc-builder",
+    featured: true,
+    imageSrc: "/projects/learning-doc-builder.jpg",
     title: "Learning Doc Builder",
     kicker: "Claude skill + reading app",
     headline: "Turns any topic into one short, interactive study page with a quiz at the end.",
     repoUrl: "https://github.com/ninawekunal/learning-doc-builder",
     liveUrl: "https://ninawekunal.github.io/learning-doc-builder/",
+    industries: ["Education"],
     tags: ["AI", "Frontend"],
     stack: [
       "React",
@@ -605,11 +722,45 @@ export const projects: PortfolioProject[] = [
       "Every push runs the checks, builds the site, and publishes it to [[github-pages]] with GitHub Actions.",
   },
   {
+    id: "pdf-highlighter",
+    featured: true,
+    imageSrc: "/projects/pdf-highlighter.jpg",
+    title: "Invoice PDF Highlighter",
+    kicker: "Document review tool",
+    headline: "Pulls the key fields out of an invoice PDF and highlights exactly where each one sits on the page.",
+    repoUrl: "https://github.com/ninawekunal/pdf-highlighter",
+    liveUrl: "https://ninawekunal.github.io/pdf-highlighter/",
+    industries: ["Fintech"],
+    tags: ["AI", "Frontend", "Data / ML"],
+    stack: ["React", "TypeScript", "Vite", "Material UI", "react-pdf", "pdf.js"],
+    motivation:
+      "A small, public version of a problem I work on every day: a person checking what software read off an invoice. Seeing the value lit up on the PDF is what makes that check fast, and what makes people trust it.",
+    capabilities: [
+      "Switch between 10 sample invoices, or upload your own one-page PDF.",
+      "Pulls out 10 key fields, such as invoice number, due date and total.",
+      "Click a field and its exact spot on the PDF lights up.",
+      "Download the invoice you are looking at.",
+    ],
+    lessons: [
+      "People trust extracted data when they can see exactly where it came from on the page.",
+      "Two ways of finding a value, with a fallback, survive far more invoice layouts than one clever rule.",
+      "When the software is not sure, the design should make checking by hand quick, not hide the doubt.",
+    ],
+    build: [
+      "Rendered PDFs with react-pdf, which is built on [[pdf-js]].",
+      "Read the text on each page and found values in two passes: known labels first, then a general 'Label: Value' fallback.",
+      "Converted each value's position from PDF coordinates to screen coordinates, so the highlight lands exactly on it.",
+    ],
+    deploy: "GitHub Actions builds it into a [[static-site]] and publishes it to [[github-pages]].",
+  },
+  {
     id: "paws-email-notifications",
+    featured: true,
     title: "PAWS Email Notifications",
     kicker: "Full-stack notification system",
     headline: "Emails people when an animal they would want to adopt appears on the PAWS shelter site.",
     repoUrl: "https://github.com/ninawekunal/paws-email-notifications",
+    industries: ["Nonprofit"],
     tags: ["Full Stack", "Scalable Systems"],
     stack: [
       "React",
@@ -643,12 +794,74 @@ export const projects: PortfolioProject[] = [
     ],
   },
   {
+    id: "accent-detector",
+    featured: true,
+    title: "Accent Detector",
+    kicker: "Speech classification",
+    headline: "Listens to someone read a short passage and guesses which of four English accents they have.",
+    repoUrl: "https://github.com/ninawekunal/AccentDetector",
+    industries: ["Education"],
+    tags: ["AI", "Data / ML"],
+    stack: ["Python", "Librosa", "scikit-learn", "TensorFlow", "Keras", "NumPy", "Pandas"],
+    motivation:
+      "As an Indian student in the US, I wanted to know how my accent came across and how to improve it. I could not find a tool that told me, so I started building one.",
+    capabilities: [
+      "Turns each recording into 13 MFCC features, a numeric fingerprint of the sound of a voice.",
+      "Sorts a speaker into one of four accents: American, British, Chinese or Indian.",
+      "Compares four classic models and two neural networks side by side on the same data.",
+    ],
+    lessons: [
+      "The data was the hard part: 373 American samples against 65 British, so a model could score well by always guessing American.",
+      "Copying samples to balance the classes before the train and test split lets copies land on both sides, so the best score is likely higher than it would be on new voices.",
+      "On a small dataset, a support vector machine beat both neural networks by a wide margin.",
+    ],
+    build: [
+      "Used about 640 recordings from the Speech Accent Archive, with every speaker reading the same paragraph.",
+      "Converted each file to WAV, trimmed or padded it to 30 seconds, and extracted MFCCs with Librosa.",
+      "Balanced the classes with SMOTE, undersampling, and oversampling with added noise, and measured each one.",
+      "Trained SVM, random forest, KNN and logistic regression models, plus an RNN and a CNN in Keras.",
+    ],
+  },
+  {
+    id: "agent-portal",
+    featured: true,
+    imageSrc: "/projects/agent-portal.svg",
+    title: "AgentPortal",
+    kicker: "Invoice approval portal",
+    headline: "Review, upload and approve invoices, with what you can do decided by your role.",
+    repoUrl: "https://github.com/ninawekunal/AgentPortal",
+    industries: ["Fintech"],
+    tags: ["Full Stack", "Scalable Systems", "Frontend"],
+    stack: ["React", "TypeScript", "Material UI", "Hapi", "Supabase", "Postgres", "GraphQL", "Jest"],
+    motivation:
+      "A practice run at the kind of product I build at work: an operations portal where people with different roles review invoices, upload documents and approve in bulk.",
+    capabilities: [
+      "Sign in with a one-time code by email; your role comes from a signed [[jwt]].",
+      "A grid of invoice cards with filters, more loading as you scroll, and approve-many-at-once.",
+      "An invoice view with the PDF, the extracted data, and approve or pay actions.",
+      "Supervisors and admins can upload documents to be read; uploads are cleaned, size-checked and rate-limited.",
+      "Both REST and [[graphql]] APIs.",
+    ],
+    lessons: [
+      "Operations screens work best when every state change is explicit and one click away.",
+      "Clear 'who owns this' cues and an obvious next action matter more than a pretty dashboard.",
+      "Typed status values stop a fast-changing workflow screen from breaking quietly.",
+    ],
+    build: [
+      "A React and Material UI site talking to a Hapi server, split into separate sign-in and invoice services.",
+      "Supabase for sign-in and file storage, behind a storage layer that could switch to Amazon S3.",
+      "Scripts to generate sample invoices and fill the database, and automated tests with Jest.",
+    ],
+    deploy: "Deployed on Railway.",
+  },
+  {
     id: "cat-whisperer",
     title: "Cat Whisperer",
     kicker: "Private, in-browser AI",
     headline: "Listens to your cat's meows and learns what they mean, without the audio ever leaving your browser.",
     repoUrl: "https://github.com/ninawekunal/cat_whisperer",
     liveUrl: "https://ninawekunal.github.io/cat_whisperer",
+    industries: ["Consumer"],
     tags: ["AI", "Frontend", "Data / ML"],
     stack: [
       "React",
@@ -681,41 +894,13 @@ export const projects: PortfolioProject[] = [
     deploy: "A GitHub Actions workflow builds it and publishes it to [[github-pages]] on every push.",
   },
   {
-    id: "pdf-highlighter",
-    title: "Invoice PDF Highlighter",
-    kicker: "Document review tool",
-    headline: "Pulls the key fields out of an invoice PDF and highlights exactly where each one sits on the page.",
-    repoUrl: "https://github.com/ninawekunal/pdf-highlighter",
-    liveUrl: "https://ninawekunal.github.io/pdf-highlighter/",
-    tags: ["AI", "Frontend", "Data / ML"],
-    stack: ["React", "TypeScript", "Vite", "Material UI", "react-pdf", "pdf.js"],
-    motivation:
-      "A small, public version of a problem I work on every day: a person checking what software read off an invoice. Seeing the value lit up on the PDF is what makes that check fast, and what makes people trust it.",
-    capabilities: [
-      "Switch between 10 sample invoices, or upload your own one-page PDF.",
-      "Pulls out 10 key fields, such as invoice number, due date and total.",
-      "Click a field and its exact spot on the PDF lights up.",
-      "Download the invoice you are looking at.",
-    ],
-    lessons: [
-      "People trust extracted data when they can see exactly where it came from on the page.",
-      "Two ways of finding a value, with a fallback, survive far more invoice layouts than one clever rule.",
-      "When the software is not sure, the design should make checking by hand quick, not hide the doubt.",
-    ],
-    build: [
-      "Rendered PDFs with react-pdf, which is built on [[pdf-js]].",
-      "Read the text on each page and found values in two passes: known labels first, then a general 'Label: Value' fallback.",
-      "Converted each value's position from PDF coordinates to screen coordinates, so the highlight lands exactly on it.",
-    ],
-    deploy: "GitHub Actions builds it into a [[static-site]] and publishes it to [[github-pages]].",
-  },
-  {
     id: "image-gender-detector",
     title: "ImageGenderDetector",
     kicker: "Classic machine learning, end to end",
     headline: "Finds faces in a photo and predicts gender with a model trained from scratch.",
     repoUrl: "https://github.com/ninawekunal/ImageGenderDetector",
     liveUrl: "https://ninawekunal.github.io/ImageGenderDetector/faceapp.html",
+    industries: ["Research"],
     tags: ["AI", "Data / ML"],
     stack: ["Python", "Flask", "OpenCV", "scikit-learn", "NumPy", "Pandas"],
     motivation:
@@ -744,6 +929,7 @@ export const projects: PortfolioProject[] = [
     headline: "A live board showing AI-style refund jobs moving from waiting to done, or failed.",
     repoUrl: "https://github.com/ninawekunal/agent-queues",
     liveUrl: "https://agent-queues.vercel.app",
+    industries: ["Developer tools"],
     tags: ["AI", "Full Stack", "Scalable Systems"],
     stack: ["Next.js", "TypeScript", "Node.js", "Upstash Redis", "QStash", "Zod"],
     motivation:
@@ -766,41 +952,12 @@ export const projects: PortfolioProject[] = [
     deploy: "Hosted on Vercel, with Upstash running Redis and QStash.",
   },
   {
-    id: "agent-portal",
-    title: "AgentPortal",
-    kicker: "Invoice approval portal",
-    headline: "Review, upload and approve invoices, with what you can do decided by your role.",
-    repoUrl: "https://github.com/ninawekunal/AgentPortal",
-    liveUrl: "https://agent-portal-production-590e.up.railway.app/login",
-    tags: ["Full Stack", "Scalable Systems", "Frontend"],
-    stack: ["React", "TypeScript", "Material UI", "Hapi", "Supabase", "Postgres", "GraphQL", "Jest"],
-    motivation:
-      "A practice run at the kind of product I build at work: an operations portal where people with different roles review invoices, upload documents and approve in bulk.",
-    capabilities: [
-      "Sign in with a one-time code by email; your role comes from a signed [[jwt]].",
-      "A grid of invoice cards with filters, more loading as you scroll, and approve-many-at-once.",
-      "An invoice view with the PDF, the extracted data, and approve or pay actions.",
-      "Supervisors and admins can upload documents to be read; uploads are cleaned, size-checked and rate-limited.",
-      "Both REST and [[graphql]] APIs.",
-    ],
-    lessons: [
-      "Operations screens work best when every state change is explicit and one click away.",
-      "Clear 'who owns this' cues and an obvious next action matter more than a pretty dashboard.",
-      "Typed status values stop a fast-changing workflow screen from breaking quietly.",
-    ],
-    build: [
-      "A React and Material UI site talking to a Hapi server, split into separate sign-in and invoice services.",
-      "Supabase for sign-in and file storage, behind a storage layer that could switch to Amazon S3.",
-      "Scripts to generate sample invoices and fill the database, and automated tests with Jest.",
-    ],
-    deploy: "Deployed on Railway.",
-  },
-  {
     id: "smarttrip",
     title: "SmartTrip",
     kicker: "Walking trip planner",
     headline: "Put your stops in order, see the walking time, and send the route to Google Maps.",
     repoUrl: "https://github.com/ninawekunal/SmartTrip",
+    industries: ["Travel"],
     tags: ["Full Stack", "Frontend"],
     stack: ["Next.js", "TypeScript", "Hapi", "Supabase", "Postgres", "Mapbox"],
     motivation:
@@ -823,7 +980,10 @@ export const projects: PortfolioProject[] = [
   },
 ];
 
+/** Filter options, in the order a reader is likely to look for them. */
+export const projectIndustries = Array.from(new Set(projects.flatMap((project) => project.industries)));
+export const projectSkills = Array.from(new Set(projects.flatMap((project) => project.tags)));
+
 export const footerNotes = [
   "Built with Next.js and Material UI, exported statically to GitHub Pages.",
-  "Every number on this page comes from git, GitHub, or a doc written at the time. The customer count is my own tally.",
 ];
