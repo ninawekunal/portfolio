@@ -3,10 +3,9 @@
 import EmailRoundedIcon from "@mui/icons-material/EmailRounded";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
-import { Box, IconButton, Stack, Typography } from "@mui/material";
+import { Avatar, Box, IconButton, Stack, Typography } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 
-import { OpenToWorkAvatar } from "@/components/OpenToWorkAvatar";
 import { BlogCard, CertificationCard, EducationCard, ExperienceCard } from "@/components/ExperienceCard";
 import { DarkButton, PageShell, Tile, TileGrid, TileSection } from "@/components/SiteTiles";
 import { certifications, certificationsSourceUrl, education, experienceTimeline, profile, projects } from "@/data/portfolio";
@@ -21,17 +20,21 @@ export function HomeView() {
 
   return (
     <PageShell>
-      <Stack alignItems="center" spacing={2.4} sx={{ textAlign: "center", pt: { xs: 2, md: 4 }, pb: { xs: 2, md: 3 } }}>
+      <Stack alignItems="center" spacing={{ xs: 1.8, md: 2 }} sx={{ textAlign: "center", pt: { xs: 1, md: 1.5 }, pb: { xs: 2, md: 2 } }}>
         <Typography
           component="h1"
-          sx={{ fontSize: { xs: "1.4rem", md: "1.9rem" }, lineHeight: 1.4, maxWidth: 680, color: INK, textWrap: "balance" }}
+          sx={{ fontSize: { xs: "1.25rem", md: "1.5rem" }, lineHeight: 1.45, maxWidth: 620, color: INK, textWrap: "balance" }}
         >
           <Box component="strong" sx={{ fontWeight: 700 }}>
             Hi, I&rsquo;m Kunal
           </Box>
           , a product engineer who ships the whole thing, for the person on the other side of the screen.
         </Typography>
-        <OpenToWorkAvatar size={{ xs: 220, md: 270 }} photoSrc="/profile_picture.jpeg" alt={profile.name} />
+        <Avatar
+          src={withBasePath("/profile_picture.jpeg")}
+          alt={profile.name}
+          sx={{ width: { xs: 160, md: 180 }, height: { xs: 160, md: 180 } }}
+        />
         <Typography variant="body2" sx={{ color: alpha(INK, 0.66), maxWidth: 560 }}>
           Founding full-stack engineer at OpenCFO, an AI-native accounts payable platform, after four years on
           partner identity at Expedia. {profile.location}.
