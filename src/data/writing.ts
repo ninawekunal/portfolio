@@ -21,6 +21,23 @@ export const writingHeading = {
 
 export const publications: Publication[] = [
   {
+    id: "cache-broken-access-control",
+    title: "Broken Access Control: How a 60-Second Cache Leaked One User's Data to Another",
+    outlet: "Medium",
+    category: "Security",
+    date: "Nov 12, 2026",
+    readingTime: "7 min read",
+    url: "https://medium.com/@ninawekunal/broken-access-control-how-a-60-second-cache-leaked-one-users-data-to-another-1aa5bf3932b2",
+    summary:
+      "A Broken Access Control bug I found in production: user data was cached by URL alone for 60 seconds, so the next person to log in on the same browser saw the last person's data. Why it hid so well, and the four questions I now ask before caching anything.",
+    takeaways: [
+      "A cache key is a security decision: if the answer depends on the user, the user belongs in the key.",
+      "Wipe the cache on logout, and send private, no-store with Vary: Cookie on per-user data.",
+      "Test it the way it breaks: switch accounts in the same browser inside the cache window.",
+    ],
+    tags: ["Web security", "OWASP", "Caching", "React", "TanStack Query"],
+  },
+  {
     id: "revocable-fast-logins",
     title: "Fast Logins You Can Still Revoke: Sessions, JWTs, and Refresh Tokens Explained",
     outlet: "Medium",
