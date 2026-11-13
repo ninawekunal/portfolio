@@ -182,7 +182,7 @@ export const experienceTimeline: CareerEntry[] = [
       },
       {
         label: "Three-way match",
-        text: "Built an auto-match API that joins line items in web workers, from 1,087ms to 738ms. DOM virtualization and Chrome profiling keep the match screen fast at ~16K line items.",
+        text: "Built the match API on the BFF, from 1,087ms to 738ms with a two-phase read and one cached compute. Auto-match runs in web workers, and DOM virtualization keeps the screen fast at ~16K receipts.",
       },
     ],
     stack: [
@@ -361,7 +361,7 @@ export const experienceTimeline: CareerEntry[] = [
         whereApplied:
           "Defined REST and GraphQL contracts for cross-domain email updates with centralized identity services.",
         outcome:
-          "Reduced identity inconsistencies and resolved roughly 45% of identity-related bugs.",
+          "Fixed identity sync across portals and resolved roughly 45% of email lockout support tickets.",
       },
       {
         skill: "MFA and risk controls",
@@ -397,7 +397,7 @@ export const experienceTimeline: CareerEntry[] = [
       },
       {
         name: "Cross-Domain Email Update Platform",
-        impact: "Resolved roughly 45% of identity-related bugs",
+        impact: "Resolved roughly 45% of email lockout support tickets",
         summary:
           "Designed and delivered centralized email-update flows spanning decoupled systems so account state stayed synchronized and support incidents dropped.",
         technologies: ["REST", "GraphQL", "Node.js", "Java", "Centralized identity services"],

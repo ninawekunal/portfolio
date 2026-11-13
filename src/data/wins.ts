@@ -550,7 +550,7 @@ export const wins: Win[] = [
     company: "Expedia",
     title: "Stopped partners getting locked out of their own accounts",
     metric: "~45%",
-    metricLabel: "of identity mismatches resolved",
+    metricLabel: "of email lockout tickets resolved",
     who: "A hotel partner who changed their email address and then could not log in.",
     context:
       "At Expedia, partners and travellers could share one account. When a partner changed their email, other Expedia systems did not always follow, and people were locked out. We measured 4 to 5 percent of users worldwide at risk.",
@@ -561,7 +561,7 @@ export const wins: Win[] = [
       "Set up a pipeline that sends every identity change to the other systems as it happens, instead of relying on one request succeeding.",
     ],
     result:
-      "The lockouts were fixed at the source instead of patched system by system, and about 45 percent of identity mismatches were resolved.",
+      "The lockouts were fixed at the source instead of patched system by system, and about 45 percent of email lockout support tickets were resolved.",
     learning:
       "I spent the first quarter treating a data problem as a feature problem. Now I start by asking who keeps a copy of the data, and what happens when the copies disagree.",
     metrics: [
