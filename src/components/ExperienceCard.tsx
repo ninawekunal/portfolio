@@ -124,7 +124,9 @@ export function ProjectCard({ project }: { project: PortfolioProject }) {
       actions={[
         ...(project.liveUrl ? [{ label: "Live demo", href: project.liveUrl, external: true }] : []),
         { label: "Full story", href: `/projects/${project.id}/` },
-        { label: `${project.title} on GitHub`, href: project.repoUrl, external: true, icon: "github" as const },
+        ...(project.repoUrl
+          ? [{ label: `${project.title} on GitHub`, href: project.repoUrl, external: true, icon: "github" as const }]
+          : []),
       ]}
       height={{ xs: 290, md: 290 }}
     />
