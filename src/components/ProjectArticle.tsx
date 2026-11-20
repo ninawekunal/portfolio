@@ -79,16 +79,18 @@ export function ProjectArticle({ project }: { project: PortfolioProject }) {
               Live demo
             </Button>
           ) : null}
-          <Button
-            href={project.repoUrl}
-            target="_blank"
-            rel="noreferrer"
-            variant="outlined"
-            startIcon={<GitHubIcon />}
-            sx={{ color: INK, borderColor: alpha(INK, 0.3) }}
-          >
-            Code
-          </Button>
+          {project.repoUrl ? (
+            <Button
+              href={project.repoUrl}
+              target="_blank"
+              rel="noreferrer"
+              variant="outlined"
+              startIcon={<GitHubIcon />}
+              sx={{ color: INK, borderColor: alpha(INK, 0.3) }}
+            >
+              Code
+            </Button>
+          ) : null}
         </Stack>
 
         {project.imageSrc ? (

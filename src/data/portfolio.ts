@@ -9,7 +9,8 @@ export type PortfolioProject = {
   kicker: string;
   /** One plain sentence: what the project is. */
   headline: string;
-  repoUrl: string;
+  /** Public repository. Left out when the code is private, so no link leads to a 404. */
+  repoUrl?: string;
   liveUrl?: string;
   /** Screenshot or poster for the project's tile, under /public. */
   imageSrc?: string;
@@ -829,7 +830,6 @@ export const projects: PortfolioProject[] = [
     title: "AgentPortal",
     kicker: "Invoice approval portal",
     headline: "Review, upload and approve invoices, with what you can do decided by your role.",
-    repoUrl: "https://github.com/ninawekunal/AgentPortal",
     industries: ["Fintech"],
     tags: ["Full Stack", "Scalable Systems", "Frontend"],
     stack: ["React", "TypeScript", "Material UI", "Hapi", "Supabase", "Postgres", "GraphQL", "Jest"],
